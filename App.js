@@ -233,8 +233,172 @@ const Skin = () => {
   );
 };
 
-const Home = () => <View style={[styles.page, { backgroundColor: '#F7FFF7' }]} />;
-const Mission = () => <View style={[styles.page, { backgroundColor: '#FFE66D' }]} />;
+const Home = () => {
+  return (
+    <ImageBackground
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+      style={styles.page1}
+      resizeMode="cover"
+    >
+      <View style={styles.mainContainer}> 
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Ftitolo.png?alt=media&token=2b91b8c6-7da2-4d47-993e-bf3b08eb8fdf' }} 
+          style={styles.titleImage} 
+          resizeMode="contain"
+        />
+
+        <View style={styles.buttonsRowTop}> 
+          <TouchableOpacity style={styles.rewardsButton} activeOpacity={1}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' }}
+              style={styles.buttonImageMenu}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.passiveButton} activeOpacity={1}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073' }}
+              style={styles.buttonImageMenu}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.newsButton} activeOpacity={1}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398' }}
+            style={styles.buttonImageMenu}
+          />
+          <Text style={styles.buttonText}>News</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.playButton} activeOpacity={1}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
+            style={styles.playButtonImage}
+          />
+          <Text style={styles.playButtonText} activeOpacity={1}>Play</Text>
+        </TouchableOpacity>
+
+        <View style={styles.buttonsRowBottom}>
+          <TouchableOpacity style={styles.itemsButton}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
+              style={styles.buttonImageMenu}
+            />
+            <Text style={styles.buttonText}>Items</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.mapButton} activeOpacity={1}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
+              style={styles.buttonImageMenu}
+            />
+            <Text style={styles.buttonText}>Map</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.characterContainer}>
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2FMarvick.png?alt=media&token=056bf8e4-af3f-4b8e-b3be-0a3eb73bf589' }} 
+          style={styles.characterImage}
+          resizeMode="contain"
+        />
+      </View>
+    </ImageBackground>
+  );
+};
+const Mission = () => {
+  const [activeButton, setActiveButton] = useState('missions');
+
+  const imageBehindSwitchMissions = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
+  const imageBehindSwitchAchievements = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
+
+  const handleSwitchMissions = () => setActiveButton('missions');
+  const handleSwitchAchievements = () => setActiveButton('achievements');
+
+  const missionItems = Array(21).fill().map((_, index) => ({
+    id: index + 1,
+    name: `Mission ${index + 1}`,
+    image: 'https://via.placeholder.com/100',
+    background: 'https://via.placeholder.com/150x200'
+  }));
+  const achievementItems = Array(15).fill().map((_, index) => ({
+    id: index + 1,
+    title: `Achievement ${index + 1}`,
+    cover: 'https://via.placeholder.com/150x200'
+  }));
+
+  return (
+    <ImageBackground
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+      style={styles.missionPage}
+      resizeMode="cover"
+    >
+      <View style={styles.missionTopButtonsContainer}>
+        <TouchableOpacity style={styles.missionTopButton} activeOpacity={1} onPress={handleSwitchMissions}>
+          <Text style={styles.missionTopButtonText}>Missions</Text>
+          {activeButton === 'missions' && (
+            <Image source={{ uri: imageBehindSwitchMissions }} style={styles.missionBackgroundImage} />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.missionTopButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+          <Text style={styles.missionTopButtonText}>Achievements</Text>
+          {activeButton === 'achievements' && (
+            <Image source={{ uri: imageBehindSwitchAchievements }} style={styles.missionBackgroundImage2} />
+          )}
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.missionImageButtonContainer}>
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin.png?alt=media&token=35253d9d-7e56-4a86-802f-6a36a06d1085' }}
+          style={styles.missionTopImage}
+        />
+        <TouchableOpacity style={styles.missionSortButton} activeOpacity={1}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147' }}
+            style={styles.missionButtonImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.missionScrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {activeButton === 'missions' && (
+          <View style={styles.missionContent}>
+            {Array(7).fill().map((_, rowIndex) => (
+              <View key={rowIndex} style={styles.missionRow}>
+                {missionItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
+                  <View key={item.id} style={styles.missionWrapper}>
+                    <ImageBackground source={{ uri: item.background }} style={styles.missionBackground}>
+                      <Text style={styles.missionName}>{item.name}</Text>
+                      <Image source={{ uri: item.image }} style={styles.missionImage} />
+                      <Text style={styles.missionClass}>{`ID: ${item.id}`}</Text>
+                    </ImageBackground>
+                  </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {activeButton === 'achievements' && (
+          <View style={styles.achievementContent}>
+            {achievementItems.map((item) => (
+              <View key={item.id} style={styles.achievementItem}>
+                <Image source={{ uri: item.cover }} style={styles.achievementCover} />
+                <Text style={styles.achievementTitle}>{item.title}</Text>
+              </View>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+    </ImageBackground>
+  );
+};
 const User = () => <View style={[styles.page, { backgroundColor: '#fff' }]} />;
 
 const pages = [<Shop />, <Skin />, <Home />, <Mission />, <User />];
@@ -565,10 +729,7 @@ const styles = StyleSheet.create({
     width: '45%', // Larghezza del bottone
     height: '45%', // Altezza del bottone
   },
-  buttonImage: {
-    width: '100%',
-    height: '100%',
-  },
+
   topButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -589,8 +750,6 @@ const styles = StyleSheet.create({
     color: '#FFF', // Colore del testo del bottone
     fontSize: 25,
     fontWeight: 'bold',
-    borderRadius: 15,
-    backgroundColor: 'rgba(0,0,0,0.2)',
     padding: 4,
   },
   backgroundImage: {
@@ -683,7 +842,83 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: '#fff',
   },
-
+  page1: {
+    width: width,
+    height: height,
+  },
+  mainContainer: { 
+    width: '100%',
+    height: '80%',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+  },
+  titleImage: {
+    width: 350,
+    height: 150,
+  },
+  buttonsRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  passiveButton: {
+    alignItems: 'flex-end',
+  },
+  rewardsButton: {
+    alignItems: 'flex-start',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  buttonImageMenu: {
+    width: 50,
+    height: 50,
+  },
+  newsButton: {
+    alignSelf: 'flex-start',
+  },
+  characterContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: [{ translateX: -125 }, { translateY: -125 }],
+  },
+  characterImage: {
+    width: 250,
+    height: 250,
+  },
+  playButton: {
+    top: 100,
+    zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+    height: 100,
+  },
+  playButtonImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  playButtonText: {
+    position: 'absolute',
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  buttonsRowBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  itemsButton: {
+    alignItems: 'flex-start',
+  },
+  mapButton: {
+    alignItems: 'flex-end',
+  },
 });
 
 export default App;
