@@ -80,8 +80,8 @@ const Shop = () => {
     </Animated.View>
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
-      showsVerticalScrollIndicator={false}
-      decelerationRate={0.5}
+      showsVerticalScrollIndicator={false}ù
+      
     >
       <View style={styles.rectangle}>
         <View style={styles.imageContainer}>
@@ -306,80 +306,86 @@ const Home = () => {
     </ImageBackground>
   );
 };
+const ProgressBar = ({ progress, total }) => {
+  const percentage = (progress / total) * 100;
+
+  return (
+    <View style={styles.progressContainer}>
+      <View style={[styles.progress, { width: `${percentage}%` }]} />
+      <Text style={styles.progressText}>{`${progress}/${total}`}</Text>
+    </View>
+  );
+};
+
 const Mission = () => {
   const [activeButton, setActiveButton] = useState('missions');
 
-  const imageBehindSwitchMissions = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
-  const imageBehindSwitchAchievements = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
+  const imageBehindSwitchAchievement = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
+  const imageBehindSwitchmission = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
 
   const handleSwitchMissions = () => setActiveButton('missions');
   const handleSwitchAchievements = () => setActiveButton('achievements');
 
-  const missionItems = Array(21).fill().map((_, index) => ({
-    id: index + 1,
-    name: `Mission ${index + 1}`,
-    image: 'https://via.placeholder.com/100',
-    background: 'https://via.placeholder.com/150x200'
-  }));
+  const missionItems = [
+    { id: 1, name: 'Mission 1', description: 'Completa 5 livelli', progress: 20, total: 50, image: 'https://via.placeholder.com/150' },
+    { id: 2, name: 'Mission 2', description: 'Raccogli 10 oggetti', progress: 10, total: 50, image: 'https://via.placeholder.com/150' },
+    { id: 3, name: 'Mission 3', description: 'Vinci 3 battaglie', progress: 35, total: 50, image: 'https://via.placeholder.com/150' },
+  ];
+
   const achievementItems = Array(15).fill().map((_, index) => ({
     id: index + 1,
     title: `Achievement ${index + 1}`,
-    cover: 'https://via.placeholder.com/150x200'
+    cover: 'https://via.placeholder.com/150',
   }));
 
   return (
     <ImageBackground
       source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
-      style={styles.missionPage}
+      style={styles.page1}
       resizeMode="cover"
     >
-      <View style={styles.missionTopButtonsContainer}>
-        <TouchableOpacity style={styles.missionTopButton} activeOpacity={1} onPress={handleSwitchMissions}>
-          <Text style={styles.missionTopButtonText}>Missions</Text>
+      <View style={styles.topButtonsContainer}>
+        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
+          <Text style={styles.topButtonText}>Mission</Text>
           {activeButton === 'missions' && (
-            <Image source={{ uri: imageBehindSwitchMissions }} style={styles.missionBackgroundImage} />
+            <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.missionTopButton} activeOpacity={1} onPress={handleSwitchAchievements}>
-          <Text style={styles.missionTopButtonText}>Achievements</Text>
+        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+          <Text style={styles.topButtonText}>Achievement</Text>
           {activeButton === 'achievements' && (
-            <Image source={{ uri: imageBehindSwitchAchievements }} style={styles.missionBackgroundImage2} />
+            <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
           )}
         </TouchableOpacity>
       </View>
 
-      <View style={styles.missionImageButtonContainer}>
+      <View style={styles.imageButtonContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin.png?alt=media&token=35253d9d-7e56-4a86-802f-6a36a06d1085' }}
-          style={styles.missionTopImage}
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
+          style={styles.topImage}
         />
-        <TouchableOpacity style={styles.missionSortButton} activeOpacity={1}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147' }}
-            style={styles.missionButtonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
       </View>
 
-      <ScrollView
-        contentContainerStyle={styles.missionScrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.missionContent}>
         {activeButton === 'missions' && (
-          <View style={styles.missionContent}>
-            {Array(7).fill().map((_, rowIndex) => (
-              <View key={rowIndex} style={styles.missionRow}>
-                {missionItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
-                  <View key={item.id} style={styles.missionWrapper}>
-                    <ImageBackground source={{ uri: item.background }} style={styles.missionBackground}>
-                      <Text style={styles.missionName}>{item.name}</Text>
-                      <Image source={{ uri: item.image }} style={styles.missionImage} />
-                      <Text style={styles.missionClass}>{`ID: ${item.id}`}</Text>
+          <View style={styles.missionContainer}>
+            {missionItems.map((item) => (
+              <View key={item.id} style={styles.missionWrapper}>
+                <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.missionName}>{item.name}</Text>
+                    <Text style={styles.missionDescription}>{item.description}</Text>
+                    <Text style={styles.missionDetails}>Dettagli</Text>
+                    <ImageBackground
+                      source={{ uri: 'https://via.placeholder.com/50' }}
+                      style={styles.backgroundImage}
+                    >
+                      <Text style={styles.backgroundText}>Info</Text>
                     </ImageBackground>
                   </View>
-                ))}
+                  <ProgressBar progress={item.progress} total={item.total} />
+                </ImageBackground>
               </View>
             ))}
           </View>
@@ -395,10 +401,11 @@ const Mission = () => {
             ))}
           </View>
         )}
-      </ScrollView>
+      </View>
     </ImageBackground>
   );
 };
+
 const User = () => <View style={[styles.page, { backgroundColor: '#fff' }]} />;
 
 const pages = [<Shop />, <Skin />, <Home />, <Mission />, <User />];
@@ -580,8 +587,8 @@ const styles = StyleSheet.create({
     height: 90, // Adjust height as needed
   },
   rectangle: {
-    width: 400,
-    height: 350,
+    width: '400vh',
+    height: '350vh',
     backgroundColor: '#ffb57a',
     borderWidth: 15,
     borderColor: '#f9923e',
@@ -614,8 +621,8 @@ const styles = StyleSheet.create({
   shopButton: {
     position: 'relative',
     bottom: 30,
-    height: '70%',
-    aspectRatio: 0.8,
+    height: '80%',
+    width: '70%',
   },
   shopButtonImage: {
     width: '100%',
@@ -724,10 +731,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 110,
     right: 45,
     width: '45%', // Larghezza del bottone
-    height: '45%', // Altezza del bottone
+    height: '150%', // Altezza del bottone
   },
 
   topButtonsContainer: {
@@ -753,24 +759,18 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   backgroundImage: {
-    top: 10,
     position: 'absolute',
     resizeMode: 'contain',
-    width: '120%',
-    height: '100%',
+    width: '318%',
+    height: '318%',
     zIndex: -1,
-    bottom: 11.5,
-    transform: [{scale: 2.5}],
   },
   backgroundImage2: {
-    top: 10,
     position: 'absolute',
     resizeMode: 'contain',
-    width: '120%',
-    height: '100%',
+    width: '230%',
+    height: '230%',
     zIndex: -1,
-    bottom: 11.5,
-    transform: [{scale: 1.8}],
   },
   skinContent: {
     marginTop: 20,
@@ -919,6 +919,86 @@ const styles = StyleSheet.create({
   mapButton: {
     alignItems: 'flex-end',
   },
+  missionContainer: {
+    marginTop: 0,
+  },
+  missionWrapper: {
+    marginBottom: 15,
+  },
+  missionBackground: {
+    padding: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+  },
+  textContainer: {
+    marginBottom: 10,
+  },
+  missionName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  missionDescription: {
+    fontSize: 14,
+  },
+  missionDetails: {
+    fontSize: 12,
+    color: '#888',
+  },
+
+  backgroundText: {
+    color: '#fff',
+    fontSize: 10,
+  },
+  progressContainer: {
+    height: '5%',
+    padding: 8,
+    width: '100%',
+    backgroundColor: '#ddd',
+    borderRadius: 5,
+    overflow: 'hidden',
+    marginTop: 10,
+  },
+  progress: {
+    height: '100%',
+    backgroundColor: '#3b5998', // Cambia il colore della barra
+  },
+  progressText: {
+    position: 'absolute',
+    alignSelf: 'center',
+    color: '#fff',
+    fontSize: 10,
+  },
+  achievementContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  achievementItem: {
+    width: '48%',
+    margin: '1%',
+    alignItems: 'center',
+  },
+  achievementCover: {
+    width: '100vh',
+    height: '100vh',
+  },
+  achievementTitle: {
+    marginTop: 5,
+  },
+  backgroundImageMission: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: '188.5%',
+    height: '188.5%',
+    zIndex: -1,
+  },
+  backgroundImageAchievement: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: '180%',
+    height: '180%',
+    zIndex: -1,
+  }
 });
 
 export default App;
