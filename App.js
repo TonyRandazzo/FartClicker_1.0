@@ -15,6 +15,8 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 const shopItemImages = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%201.png?alt=media&token=1d60b34d-df85-4a42-88c5-a707df97f7a6',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%202.png?alt=media&token=c1e9e543-3811-4092-8ea4-564c4fd75a3b',
@@ -80,7 +82,7 @@ const Shop = () => {
     </Animated.View>
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
-      showsVerticalScrollIndicator={false}ù
+      showsVerticalScrollIndicator={false}
       
     >
       <View style={styles.rectangle}>
@@ -148,12 +150,30 @@ const Skin = () => {
   const handleSwitchSkin = () => setActiveButton('skin');
   const handleSwitchComic = () => setActiveButton('comic');
 
-  const skinItems = Array(21).fill().map((_, index) => ({
-    id: index + 1,
-    name: `Skin ${index + 1}`,
-    image: 'https://via.placeholder.com/100',
-    background: 'https://via.placeholder.com/150x200'
-  }));
+  const skinItems = [
+    { id: 1, name: 'Marvick', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Warrior' },
+    { id: 2, name: 'Maestro Sasuke', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Mage' },
+    { id: 3, name: 'Bob', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20bob.png?alt=media&token=4a52b112-1e10-4e39-83b5-1c92f479ff2c', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Ranger' },
+    { id: 4, name: 'Cyclop', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20cyclop.png?alt=media&token=94e26047-aca9-47bb-907d-e92f1d2ac3e2', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Assassin' },
+    { id: 5, name: 'Baby Alien', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20alien.png?alt=media&token=121dcfc6-3d7e-410a-8097-42c10af79784', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Paladin' },
+    { id: 6, name: 'George', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20george.png?alt=media&token=10b6c8f3-39a9-4a99-99de-a88f42572375', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Rogue' },
+    { id: 7, name: 'Yokozuna', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20yokkozuna.png?alt=media&token=248beef7-ea0e-4b6a-a883-9afed5dcc449', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Archer' },
+    { id: 8, name: 'Dracula', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FMezzob%20Draccula.png?alt=media&token=29392aff-cd3c-4ede-a5a0-87baaea85540', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Golem' },
+    { id: 9, name: 'Robert', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20robert.png?alt=media&token=68cfc266-3d67-4d0c-a57f-0c769a129d73', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Necromancer' },
+    { id: 10, name: 'Xao', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20xao.png?alt=media&token=3b85a8a1-2202-4b1a-b4b3-fa903ae568b9', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Knight' },
+    { id: 11, name: 'Fart Man', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fartman.png?alt=media&token=961c0f05-55c6-4e11-97a9-99deaa230539', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Sorceress' },
+    { id: 12, name: 'Alien', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Falien%20adulto%20mezzob.png?alt=media&token=2fbc4279-ebc6-4ef0-b87f-3fb3475e66ed', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Nomad' },
+    { id: 13, name: 'Mr Fartè', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20Mr.%20Fart%C3%A9.png?alt=media&token=2f1f1eb0-52d9-4ba2-8dbb-daa1ebf483e3', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Lord' },
+    { id: 14, name: 'Fangpì', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fangpi%C3%AC.png?alt=media&token=a0d97103-7d72-4648-8729-3b71449ec82c', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Shaman' },
+    { id: 15, name: 'Amaterasu&Tsukuyomi', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20tuskuamateras.png?alt=media&token=e3be9494-04c8-4cad-ab23-ccbf7e835246', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Monk' },
+    { id: 16, name: 'StinkyBlob', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20melma%20puzzonsa.png?alt=media&token=2add89e2-6c4f-4d5a-84d0-4cae2ca524e7', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Giant' },
+    { id: 17, name: 'Bear', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20bear.png?alt=media&token=1bcfc630-9007-4fb8-81b9-446c292f3168', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Captain' },
+    { id: 18, name: 'Soprano', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20soprano.png?alt=media&token=949f658a-2034-436e-b15e-e6baa473790a', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Priestess' },
+    { id: 19, name: 'Mr Takeshi', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20mr.%20takeshi.png?alt=media&token=b4ee41e6-1a61-4cfc-9528-d51b331088b7', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Priestess' },
+    { id: 20, name: 'Stein', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20stein.png?alt=media&token=9f5854a3-7b60-4ca4-9ba8-b8cfcc8456e2', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Priestess' },
+    { id: 21, name: 'Gorilloz', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20gorilloz.png?alt=media&token=5d113d1f-7988-495f-8499-14f1251b76ef', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Priestess' },
+];
+
   const comicItems = Array(15).fill().map((_, index) => ({
     id: index + 1,
     title: `Comic ${index + 1}`,
@@ -206,11 +226,12 @@ const Skin = () => {
               <View key={rowIndex} style={styles.skinRow}>
                 {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                   <View key={item.id} style={styles.skinWrapper}>
-                    <ImageBackground source={{ uri: item.background }} style={styles.sfondi}>
+                      <ImageBackground source={{ uri: item.background }} style={styles.sfondi}>
+                      </ImageBackground>
                       <Text style={styles.nome}>{item.name}</Text>
                       <Image source={{ uri: item.image }} style={styles.skinImage} />
-                      <Text style={styles.classe}>{`ID: ${item.id}`}</Text>
-                    </ImageBackground>
+                      <Text style={styles.classe}>{item.class}</Text>
+                      <Image source={{ uri: item.rarity }} style={styles.rarity} />
                   </View>
                 ))}
               </View>
@@ -267,7 +288,7 @@ const Home = () => {
             source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398' }}
             style={styles.buttonImageMenu}
           />
-          <Text style={styles.buttonText}>News</Text>
+          <Text style={styles.buttonText}></Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.playButton} activeOpacity={1}>
@@ -279,26 +300,26 @@ const Home = () => {
         </TouchableOpacity>
 
         <View style={styles.buttonsRowBottom}>
-          <TouchableOpacity style={styles.itemsButton}>
+          <TouchableOpacity style={styles.itemsButton} activeOpacity={1}>
             <Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
               style={styles.buttonImageMenu}
             />
-            <Text style={styles.buttonText}>Items</Text>
+            <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.mapButton} activeOpacity={1}>
             <Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
               style={styles.buttonImageMenu}
             />
-            <Text style={styles.buttonText}>Map</Text>
+            <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.characterContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2FMarvick.png?alt=media&token=056bf8e4-af3f-4b8e-b3be-0a3eb73bf589' }} 
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }} 
           style={styles.characterImage}
           resizeMode="contain"
         />
@@ -332,77 +353,108 @@ const Mission = () => {
     { id: 3, name: 'Mission 3', description: 'Vinci 3 battaglie', progress: 35, total: 50, image: 'https://via.placeholder.com/150' },
   ];
 
-  const achievementItems = Array(15).fill().map((_, index) => ({
-    id: index + 1,
-    title: `Achievement ${index + 1}`,
-    cover: 'https://via.placeholder.com/150',
-  }));
+  const achievementItems = [
+    {
+      id: 1,
+      title: 'Beginner Collector (Level 1)',
+      description: 'Collect 10 rare items to level up.',
+      cover: 'https://via.placeholder.com/300x150', // URL immagine dell'achievement
+      progress: 20,
+      total: 50,
+    },
+    {
+      id: 2,
+      title: 'Master Explorer (Level 3)',
+      description: 'Explore 5 new worlds to level up.',
+      cover: 'https://via.placeholder.com/300x150',
+      progress: 30,
+      total: 100,
+    },
+    {
+      id: 3,
+      title: 'Skilled Warrior (Level 2)',
+      description: 'Defeat 100 enemies to level up.',
+      cover: 'https://via.placeholder.com/300x150',
+      progress: 75,
+      total: 150,
+    },
+    // Aggiungi altri achievement secondo necessità
+  ];
 
   return (
-    <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
-      style={styles.page1}
-      resizeMode="cover"
-    >
-      <View style={styles.topButtonsContainer}>
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
-          <Text style={styles.topButtonText}>Mission</Text>
-          {activeButton === 'missions' && (
-            <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
-          )}
-        </TouchableOpacity>
+<ImageBackground
+  source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+  style={styles.page1}
+  resizeMode="cover"
+>
+  <View style={styles.topButtonsContainer}>
+    <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
+      <Text style={styles.topButtonText}>Mission</Text>
+      {activeButton === 'missions' && (
+        <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
+      )}
+    </TouchableOpacity>
 
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
-          <Text style={styles.topButtonText}>Achievement</Text>
-          {activeButton === 'achievements' && (
-            <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
-          )}
-        </TouchableOpacity>
-      </View>
+    <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+      <Text style={styles.topButtonText}>Achievement</Text>
+      {activeButton === 'achievements' && (
+        <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
+      )}
+    </TouchableOpacity>
+  </View>
 
-      <View style={styles.imageButtonContainer}>
-        <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
-          style={styles.topImage}
-        />
-      </View>
+  <View style={styles.imageButtonContainer}>
+    <Image
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
+      style={styles.topImage}
+    />
+  </View>
 
-      <View style={styles.missionContent}>
-        {activeButton === 'missions' && (
-          <View style={styles.missionContainer}>
-            {missionItems.map((item) => (
-              <View key={item.id} style={styles.missionWrapper}>
-                <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
-                  <View style={styles.textContainer}>
-                    <Text style={styles.missionName}>{item.name}</Text>
-                    <Text style={styles.missionDescription}>{item.description}</Text>
-                    <Text style={styles.missionDetails}>Dettagli</Text>
-                    <ImageBackground
-                      source={{ uri: 'https://via.placeholder.com/50' }}
-                      style={styles.backgroundImage}
-                    >
-                      <Text style={styles.backgroundText}>Info</Text>
-                    </ImageBackground>
-                  </View>
-                  <ProgressBar progress={item.progress} total={item.total} />
+  <View style={styles.missionContent}>
+    {activeButton === 'missions' && (
+      <View style={styles.missionContainer}>
+        {missionItems.map((item) => (
+          <View key={item.id} style={styles.missionWrapper}>
+            <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
+              <View style={styles.textContainer}>
+                <Text style={styles.missionName}>{item.name}</Text>
+                <Text style={styles.missionDescription}>{item.description}</Text>
+                <Text style={styles.missionDetails}>Dettagli</Text>
+                <ImageBackground
+                  source={{ uri: 'https://via.placeholder.com/50' }}
+                  style={styles.backgroundImage}
+                >
+                  <Text style={styles.backgroundText}>Info</Text>
                 </ImageBackground>
               </View>
-            ))}
+              <ProgressBar progress={item.progress} total={item.total} />
+            </ImageBackground>
           </View>
-        )}
-
-        {activeButton === 'achievements' && (
-          <View style={styles.achievementContent}>
-            {achievementItems.map((item) => (
-              <View key={item.id} style={styles.achievementItem}>
-                <Image source={{ uri: item.cover }} style={styles.achievementCover} />
-                <Text style={styles.achievementTitle}>{item.title}</Text>
-              </View>
-            ))}
-          </View>
-        )}
+        ))}
       </View>
-    </ImageBackground>
+    )}
+
+    {activeButton === 'achievements' && (
+      <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
+        {achievementItems.map((item) => (
+          <View key={item.id} style={styles.achievementWrapper}>
+            <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
+              <View style={styles.achievementTextContainer}>
+                <Text style={styles.achievementName}>{item.title}</Text>
+                <Text style={styles.achievementDescription}>{item.description}</Text>
+                <Text style={styles.achievementDetails}>More Info</Text>
+              </View>
+              <View style={styles.achievementProgressBarContainer}>
+                <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
+                <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
+              </View>
+            </ImageBackground>
+          </View>
+        ))}
+      </ScrollView>
+    )}
+  </View>
+</ImageBackground>
   );
 };
 
@@ -504,7 +556,7 @@ const App = () => {
           />
         </TouchableOpacity >
       </View>
-      <FlatList
+      <AnimatedFlatList
         data={pages}
         renderItem={({ item }) => item}
         horizontal
@@ -513,7 +565,7 @@ const App = () => {
         showsHorizontalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: true }
         )}
         onViewableItemsChanged={onViewRef.current}
         viewabilityConfig={viewConfigRef.current}
@@ -676,13 +728,13 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     alignItems: 'center',
-    paddingBottom: 1000, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
+    paddingBottom: 500, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
   },
   shopButtonText: {
-    marginLeft: 15,
-    marginTop: 25,
+    top: '38%',
+    width: '100%',
     position: 'absolute',
-    fontSize: 11,
+    fontSize: 12,
     color: '#fff',
     textAlign: 'center',
   },
@@ -699,10 +751,7 @@ const styles = StyleSheet.create({
     padding: 5, // Padding interno per il testo
     borderRadius: 5, // Bordo arrotondato per l'estetica
   },
-  scrollContainer: {
-    alignItems: 'center',
-    paddingBottom: 1000, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
-  },
+
   zigzagImage: {
     position: 'absolute',
     width: width,  // Usa la larghezza dello schermo
@@ -761,20 +810,21 @@ const styles = StyleSheet.create({
   backgroundImage: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '318%',
-    height: '318%',
+    width: '300%',
+    height: '300%',
     zIndex: -1,
   },
   backgroundImage2: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '230%',
-    height: '230%',
+    width: '215%',
+    height: '215%',
     zIndex: -1,
   },
   skinContent: {
     marginTop: 20,
     width: '100%',
+    height: '100%',
     paddingHorizontal: 10,
   },
   row: {
@@ -805,42 +855,48 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
-  skinContent: {
-    paddingHorizontal: 10,
-  },
   skinRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    marginBottom: 50,
   },
   skinWrapper: {
+    right: '3%',
     width: '30%',
     aspectRatio: 1,
   },
+  rarity: {
+    width: '120%', 
+    height: '140%',   
+    resizeMode: 'contain', 
+    position: 'absolute', 
+  },
   sfondi: {
-    resizeMode: 'contain',
-    width: '100%',
-    height: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    position: 'absolute',
+    top: '5%',
+    left: '20%',
+    width: '90%',
+    height: '110%',
   },
   nome: {
-    top: 5,
-    left: -30,
+    top: '5%',
+    left: '20%',
     color: '#fff',
     fontSize: 12,
+    zIndex: 1,
   },
   skinImage: {
-    width: '80%',
-    height: '60%',
+    width: '120%',
+    height: '120%',
     resizeMode: 'contain',
   },
   classe: {
     position: 'absolute',
-    bottom: 5,
-    left: 5,
+    top: '120%',
+    left: '20%',
     fontSize: 11,
     color: '#fff',
+    zIndex: 1,
   },
   page1: {
     width: width,
@@ -854,8 +910,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   titleImage: {
-    width: 350,
-    height: 150,
+    width: '300%',
+    height: '20%',
+    resizeMode: 'cover',
   },
   buttonsRowTop: {
     flexDirection: 'row',
@@ -881,21 +938,20 @@ const styles = StyleSheet.create({
   },
   characterContainer: {
     position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: [{ translateX: -125 }, { translateY: -125 }],
+    top: '35%',
+    left: '18%',
   },
   characterImage: {
     width: 250,
     height: 250,
   },
   playButton: {
-    top: 100,
+    top: '13%',
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 200,
-    height: 100,
+    width: '200%',
+    height: '15%',
   },
   playButtonImage: {
     width: '100%',
@@ -951,13 +1007,12 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   progressContainer: {
-    height: '5%',
+    height: '0%',
     padding: 8,
     width: '100%',
     backgroundColor: '#ddd',
     borderRadius: 5,
     overflow: 'hidden',
-    marginTop: 10,
   },
   progress: {
     height: '100%',
@@ -975,7 +1030,7 @@ const styles = StyleSheet.create({
   },
   achievementItem: {
     width: '48%',
-    margin: '1%',
+    margin: 10,
     alignItems: 'center',
   },
   achievementCover: {
@@ -988,17 +1043,74 @@ const styles = StyleSheet.create({
   backgroundImageMission: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '188.5%',
-    height: '188.5%',
+    width: '178%',
+    height: '178%',
     zIndex: -1,
   },
   backgroundImageAchievement: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '180%',
-    height: '180%',
+    width: '167%',
+    height: '167%',
     zIndex: -1,
-  }
+  },
+  achievementScrollContainer: {
+    flexDirection: 'column',
+    paddingHorizontal: 10,
+    paddingBottom: 500,
+  },
+  achievementWrapper: {
+    marginBottom: 15,
+    borderRadius: 10,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    backgroundColor: '#f0f0f0', // Sfondo chiaro per i contenuti
+  },
+  achievementBackground: {
+    width: '100%', // Riempie la larghezza del container
+    height: 150, // Altezza rettangolare
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  achievementTextContainer: {
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  achievementName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  achievementDescription: {
+    fontSize: 14,
+    color: '#444',
+  },
+  achievementDetails: {
+    fontSize: 12,
+    color: '#888',
+  },
+  
+  achievementProgressBarContainer: {
+    height: 10,
+    width: '100%',
+    backgroundColor: '#ddd',
+    borderRadius: 5,
+    marginTop: 5,
+    position: 'relative',
+  },
+  achievementProgressBar: {
+    height: '100%',
+    backgroundColor: '#3b5998',
+    borderRadius: 5,
+  },
+  achievementProgressText: {
+    position: 'absolute',
+    alignSelf: 'center',
+    color: '#fff',
+    fontSize: 10,
+  },
 });
 
 export default App;
