@@ -83,7 +83,7 @@ const Shop = () => {
     <ScrollView
       contentContainerStyle={styles.scrollContainer}
       showsVerticalScrollIndicator={false}
-      
+
     >
       <View style={styles.rectangle}>
         <View style={styles.imageContainer}>
@@ -91,9 +91,9 @@ const Shop = () => {
             <View key={index} style={styles.imageWrapper}>
               <Image source={{ uri: imageUrl }} style={styles.shopImage} />
 
-                {index > 0 && (
-                  <Text style={styles.topRightText}>{topRightTexts[index]}</Text>
-                )}
+              {index > 0 && (
+                <Text style={styles.topRightText}>{topRightTexts[index]}</Text>
+              )}
 
               <TouchableOpacity style={styles.shopButton} activeOpacity={1}>
                 <Image source={{ uri: buttonImage }} style={styles.shopButtonImage} />
@@ -172,7 +172,7 @@ const Skin = () => {
     { id: 19, name: 'Mr Takeshi', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20mr.%20takeshi.png?alt=media&token=b4ee41e6-1a61-4cfc-9528-d51b331088b7', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20blu%20con%20sfumatura%20biancastra%20della%20schermata%20home.png?alt=media&token=b83d60da-2118-4eed-b3ec-e2dce661aed4', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f', class: 'Priestess' },
     { id: 20, name: 'Stein', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20stein.png?alt=media&token=9f5854a3-7b60-4ca4-9ba8-b8cfcc8456e2', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20epico.png?alt=media&token=3fb40852-9040-4352-93f8-d0841723978c', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20epico.png?alt=media&token=a34a1c61-855d-454f-9652-112d11596d45', class: 'Priestess' },
     { id: 21, name: 'Gorilloz', image: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20gorilloz.png?alt=media&token=5d113d1f-7988-495f-8499-14f1251b76ef', background: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20epico.png?alt=media&token=3fb40852-9040-4352-93f8-d0841723978c', rarity: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20epico.png?alt=media&token=a34a1c61-855d-454f-9652-112d11596d45', class: 'Priestess' },
-];
+  ];
 
   const comicItems = Array(15).fill().map((_, index) => ({
     id: index + 1,
@@ -226,12 +226,12 @@ const Skin = () => {
               <View key={rowIndex} style={styles.skinRow}>
                 {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                   <View key={item.id} style={styles.skinWrapper}>
-                      <ImageBackground source={{ uri: item.background }} style={styles.sfondi}>
-                      </ImageBackground>
-                      <Text style={styles.nome}>{item.name}</Text>
-                      <Image source={{ uri: item.image }} style={styles.skinImage} />
-                      <Text style={styles.classe}>{item.class}</Text>
-                      <Image source={{ uri: item.rarity }} style={styles.rarity} />
+                    <ImageBackground source={{ uri: item.background }} style={styles.sfondi}>
+                    </ImageBackground>
+                    <Text style={styles.nome}>{item.name}</Text>
+                    <Image source={{ uri: item.image }} style={styles.skinImage} />
+                    <Text style={styles.classe}>{item.class}</Text>
+                    <Image source={{ uri: item.rarity }} style={styles.rarity} />
                   </View>
                 ))}
               </View>
@@ -261,14 +261,14 @@ const Home = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-      <View style={styles.mainContainer}> 
+      <View style={styles.mainContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Ftitolo.png?alt=media&token=2b91b8c6-7da2-4d47-993e-bf3b08eb8fdf' }} 
-          style={styles.titleImage} 
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Ftitolo.png?alt=media&token=2b91b8c6-7da2-4d47-993e-bf3b08eb8fdf' }}
+          style={styles.titleImage}
           resizeMode="contain"
         />
 
-        <View style={styles.buttonsRowTop}> 
+        <View style={styles.buttonsRowTop}>
           <TouchableOpacity style={styles.rewardsButton} activeOpacity={1}>
             <Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' }}
@@ -297,7 +297,7 @@ const Home = () => {
             style={styles.playButtonImage}
           />
           <Text style={styles.playButtonText} activeOpacity={1}>Play</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
 
         <View style={styles.buttonsRowBottom}>
           <TouchableOpacity style={styles.itemsButton} activeOpacity={1}>
@@ -319,7 +319,7 @@ const Home = () => {
 
       <View style={styles.characterContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }} 
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
           style={styles.characterImage}
           resizeMode="contain"
         />
@@ -327,6 +327,7 @@ const Home = () => {
     </ImageBackground>
   );
 };
+
 const ProgressBar = ({ progress, total }) => {
   const percentage = (progress / total) * 100;
 
@@ -382,79 +383,79 @@ const Mission = () => {
   ];
 
   return (
-<ImageBackground
-  source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
-  style={styles.page1}
-  resizeMode="cover"
->
-  <View style={styles.topButtonsContainer}>
-    <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
-      <Text style={styles.topButtonText}>Mission</Text>
-      {activeButton === 'missions' && (
-        <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
-      )}
-    </TouchableOpacity>
+    <ImageBackground
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+      style={styles.page1}
+      resizeMode="cover"
+    >
+      <View style={styles.topButtonsContainer}>
+        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
+          <Text style={styles.topButtonText}>Mission</Text>
+          {activeButton === 'missions' && (
+            <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
+          )}
+        </TouchableOpacity>
 
-    <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
-      <Text style={styles.topButtonText}>Achievement</Text>
-      {activeButton === 'achievements' && (
-        <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
-      )}
-    </TouchableOpacity>
-  </View>
+        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+          <Text style={styles.topButtonText}>Achievement</Text>
+          {activeButton === 'achievements' && (
+            <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
+          )}
+        </TouchableOpacity>
+      </View>
 
-  <View style={styles.imageButtonContainer}>
-    <Image
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
-      style={styles.topImage}
-    />
-  </View>
+      <View style={styles.imageButtonContainer}>
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
+          style={styles.topImage}
+        />
+      </View>
 
-  <View style={styles.missionContent}>
-    {activeButton === 'missions' && (
-      <View style={styles.missionContainer}>
-        {missionItems.map((item) => (
-          <View key={item.id} style={styles.missionWrapper}>
-            <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
-              <View style={styles.textContainer}>
-                <Text style={styles.missionName}>{item.name}</Text>
-                <Text style={styles.missionDescription}>{item.description}</Text>
-                <Text style={styles.missionDetails}>Dettagli</Text>
-                <ImageBackground
-                  source={{ uri: 'https://via.placeholder.com/50' }}
-                  style={styles.backgroundImage}
-                >
-                  <Text style={styles.backgroundText}>Info</Text>
+      <View style={styles.missionContent}>
+        {activeButton === 'missions' && (
+          <View style={styles.missionContainer}>
+            {missionItems.map((item) => (
+              <View key={item.id} style={styles.missionWrapper}>
+                <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.missionName}>{item.name}</Text>
+                    <Text style={styles.missionDescription}>{item.description}</Text>
+                    <Text style={styles.missionDetails}>Dettagli</Text>
+                    <ImageBackground
+                      source={{ uri: 'https://via.placeholder.com/50' }}
+                      style={styles.backgroundImage}
+                    >
+                      <Text style={styles.backgroundText}>Info</Text>
+                    </ImageBackground>
+                  </View>
+                  <ProgressBar progress={item.progress} total={item.total} />
                 </ImageBackground>
               </View>
-              <ProgressBar progress={item.progress} total={item.total} />
-            </ImageBackground>
+            ))}
           </View>
-        ))}
-      </View>
-    )}
+        )}
 
-    {activeButton === 'achievements' && (
-      <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
-        {achievementItems.map((item) => (
-          <View key={item.id} style={styles.achievementWrapper}>
-            <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
-              <View style={styles.achievementTextContainer}>
-                <Text style={styles.achievementName}>{item.title}</Text>
-                <Text style={styles.achievementDescription}>{item.description}</Text>
-                <Text style={styles.achievementDetails}>More Info</Text>
+        {activeButton === 'achievements' && (
+          <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
+            {achievementItems.map((item) => (
+              <View key={item.id} style={styles.achievementWrapper}>
+                <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
+                  <View style={styles.achievementTextContainer}>
+                    <Text style={styles.achievementName}>{item.title}</Text>
+                    <Text style={styles.achievementDescription}>{item.description}</Text>
+                    <Text style={styles.achievementDetails}>More Info</Text>
+                  </View>
+                  <View style={styles.achievementProgressBarContainer}>
+                    <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
+                    <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
+                  </View>
+                </ImageBackground>
               </View>
-              <View style={styles.achievementProgressBarContainer}>
-                <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
-                <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
-              </View>
-            </ImageBackground>
-          </View>
-        ))}
-      </ScrollView>
-    )}
-  </View>
-</ImageBackground>
+            ))}
+          </ScrollView>
+        )}
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -469,68 +470,117 @@ const imageUrls = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Frotolo%20missione.png?alt=media&token=1badebd8-2727-4840-a03f-2e7aa3c1105a',
   'https://via.placeholder.com/150/FFFFFF/000000?text=5',
 ];
+const ItemComponent = React.memo(({ item }) => {
+  return (
+    <View style={styles.pageContainer}>
+      {item}
+    </View>
+  );
+});
 
 const App = () => {
   const flatListRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(2); 
-  const [activeIndex, setActiveIndex] = useState(2); 
+  const [currentIndex, setCurrentIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(2);
   const scrollX = useRef(new Animated.Value(0)).current;
 
   const scaleValues = useRef(imageUrls.map(() => new Animated.Value(1))).current;
   const translateYValues = useRef(imageUrls.map(() => new Animated.Value(0))).current;
 
-  const onViewRef = useRef(({ viewableItems }) => {
+  const onViewRef = useRef(({ viewableItems, changed }) => {
     if (viewableItems.length > 0) {
       const newIndex = viewableItems[0].index;
+
       setCurrentIndex(newIndex);
+      setActiveIndex(newIndex);
+
+      // Utilizziamo setTimeout per assicurarci che lo stato sia aggiornato prima di loggare
+      setTimeout(() => {
+        console.log('--- Scroll Debug Info ---');
+        console.log('Viewable Items:', viewableItems.map(item => ({ index: item.index, key: item.key })));
+        console.log('Changed:', changed.map(item => ({ index: item.index, key: item.key, isViewable: item.isViewable })));
+        console.log('New Index:', newIndex);
+        console.log('Current Index:', newIndex);
+        console.log('Active Index:', newIndex);
+        console.log('------------------------');
+      }, 0);
+
       animateIcons(newIndex);
     }
-  });
+  }).current;
 
   const viewConfigRef = useRef({ viewAreaCoveragePercentThreshold: 50 });
 
   const goToPage = (index) => {
-    flatListRef.current.scrollToIndex({ index, animated: false });
+    console.log('goToPage called with index:', index);
+    flatListRef.current?.scrollToIndex({ index, animated: false });
+    setCurrentIndex(index);
     setActiveIndex(index);
     animateIcons(index);
   };
 
   const animateIcons = (selectedIndex) => {
-    scaleValues.forEach((scale, index) => {
-      if (index === selectedIndex) {
+    const animations = imageUrls.map((_, index) => {
+      const isSelected = index === selectedIndex;
+
+      return Animated.sequence([
         Animated.parallel([
-          Animated.spring(scaleValues[selectedIndex], {
-            toValue: 1.5,
+          // Ingrandimento iniziale e rimbalzo verso l'alto
+          Animated.timing(scaleValues[index], {
+            toValue: isSelected ? 1.6 : 1,  // Più grande se selezionato
+            duration: 200,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateYValues[index], {
+            toValue: isSelected ? -20 : 0,  // Rimbalzo verso l'alto
+            duration: 300,
             friction: 3.5,
             useNativeDriver: true,
           }),
-          Animated.spring(translateYValues[selectedIndex], {
-            toValue: -20,
-            friction: 3.5,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          Animated.spring(scaleValues[selectedIndex], {
-            toValue: 1.5,
-            friction: 3.5,
-            tension: 300,
-            useNativeDriver: true,
-          }).start();
-        });
-      } else {
-        Animated.parallel([
-          Animated.spring(scaleValues[index], {
-            toValue: 1,
-            friction: 5,
-            useNativeDriver: true,
-          }),
-          Animated.spring(translateYValues[index], {
-            toValue: 0,
-            friction: 5,
-            useNativeDriver: true,
-          }),
-        ]).start();
-      }
+        ]),
+        // Effetto rimbalzo (riduzione temporanea)
+        Animated.timing(scaleValues[index], {
+          toValue: isSelected ? 1.3 : 1,  // Riduci leggermente dopo l'espansione
+          duration: 100,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scaleValues[index], {
+          toValue: isSelected ? 1.6 : 1,  // Mantieni la dimensione più grande
+          duration: 100,
+          useNativeDriver: true,
+        }),
+      ]);
+    });
+
+    // Esegui tutte le animazioni in parallelo
+    Animated.parallel(animations).start();
+  };
+
+  useEffect(() => {
+    console.log('State Updated - Current Index:', currentIndex, 'Active Index:', activeIndex);
+  }, [currentIndex, activeIndex]);
+
+  const getInterpolatedScale = (index) => {
+    return scrollX.interpolate({
+      inputRange: [
+        (index - 1) * width,
+        index * width,
+        (index + 1) * width,
+      ],
+      outputRange: [1, 1.5, 1],
+      extrapolate: 'clamp',
+    });
+  };
+
+  const getInterpolatedTranslateY = (index) => {
+    return scrollX.interpolate({
+      inputRange: [
+        (index - 1) * width,
+        index * width,
+        (index + 1) * width,
+      ],
+      outputRange: [0, -20, 0],
+      extrapolate: 'clamp',
     });
   };
 
@@ -539,45 +589,60 @@ const App = () => {
     offset: width * index,
     index,
   });
+
   useEffect(() => {
     if (flatListRef.current) {
       flatListRef.current.scrollToIndex({ index: 2, animated: false });
     }
   }, []);
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20alto%20schermata.png?alt=media&token=f05f1f2d-2286-41b3-9fa8-fe350d0dbe6e' }} // Replace with your image URL
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20alto%20schermata.png?alt=media&token=f05f1f2d-2286-41b3-9fa8-fe350d0dbe6e' }}
           style={styles.topImage}
           resizeMode="cover"
         />
         <TouchableOpacity style={styles.button} activeOpacity={1}>
           <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }} // Replace with your button image URL
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
             style={styles.buttonImage}
             resizeMode="contain"
           />
-        </TouchableOpacity >
+        </TouchableOpacity>
       </View>
-      <AnimatedFlatList
+      <Animated.FlatList
         data={pages}
-        renderItem={({ item }) => item}
+        renderItem={({ item, index }) => (
+          <View style={styles.pageContainer}>
+            {item}
+          </View>
+        )}
         horizontal
         pagingEnabled
         ref={flatListRef}
         showsHorizontalScrollIndicator={false}
+        initialNumToRender={5}
+        maxToRenderPerBatch={10}
+        keyExtractor={(item, index) => `page_${index}`}
+        getItemLayout={(data, index) => ({
+          length: width,
+          offset: width * index,
+          index,
+        })}
+        onViewableItemsChanged={onViewRef}
+        viewabilityConfig={viewConfigRef.current}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
           { useNativeDriver: true }
         )}
-        onViewableItemsChanged={onViewRef.current}
-        viewabilityConfig={viewConfigRef.current}
-        keyExtractor={(_, index) => index.toString()}
-        getItemLayout={getItemLayout}
+        scrollEventThrottle={16}
       />
       <Image
-        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20basso.png?alt=media&token=62e385a2-831b-4421-aa8a-cfa55d3c7392' }} // Replace with your bottom image URL
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20basso.png?alt=media&token=62e385a2-831b-4421-aa8a-cfa55d3c7392' }}
         style={styles.bottomImage}
         resizeMode="cover"
       />
@@ -588,14 +653,21 @@ const App = () => {
 
           return (
             <TouchableOpacity key={index} onPress={() => goToPage(index)} style={styles.buttonContainer} activeOpacity={1}>
-              <Animated.View style={{ transform: [{ scale }, { translateY }] }}>
+              <Animated.View
+                style={{
+                  transform: [
+                    { scale: scale },  // Usa il valore animato per la scala
+                    { translateY: translateY },  // Usa il valore animato per il rimbalzo verticale
+                  ],
+                }}
+              >
                 <Image
                   source={{ uri: url }}
-                  style={[styles.indicator]}
+                  style={styles.indicator}
                   resizeMode="contain"
                 />
               </Animated.View>
-            </TouchableOpacity >
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -693,7 +765,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   indicator: {
-    width: 60,
+    width: 55,
     height: 60,
     marginHorizontal: 10,
   },
@@ -702,26 +774,27 @@ const styles = StyleSheet.create({
     borderRightWidth: 4,
     borderRightColor: '#fff',
   },
-  LimitedOffer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+
   newImage: {
     width: 350, // Imposta la larghezza desiderata
     height: 350, // Imposta l'altezza desiderata
     resizeMode: 'contain', // Mantieni il rapporto di aspetto
   },
   rotatedText: {
-    fontSize: 30, // Imposta la dimensione del testo
+    fontSize: 40, // Imposta la dimensione del testo
     color: 'white',
     transform: [{ rotate: '-3.3deg' }], // Ruota il testo di 30 gradi
     marginVertical: 10, // Spazio verticale intorno al testo
     position: 'absolute',
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
   LimitedOffer: {
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative', // Aggiungi questa proprietà per posizionare Timer in modo relativo
+    position: 'relative', 
   },
   Timer: {
     width: 50, // Imposta la larghezza desiderata per l'altra immagine
@@ -738,9 +811,13 @@ const styles = StyleSheet.create({
     top: '38%',
     width: '100%',
     position: 'absolute',
-    fontSize: 12,
+    fontSize: 18,
     color: '#fff',
     textAlign: 'center',
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
   },
   topRightText: {
     position: 'absolute',
@@ -748,7 +825,10 @@ const styles = StyleSheet.create({
     right: -15, // Posiziona il testo in alto a destra
     color: '#fff', // Colore del testo
     fontSize: 18, // Dimensione del testo
-    fontWeight: 'bold', // Stile grassetto
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1, // Stile grassetto
     textShadowColor: 'orange', // Colore dell'ombra (che simula il bordo)
     textShadowOffset: { width: 1, height: 1 }, // Offset dell'ombra
     textShadowRadius: 4,
@@ -795,7 +875,7 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 2,
     position: 'absolute',
-    top: 20, 
+    top: 20,
   },
   topButton: {
     borderRadius: 5,
@@ -808,22 +888,27 @@ const styles = StyleSheet.create({
     top: 0,
     color: '#FFF', // Colore del testo del bottone
     fontSize: 25,
-    fontWeight: 'bold',
+        fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
     padding: 4,
   },
   backgroundImage: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
     resizeMode: 'contain',
-    width: '300%',
-    height: '300%',
+    transform: [{scale: 3.8}],
     zIndex: -1,
   },
   backgroundImage2: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '215%',
-    height: '215%',
     zIndex: -1,
+    width: '100%',
+    height: '100%',
+    transform: [{scale: 2.9}],
   },
   skinContent: {
     marginTop: 20,
@@ -849,13 +934,16 @@ const styles = StyleSheet.create({
   },
   comicCover: {
     width: '100%',
-    aspectRatio: 3/4,
+    aspectRatio: 3 / 4,
     borderRadius: 10,
   },
   comicTitle: {
     marginTop: 5,
-    fontSize: 14,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
     color: '#fff',
     textAlign: 'center',
   },
@@ -870,10 +958,10 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
   },
   rarity: {
-    width: '120%', 
-    height: '140%',   
-    resizeMode: 'contain', 
-    position: 'absolute', 
+    width: '122%',
+    height: '139%',
+    resizeMode: 'contain',
+    position: 'absolute',
   },
   sfondi: {
     position: 'absolute',
@@ -883,16 +971,19 @@ const styles = StyleSheet.create({
     height: '110%',
   },
   nome: {
+    top: '5%',
     left: '20%',
     color: '#fff',
-    fontSize: 13,
+    fontSize: 16,
     zIndex: 1,
+    fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
-    textShadowOffset: { width: 1, height: 1 },
+    textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
+    color: '#fff',
   },
   skinImage: {
-    width: '115%',
+    width: '119%',
     height: '119%',
     resizeMode: 'contain',
   },
@@ -901,10 +992,14 @@ const styles = StyleSheet.create({
     top: '120%',
     left: '20%',
     fontSize: 11,
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 1,
     color: '#fff',
     zIndex: 1,
   },
-  mainContainer: { 
+  mainContainer: {
     width: '100%',
     height: '80%',
     justifyContent: 'space-between',
@@ -929,7 +1024,10 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+        fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
   buttonImageMenu: {
     width: 50,
@@ -963,8 +1061,11 @@ const styles = StyleSheet.create({
   playButtonText: {
     position: 'absolute',
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 50,
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   buttonsRowBottom: {
     flexDirection: 'row',
@@ -978,14 +1079,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   missionContainer: {
+    marginLeft: 10,
+    marginRight: 10,
     marginTop: 0,
   },
   missionWrapper: {
-    marginBottom: 15,
+    marginBottom: 40,
   },
   missionBackground: {
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 5,
     overflow: 'hidden',
     justifyContent: 'center',
   },
@@ -993,20 +1096,27 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   missionName: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    color: '#fff',
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   missionDescription: {
     fontSize: 14,
+    fontFamily: 'Tricky Jimmy',
   },
   missionDetails: {
     fontSize: 12,
     color: '#888',
+    fontFamily: 'Tricky Jimmy',
   },
 
   backgroundText: {
     color: '#fff',
     fontSize: 10,
+    fontFamily: 'Tricky Jimmy',
   },
   progressContainer: {
     height: 15,
@@ -1021,10 +1131,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#3b5998', // Cambia il colore della barra
   },
   progressText: {
+    fontFamily: 'Tricky Jimmy',
     position: 'absolute',
     alignSelf: 'center',
     color: '#fff',
-    fontSize: 10,
+    fontSize: 15,
   },
   achievementContent: {
     flexDirection: 'row',
@@ -1043,18 +1154,21 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   backgroundImageMission: {
+    bottom: '14%',
     position: 'absolute',
     resizeMode: 'contain',
-    width: '178%',
-    height: '178%',
     zIndex: -1,
+    width: '100%',
+    height: '100%',
+    transform: [{scale: 2}],
   },
   backgroundImageAchievement: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '167%',
-    height: '167%',
     zIndex: -1,
+    width: '100%',
+    height: '100%',
+    transform: [{scale: 2.35}],
   },
   achievementScrollContainer: {
     flexDirection: 'column',
@@ -1073,27 +1187,34 @@ const styles = StyleSheet.create({
     height: 150, // Altezza rettangolare
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 15,
     borderRadius: 10,
     overflow: 'hidden',
   },
   achievementTextContainer: {
     marginBottom: 10,
     paddingHorizontal: 10,
+    fontFamily: 'Tricky Jimmy',
   },
   achievementName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontSize: 21,
+    fontFamily: 'Tricky Jimmy',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    color: '#fff',
   },
   achievementDescription: {
     fontSize: 14,
+    fontFamily: 'Tricky Jimmy',
     color: '#444',
   },
   achievementDetails: {
     fontSize: 12,
     color: '#888',
+    fontFamily: 'Tricky Jimmy',
   },
-  
+
   achievementProgressBarContainer: {
     height: 15,
     width: '100%',
@@ -1101,17 +1222,20 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5,
     position: 'relative',
+    fontFamily: 'Tricky Jimmy',
   },
   achievementProgressBar: {
     height: '100%',
     backgroundColor: '#3b5998',
     borderRadius: 5,
+
   },
   achievementProgressText: {
     position: 'absolute',
     alignSelf: 'center',
     color: '#fff',
-    fontSize: 10,
+    fontSize: 18,
+    fontFamily: 'Tricky Jimmy',
   },
 });
 
