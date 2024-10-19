@@ -254,7 +254,47 @@ const Skin = () => {
   );
 };
 
+const MapScreen = () => {
+  const renderItem = ({ item }) => (
+    <View style={styles.itemContainer}>
+      <Image
+        source={{ uri: 'https://example.com/path-to-your-image.png' }} // Sostituisci con l'URL dell'immagine
+        style={styles.itemImage}
+      />
+      <Text style={styles.itemText}>{item}</Text>
+    </View>
+  );
+
+  // Genera un array di numeri da 1 a 100
+  const data = Array.from({ length: 100 }, (_, index) => index + 1);
+
+  return (
+    <ImageBackground
+    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }} // Usa lo stesso sfondo di Home
+    style={styles.background}
+    resizeMode="cover"
+  >
+    <FlatList
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.toString()}
+      numColumns={2} // Mostra 2 colonne
+    />
+        </ImageBackground>
+
+  );
+};
+
 const Home = () => {
+  const [showMapScreen, setShowMapScreen] = useState(false);
+
+  const toggleMapScreen = () => {
+    setShowMapScreen((prev) => !prev);
+  };
+
+  if (showMapScreen) {
+    return <MapScreen />; 
+  }
   return (
     <ImageBackground
       source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
@@ -297,7 +337,7 @@ const Home = () => {
             style={styles.playButtonImage}
           />
           <Text style={styles.playButtonText} activeOpacity={1}>Play</Text>
-          </TouchableOpacity>
+        </TouchableOpacity>
 
         <View style={styles.buttonsRowBottom}>
           <TouchableOpacity style={styles.itemsButton} activeOpacity={1}>
@@ -307,7 +347,10 @@ const Home = () => {
             />
             <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.mapButton} activeOpacity={1}>
+          <TouchableOpacity 
+            style={styles.mapButton}
+            activeOpacity={1}
+            onPress={toggleMapScreen}>
             <Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
               style={styles.buttonImageMenu}
@@ -650,9 +693,12 @@ const App = () => {
         {imageUrls.map((url, index) => {
           const scale = scaleValues[index];
           const translateY = translateYValues[index];
-
+          const buttonContainerStyle = [
+            styles.buttonContainer,
+            index === 4 && { borderRightWidth: 0 }, // Se l'index è 5, borderRightWidth diventa 0
+          ];
           return (
-            <TouchableOpacity key={index} onPress={() => goToPage(index)} style={styles.buttonContainer} activeOpacity={1}>
+            <TouchableOpacity key={index} onPress={() => goToPage(index)}  style={buttonContainerStyle} activeOpacity={1}>
               <Animated.View
                 style={{
                   transform: [
@@ -794,7 +840,7 @@ const styles = StyleSheet.create({
   LimitedOffer: {
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative', 
+    position: 'relative',
   },
   Timer: {
     width: 50, // Imposta la larghezza desiderata per l'altra immagine
@@ -888,7 +934,7 @@ const styles = StyleSheet.create({
     top: 0,
     color: '#FFF', // Colore del testo del bottone
     fontSize: 25,
-        fontFamily: 'Tricky Jimmy',
+    fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -899,7 +945,7 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     resizeMode: 'contain',
-    transform: [{scale: 3.8}],
+    transform: [{ scale: 3.8 }],
     zIndex: -1,
   },
   backgroundImage2: {
@@ -908,7 +954,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     width: '100%',
     height: '100%',
-    transform: [{scale: 2.9}],
+    transform: [{ scale: 2.9 }],
   },
   skinContent: {
     marginTop: 20,
@@ -1024,7 +1070,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-        fontFamily: 'Tricky Jimmy',
+    fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -1160,7 +1206,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     width: '100%',
     height: '100%',
-    transform: [{scale: 2}],
+    transform: [{ scale: 2 }],
   },
   backgroundImageAchievement: {
     position: 'absolute',
@@ -1168,7 +1214,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
     width: '100%',
     height: '100%',
-    transform: [{scale: 2.35}],
+    transform: [{ scale: 2.35 }],
   },
   achievementScrollContainer: {
     flexDirection: 'column',
@@ -1236,6 +1282,23 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontFamily: 'Tricky Jimmy',
+  },
+  itemContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    position: 'relative',
+  },
+  itemImage: {
+    width: 100,
+    height: 100, // Dimensioni dell'immagine
+  },
+  itemText: {
+    position: 'absolute',
+    color: 'white', // Colore del testo
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
