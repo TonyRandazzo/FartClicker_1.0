@@ -255,32 +255,34 @@ const Skin = () => {
 };
 
 const MapScreen = () => {
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image
-        source={{ uri: 'https://example.com/path-to-your-image.png' }} // Sostituisci con l'URL dell'immagine
-        style={styles.itemImage}
-      />
-      <Text style={styles.itemText}>{item}</Text>
-    </View>
-  );
 
   // Genera un array di numeri da 1 a 100
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
 
   return (
     <ImageBackground
-    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }} // Usa lo stesso sfondo di Home
-    style={styles.background}
-    resizeMode="cover"
-  >
-    <FlatList
-      data={data}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.toString()}
-      numColumns={2} // Mostra 2 colonne
-    />
-        </ImageBackground>
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.containerContent}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}
+          style={styles.scrollView}
+        >
+          {data.map((item) => (
+            <View key={item.toString()} style={[styles.itemContainer, styles.itemWrapper]}>
+              <Image
+                source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8' }}
+                style={styles.itemImage}
+              />
+              <Text style={styles.itemText}>{item}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    </ImageBackground>
 
   );
 };
@@ -1284,22 +1286,41 @@ const styles = StyleSheet.create({
     fontFamily: 'Tricky Jimmy',
   },
   itemContainer: {
-    flex: 1,
+    width: width,
+    height: height,
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
     position: 'relative',
   },
+  background: {
+    width: width,
+    height: height,
+  },
   itemImage: {
-    width: 100,
-    height: 100, // Dimensioni dell'immagine
+    width: '30%',
+    height: '15%',
   },
   itemText: {
     position: 'absolute',
-    color: 'white', // Colore del testo
-    fontSize: 20,
+    color: 'white',
+    fontSize: 30,
+    paddingBottom: '2%',
     fontWeight: 'bold',
   },
+  scrollView: {
+    transform: [{ scaleY: -1 }], // Invertiamo la direzione dello scroll
+  },
+  scrollViewContent: {
+    flexDirection: 'column',
+  },
+  containerContent: {
+  },
+  // Stile per invertire ogni elemento all'interno dello ScrollView
+  itemWrapper: {
+    transform: [{ scaleY: -1 }],
+    marginVertical: -200,
+    marginBottom: -150,
+  }
 });
 
 export default App;
