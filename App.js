@@ -12,6 +12,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
+import { ScaledSheet } from 'react-native-size-matters';
 
 const { width, height } = Dimensions.get('window');
 
@@ -254,10 +255,24 @@ const Skin = () => {
   );
 };
 
-const MapScreen = () => {
-
-  // Genera un array di numeri da 1 a 100
+const MapScreen = ({ toggleMapScreen }) => {
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
+  const mapScaleAnim = useRef(new Animated.Value(1)).current;
+
+  const bounceAnimation = (scaleAnim) => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.3,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   return (
     <ImageBackground
@@ -273,6 +288,12 @@ const MapScreen = () => {
         >
           {data.map((item) => (
             <View key={item.toString()} style={[styles.itemContainer, styles.itemWrapper]}>
+              <View style={styles.dashedLineContainer}>
+                {Array.from({ length: 35 }).map((_, index) => (
+                  <View key={index} style={styles.dashedSegment} />
+                ))}
+              </View>
+
               <Image
                 source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8' }}
                 style={styles.itemImage}
@@ -282,21 +303,49 @@ const MapScreen = () => {
           ))}
         </ScrollView>
       </View>
-    </ImageBackground>
 
+      <TouchableOpacity style={styles.fixedMapButton} activeOpacity={1} onPressIn={() => bounceAnimation(mapScaleAnim)} onPress={toggleMapScreen}>
+        <Animated.Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
+          style={[styles.buttonImageMenu, { transform: [{ scale: mapScaleAnim }]}]}
+        />
+      </TouchableOpacity>
+    </ImageBackground>
   );
 };
 
 const Home = () => {
   const [showMapScreen, setShowMapScreen] = useState(false);
+  const rewardsScaleAnim = useRef(new Animated.Value(1)).current;
+  const passiveScaleAnim = useRef(new Animated.Value(1)).current;
+  const itemsScaleAnim = useRef(new Animated.Value(1)).current;
+  const newsScaleAnim = useRef(new Animated.Value(1)).current;
+  const playScaleAnim = useRef(new Animated.Value(1)).current;
+  const mapScaleAnim = useRef(new Animated.Value(1)).current;
 
   const toggleMapScreen = () => {
     setShowMapScreen((prev) => !prev);
   };
 
+
   if (showMapScreen) {
-    return <MapScreen />; 
+    return <MapScreen toggleMapScreen={toggleMapScreen} />;
   }
+
+  const bounceAnimation = (scaleAnim) => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.3,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
   return (
     <ImageBackground
       source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
@@ -311,54 +360,50 @@ const Home = () => {
         />
 
         <View style={styles.buttonsRowTop}>
-          <TouchableOpacity style={styles.rewardsButton} activeOpacity={1}>
-            <Image
+          <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
+            <Animated.Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' }}
-              style={styles.buttonImageMenu}
+              style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }]}]}
             />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.passiveButton} activeOpacity={1}>
-            <Image
+          <TouchableOpacity style={styles.passiveButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
+            <Animated.Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073' }}
-              style={styles.buttonImageMenu}
+              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }]}]}
             />
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.newsButton} activeOpacity={1}>
-          <Image
+        <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
+          <Animated.Image
             source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398' }}
-            style={styles.buttonImageMenu}
+            style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }]}]}
           />
           <Text style={styles.buttonText}></Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.playButton} activeOpacity={1}>
-          <Image
+        <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
+          <Animated.Image
             source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
-            style={styles.playButtonImage}
+            style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }]}]}
           />
-          <Text style={styles.playButtonText} activeOpacity={1}>Play</Text>
+          <Text style={styles.playButtonText} activeOpacity={1}onPressIn={bounceAnimation} >Play</Text>
         </TouchableOpacity>
 
         <View style={styles.buttonsRowBottom}>
-          <TouchableOpacity style={styles.itemsButton} activeOpacity={1}>
-            <Image
+          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
+            <Animated.Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
-              style={styles.buttonImageMenu}
+              style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }]}]}
             />
             <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.mapButton}
-            activeOpacity={1}
-            onPress={toggleMapScreen}>
-            <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
-              style={styles.buttonImageMenu}
-            />
-            <Text style={styles.buttonText}></Text>
-          </TouchableOpacity>
+          <TouchableOpacity style={styles.mapButton} activeOpacity={1} onPressIn={() => bounceAnimation(mapScaleAnim)} onPress={toggleMapScreen}>
+        <Animated.Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
+          style={[styles.buttonImageMenu, { transform: [{ scale: mapScaleAnim }]}]}
+        />
+      </TouchableOpacity>
         </View>
       </View>
 
@@ -372,6 +417,7 @@ const Home = () => {
     </ImageBackground>
   );
 };
+
 
 const ProgressBar = ({ progress, total }) => {
   const percentage = (progress / total) * 100;
@@ -466,12 +512,6 @@ const Mission = () => {
                     <Text style={styles.missionName}>{item.name}</Text>
                     <Text style={styles.missionDescription}>{item.description}</Text>
                     <Text style={styles.missionDetails}>Dettagli</Text>
-                    <ImageBackground
-                      source={{ uri: 'https://via.placeholder.com/50' }}
-                      style={styles.backgroundImage}
-                    >
-                      <Text style={styles.backgroundText}>Info</Text>
-                    </ImageBackground>
                   </View>
                   <ProgressBar progress={item.progress} total={item.total} />
                 </ImageBackground>
@@ -539,7 +579,6 @@ const App = () => {
       setCurrentIndex(newIndex);
       setActiveIndex(newIndex);
 
-      // Utilizziamo setTimeout per assicurarci che lo stato sia aggiornato prima di loggare
       setTimeout(() => {
         console.log('--- Scroll Debug Info ---');
         console.log('Viewable Items:', viewableItems.map(item => ({ index: item.index, key: item.key })));
@@ -570,34 +609,31 @@ const App = () => {
 
       return Animated.sequence([
         Animated.parallel([
-          // Ingrandimento iniziale e rimbalzo verso l'alto
           Animated.timing(scaleValues[index], {
-            toValue: isSelected ? 1.6 : 1,  // Più grande se selezionato
+            toValue: isSelected ? 1.6 : 1,  
             duration: 200,
             useNativeDriver: true,
           }),
           Animated.timing(translateYValues[index], {
-            toValue: isSelected ? -20 : 0,  // Rimbalzo verso l'alto
+            toValue: isSelected ? -20 : 0,  
             duration: 300,
             friction: 3.5,
             useNativeDriver: true,
           }),
         ]),
-        // Effetto rimbalzo (riduzione temporanea)
         Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.3 : 1,  // Riduci leggermente dopo l'espansione
+          toValue: isSelected ? 1.3 : 1,  
           duration: 100,
           useNativeDriver: true,
         }),
         Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.6 : 1,  // Mantieni la dimensione più grande
+          toValue: isSelected ? 1.6 : 1,  
           duration: 100,
           useNativeDriver: true,
         }),
       ]);
     });
 
-    // Esegui tutte le animazioni in parallelo
     Animated.parallel(animations).start();
   };
 
@@ -697,15 +733,15 @@ const App = () => {
           const translateY = translateYValues[index];
           const buttonContainerStyle = [
             styles.buttonContainer,
-            index === 4 && { borderRightWidth: 0 }, // Se l'index è 5, borderRightWidth diventa 0
+            index === 4 && { borderRightWidth: 0 }, 
           ];
           return (
-            <TouchableOpacity key={index} onPress={() => goToPage(index)}  style={buttonContainerStyle} activeOpacity={1}>
+            <TouchableOpacity key={index} onPress={() => goToPage(index)} style={buttonContainerStyle} activeOpacity={1}>
               <Animated.View
                 style={{
                   transform: [
-                    { scale: scale },  // Usa il valore animato per la scala
-                    { translateY: translateY },  // Usa il valore animato per il rimbalzo verticale
+                    { scale: scale },  
+                    { translateY: translateY },  
                   ],
                 }}
               >
@@ -723,24 +759,24 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = ScaledSheet.create({
   container: {
     flex: 1,
   },
   topContainer: {
     position: 'relative',
     width: '100%',
-    height: 60, // Adjust height as needed
+    height: 60,
   },
   topImage: {
     width: '100%',
-    height: '100%', // Full height of the top container
+    height: '100%',
   },
   button: {
     position: 'absolute',
-    right: 16, // Adjust padding to position the button
-    top: '50%', // Center vertically within the image
-    transform: [{ translateY: -25 }], // Adjust to center based on button size
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -25 }],
     width: 50,
     height: 50,
     justifyContent: 'center',
@@ -759,8 +795,8 @@ const styles = StyleSheet.create({
     height: height,
   },
   bottomImage: {
-    width: '100%', // Full width of the screen
-    height: 90, // Adjust height as needed
+    width: '100%',
+    height: 90,
   },
   rectangle: {
     width: '400vh',
@@ -813,26 +849,25 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   indicator: {
-    width: 55,
-    height: 60,
-    marginHorizontal: 10,
+    width: '48@s',
+    height: '50@s',
+    marginHorizontal: '8@s',
   },
   buttonContainer: {
     paddingRight: 0,
     borderRightWidth: 4,
     borderRightColor: '#fff',
   },
-
   newImage: {
-    width: 350, // Imposta la larghezza desiderata
-    height: 350, // Imposta l'altezza desiderata
-    resizeMode: 'contain', // Mantieni il rapporto di aspetto
+    width: 350,
+    height: 350,
+    resizeMode: 'contain',
   },
   rotatedText: {
-    fontSize: 40, // Imposta la dimensione del testo
+    fontSize: 40,
     color: 'white',
-    transform: [{ rotate: '-3.3deg' }], // Ruota il testo di 30 gradi
-    marginVertical: 10, // Spazio verticale intorno al testo
+    transform: [{ rotate: '-3.3deg' }],
+    marginVertical: 10,
     position: 'absolute',
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
@@ -845,15 +880,15 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   Timer: {
-    width: 50, // Imposta la larghezza desiderata per l'altra immagine
-    height: 50, // Imposta l'altezza desiderata per l'altra immagine
+    width: 50,
+    height: 50,
     position: 'absolute',
-    left: 0, // Posiziona a sinistra
-    bottom: 90, // Posiziona in basso
+    left: 0,
+    bottom: 90,
   },
   scrollContainer: {
     alignItems: 'center',
-    paddingBottom: 500, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
+    paddingBottom: 500,
   },
   shopButtonText: {
     top: '38%',
@@ -869,26 +904,25 @@ const styles = StyleSheet.create({
   },
   topRightText: {
     position: 'absolute',
-    top: -15, // Puoi modificare questo valore in base a dove vuoi posizionare il testo
-    right: -15, // Posiziona il testo in alto a destra
-    color: '#fff', // Colore del testo
-    fontSize: 18, // Dimensione del testo
+    top: -15,
+    right: -15,
+    color: '#fff',
+    fontSize: 18,
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 1, // Stile grassetto
-    textShadowColor: 'orange', // Colore dell'ombra (che simula il bordo)
-    textShadowOffset: { width: 1, height: 1 }, // Offset dell'ombra
+    textShadowRadius: 1,
+    textShadowColor: 'orange',
+    textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 4,
-    padding: 5, // Padding interno per il testo
-    borderRadius: 5, // Bordo arrotondato per l'estetica
+    padding: 5,
+    borderRadius: 5,
   },
-
   zigzagImage: {
     position: 'absolute',
-    width: width,  // Usa la larghezza dello schermo
-    height: height,  // Usa l'altezza dello schermo
-    resizeMode: 'cover',  // Assicura che l'immagine copra l'intera area
+    width: width,
+    height: height,
+    resizeMode: 'cover',
   },
   animatedBackground: {
     position: 'absolute',
@@ -900,23 +934,22 @@ const styles = StyleSheet.create({
   },
   imageButtonContainer: {
     position: 'relative',
-    width: '100%', // Larghezza totale
-    height: 200, // Imposta un'altezza desiderata per il contenitore
+    width: '100%',
+    height: 200,
     alignItems: 'center',
   },
   topImage: {
     width: '100%',
-    height: '100%', // Immagine di sfondo a piena larghezza e altezza del contenitore
+    height: '100%',
   },
   sortButton: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
     right: 45,
-    width: '45%', // Larghezza del bottone
-    height: '150%', // Altezza del bottone
+    width: '45%',
+    height: '150%',
   },
-
   topButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -928,23 +961,22 @@ const styles = StyleSheet.create({
   topButton: {
     borderRadius: 5,
     paddingVertical: 10,
-    paddingHorizontal: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   topButtonText: {
     top: 0,
-    color: '#FFF', // Colore del testo del bottone
+    color: '#FFF',
     fontSize: 25,
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
-    padding: 4,
+    padding: 7,
   },
   backgroundImage: {
-    width: '100%',
-    height: '100%',
+    width: '40@s',
+    height: '40@s',
     position: 'absolute',
     resizeMode: 'contain',
     transform: [{ scale: 3.8 }],
@@ -954,8 +986,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    width: '100%',
-    height: '100%',
+    width: '52@s',
+    height: '52@s',
     transform: [{ scale: 2.9 }],
   },
   skinContent: {
@@ -968,7 +1000,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-
   comicContent: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -1098,7 +1129,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '200%',
+    width: '40%',
     height: '15%',
   },
   playButtonImage: {
@@ -1126,6 +1157,14 @@ const styles = StyleSheet.create({
   mapButton: {
     alignItems: 'flex-end',
   },
+  fixedMapButton: {
+    position: 'absolute',
+    top: '514@s', 
+    right: '9@s',
+    zIndex: 10, 
+    width: '50@s', 
+    height: '50@s',
+  },
   missionContainer: {
     marginLeft: 10,
     marginRight: 10,
@@ -1140,6 +1179,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
   },
+
   textContainer: {
     marginBottom: 10,
   },
@@ -1160,7 +1200,6 @@ const styles = StyleSheet.create({
     color: '#888',
     fontFamily: 'Tricky Jimmy',
   },
-
   backgroundText: {
     color: '#fff',
     fontSize: 10,
@@ -1176,7 +1215,7 @@ const styles = StyleSheet.create({
   },
   progress: {
     height: '100%',
-    backgroundColor: '#3b5998', // Cambia il colore della barra
+    backgroundColor: '#3b5998',
   },
   progressText: {
     fontFamily: 'Tricky Jimmy',
@@ -1185,38 +1224,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
   },
-  achievementContent: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  achievementItem: {
-    width: '48%',
-    margin: 10,
-    alignItems: 'center',
-  },
-  achievementCover: {
-    width: '100vh',
-    height: '100vh',
-  },
-  achievementTitle: {
-    marginTop: 5,
-  },
+
   backgroundImageMission: {
-    bottom: '14%',
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    width: '100%',
-    height: '100%',
-    transform: [{ scale: 2 }],
+    width: '150@s',
+    height: '150@s',
   },
   backgroundImageAchievement: {
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    width: '100%',
-    height: '100%',
-    transform: [{ scale: 2.35 }],
+    width: '150@s',
+    height: '150@s',
   },
   achievementScrollContainer: {
     flexDirection: 'column',
@@ -1228,11 +1249,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: 'hidden',
     justifyContent: 'center',
-    backgroundColor: '#f0f0f0', // Sfondo chiaro per i contenuti
+    backgroundColor: '#f0f0f0',
   },
   achievementBackground: {
-    width: '100%', // Riempie la larghezza del container
-    height: 150, // Altezza rettangolare
+    width: '100%',
+    height: 150,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 15,
@@ -1262,7 +1283,6 @@ const styles = StyleSheet.create({
     color: '#888',
     fontFamily: 'Tricky Jimmy',
   },
-
   achievementProgressBarContainer: {
     height: 15,
     width: '100%',
@@ -1276,7 +1296,6 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#3b5998',
     borderRadius: 5,
-
   },
   achievementProgressText: {
     position: 'absolute',
@@ -1297,30 +1316,42 @@ const styles = StyleSheet.create({
     height: height,
   },
   itemImage: {
-    width: '30%',
-    height: '15%',
+    resizeMode: 'contain',
+    width: '90@s',
+    height: '90@s',
   },
   itemText: {
     position: 'absolute',
     color: 'white',
-    fontSize: 30,
-    paddingBottom: '2%',
-    fontWeight: 'bold',
+    fontSize: 40,
+    fontFamily: 'Tricky Jimmy',
   },
   scrollView: {
-    transform: [{ scaleY: -1 }], // Invertiamo la direzione dello scroll
+    transform: [{ scaleY: -1 }],
   },
   scrollViewContent: {
     flexDirection: 'column',
+    paddingBottom: 0,
   },
-  containerContent: {
-  },
-  // Stile per invertire ogni elemento all'interno dello ScrollView
   itemWrapper: {
     transform: [{ scaleY: -1 }],
-    marginVertical: -200,
-    marginBottom: -150,
-  }
+    bottom: 100,
+    marginBottom: -450,
+  },
+  dashedSegment: {
+    width: 4, // Aumenta la larghezza qui per rendere la linea più spessa
+    height: 8, // Altezza del singolo tratto
+    backgroundColor: 'gray', // Colore del tratto
+    marginBottom: 4, // Spazio tra i tratti
+  },
+  dashedLineContainer: {
+    position: 'absolute',
+    left: '50%', // posiziona al centro orizzontalmente
+    transform: [{ translateX: -2 }], // centra esattamente
+    height: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
 });
 
 export default App;
