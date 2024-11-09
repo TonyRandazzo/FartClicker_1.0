@@ -49,6 +49,9 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>SinglyLinkedRegular-vmoRL.otf</string>
+		<string>LuckiestGuy-8jyD.ttf</string>
+		<string>thats-super.regular.ttf</string>
 		<string>Tricky Jimmy.ttf</string>
 	</array>
 </dict>

@@ -2,8 +2,24 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/fonts/CHUBBY.TTF",
+      "sha1": "9d6765f0829a2fd79d7c12a3a6b052429c249008"
+    },
+    {
+      "path": "assets/fonts/LuckiestGuy-8jyD.ttf",
+      "sha1": "e372cd620ff26875dc0b0bfecb39b277323362eb"
+    },
+    {
+      "path": "assets/fonts/SinglyLinkedRegular-vmoRL.otf",
+      "sha1": "f504af8008f95ff8617d7367c2e40d07a4967d2d"
+    },
+    {
+      "path": "assets/fonts/thats-super.regular.ttf",
+      "sha1": "60f3048ee34dc9e20ef9fdb006b053b634911042"
+    },
+    {
       "path": "assets/fonts/Tricky Jimmy.ttf",
-      "sha1": "721bdad50743f8b95231cd9843b00605cede953d"
+      "sha1": "51f12df8ff12601e1d31337f3c7d603b5f55bf0d"
     }
   ]
 }
