@@ -183,16 +183,38 @@ const Home = () => {
     );
   };
   
-  const styles = ScaledSheet.create({
+  const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
-    ombra: {
-      width: '500@s',
-      height: '500@s',
+    topContainer: {
+      position: 'relative',
+      width: '100%',
+      height: 60, // Adjust height as needed
+    },
+    topImage: {
+      width: '100%',
+      height: '100%', // Full height of the top container
+    },
+    ombra:{
+      right: 120,
+      top: -385,
+      width: 500,
+      height: 500,
+    },
+    button: {
       position: 'absolute',
-      bottom: '-122@s',
-      right: '-150@s',
+      right: 16, // Adjust padding to position the button
+      top: '50%', // Center vertically within the image
+      transform: [{ translateY: -25 }], // Adjust to center based on button size
+      width: 50,
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonImage: {
+      width: '100%',
+      height: '100%',
     },
     page: {
       width: width,
@@ -202,23 +224,48 @@ const Home = () => {
       width: width,
       height: height,
     },
+    fixedMapButton: {
+      position: 'absolute',
+      zIndex: 10, 
+      right: 19,
+      top: 603,
+
+    },
+
+    indicatorContainer: {
+      position: 'absolute',
+      bottom: 20,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      width: '100%',
+    },
+    indicator: {
+      width: 55,
+      height: 60,
+      marginHorizontal: 10,
+    },
+    buttonContainer: {
+      paddingRight: 0,
+      borderRightWidth: 4,
+      borderRightColor: '#fff',
+    },
     mainContainer: {
-      width: width,
-      height: '600@s',
+      width: '100%',
+      height: '80%',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 20,
     },
     titleImage: {
-      width: '300@s',
-      height: '150@s',
+      width: '300%',
+      height: '20%',
       resizeMode: 'cover',
     },
     buttonsRowTop: {
+      zIndex: 1,
       flexDirection: 'row',
       justifyContent: 'space-between',
-      width: width,
-      padding: '10@s',
+      width: '100%',
     },
     passiveButton: {
       alignItems: 'flex-end',
@@ -228,35 +275,37 @@ const Home = () => {
     },
     buttonText: {
       color: '#fff',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
     },
     buttonImageMenu: {
+      resizeMode: 'contain',
       width: 50,
       height: 50,
     },
     newsButton: {
+      zIndex: 1,
       alignSelf: 'flex-start',
     },
     characterContainer: {
       position: 'absolute',
-      top: '250@s',
-      left: '70@s',
+      top: '35%',
+      left: '18%',
     },
     characterImage: {
-      width: '206@s',
-      height: '206@s',
       zIndex: 1,
+      width: 250,
+      height: 250,
     },
     playButton: {
-      top: '50@s',
+      top: '13%',
       zIndex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      width: '200@s',
-      height: '100@s',
+      width: '40%',
+      height: '15%',
     },
     playButtonImage: {
       width: '100%',
@@ -267,7 +316,7 @@ const Home = () => {
       position: 'absolute',
       color: '#fff',
       fontSize: 50,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
@@ -278,18 +327,12 @@ const Home = () => {
       width: '100%',
     },
     itemsButton: {
+      zIndex: 1,
       alignItems: 'flex-start',
     },
     mapButton: {
+      zIndex: 1,
       alignItems: 'flex-end',
-    },
-    fixedMapButton: {
-      position: 'absolute',
-      top: '514@s', 
-      right: '9@s',
-      zIndex: 10, 
-      width: '50@s', 
-      height: '50@s',
     },
     itemContainer: {
       width: width,
@@ -303,15 +346,15 @@ const Home = () => {
       height: height,
     },
     itemImage: {
-      resizeMode: 'contain',
-      width: '90@s',
-      height: '90@s',
+      width: '30%',
+      height: '15%',
     },
     itemText: {
       position: 'absolute',
       color: 'white',
-      fontSize: 40,
-      fontFamily: 'Chubby Cheeks',
+      fontSize: 30,
+      paddingBottom: '2%',
+      fontWeight: 'bold',
     },
     scrollView: {
       transform: [{ scaleY: -1 }],

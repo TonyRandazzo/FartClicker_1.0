@@ -12,7 +12,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 const { width, height } = Dimensions.get('window');
 
 
@@ -72,7 +72,7 @@ const ProgressBar = ({ progress, total }) => {
   
     return (
       <ImageBackground
-        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20missioni%202.png?alt=media&token=706f9ac9-3e8b-4cf8-b83b-124b62d2ae5c' }}
         style={styles.page1}
         resizeMode="cover"
       >
@@ -141,21 +141,24 @@ const ProgressBar = ({ progress, total }) => {
     );
   };
   
-  const styles = ScaledSheet.create({
+  const styles = StyleSheet.create({
     container: {
       flex: 1,
     },
     topContainer: {
       position: 'relative',
       width: '100%',
-      height: 60,
+      height: 60, // Adjust height as needed
     },
-  
+    topImage: {
+      width: '100%',
+      height: '100%', // Full height of the top container
+    },
     button: {
       position: 'absolute',
-      right: 16,
-      top: '50%',
-      transform: [{ translateY: -25 }],
+      right: 16, // Adjust padding to position the button
+      top: '50%', // Center vertically within the image
+      transform: [{ translateY: -25 }], // Adjust to center based on button size
       width: 50,
       height: 50,
       justifyContent: 'center',
@@ -174,8 +177,8 @@ const ProgressBar = ({ progress, total }) => {
       height: height,
     },
     bottomImage: {
-      width: '100%',
-      height: 90,
+      width: '100%', // Full width of the screen
+      height: 90, // Adjust height as needed
     },
     rectangle: {
       width: '400vh',
@@ -228,9 +231,9 @@ const ProgressBar = ({ progress, total }) => {
       width: '100%',
     },
     indicator: {
-      width: '48@s',
-      height: '50@s',
-      marginHorizontal: '8@s',
+      width: 55,
+      height: 60,
+      marginHorizontal: 10,
     },
     buttonContainer: {
       paddingRight: 0,
@@ -238,17 +241,17 @@ const ProgressBar = ({ progress, total }) => {
       borderRightColor: '#fff',
     },
     newImage: {
-      width: 350,
-      height: 350,
-      resizeMode: 'contain',
+      width: 350, // Imposta la larghezza desiderata
+      height: 350, // Imposta l'altezza desiderata
+      resizeMode: 'contain', // Mantieni il rapporto di aspetto
     },
     rotatedText: {
-      fontSize: 40,
+      fontSize: 40, // Imposta la dimensione del testo
       color: 'white',
-      transform: [{ rotate: '-3.3deg' }],
-      marginVertical: 10,
+      transform: [{ rotate: '-3.3deg' }], // Ruota il testo di 30 gradi
+      marginVertical: 10, // Spazio verticale intorno al testo
       position: 'absolute',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 1,
@@ -259,77 +262,21 @@ const ProgressBar = ({ progress, total }) => {
       position: 'relative',
     },
     Timer: {
-      width: 50,
-      height: 50,
+      width: 50, // Imposta la larghezza desiderata per l'altra immagine
+      height: 50, // Imposta l'altezza desiderata per l'altra immagine
       position: 'absolute',
-      left: 0,
-      bottom: 90,
+      left: 0, // Posiziona a sinistra
+      bottom: 90, // Posiziona in basso
     },
     scrollContainer: {
       alignItems: 'center',
-      paddingBottom: 500,
-    },
-    shopButtonText: {
-      top: '38%',
-      width: '100%',
-      position: 'absolute',
-      fontSize: 18,
-      color: '#fff',
-      textAlign: 'center',
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
-    },
-    topRightText: {
-      position: 'absolute',
-      top: -15,
-      right: -15,
-      color: '#fff',
-      fontSize: 18,
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 1,
-      textShadowColor: 'orange',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 4,
-      padding: 5,
-      borderRadius: 5,
-    },
-    zigzagImage: {
-      position: 'absolute',
-      width: width,
-      height: height,
-      resizeMode: 'cover',
-    },
-    animatedBackground: {
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      top: 0,
-      left: 0,
-      overflow: 'hidden',
+      paddingBottom: 500, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
     },
     imageButtonContainer: {
-        position: 'relative',
-        width: width,
-        height: '175@s',
-        alignItems: 'center',
-      },
-      topImage: {
-          resizeMode: 'contain',
-        width: width,
-        height: '300@s',
-        bottom: '61.5@s',
-      },
-    sortButton: {
-      position: 'absolute',
-      justifyContent: 'center',
+      position: 'relative',
+      width: '100%', // Larghezza totale
+      height: 200, // Imposta un'altezza desiderata per il contenitore
       alignItems: 'center',
-      right: 45,
-      width: '45%',
-      height: '150%',
     },
     topButtonsContainer: {
       flexDirection: 'row',
@@ -342,120 +289,19 @@ const ProgressBar = ({ progress, total }) => {
     topButton: {
       borderRadius: 5,
       paddingVertical: 10,
+      paddingHorizontal: 20,
       alignItems: 'center',
       justifyContent: 'center',
     },
     topButtonText: {
       top: 0,
-      color: '#FFF',
+      color: '#FFF', 
       fontSize: 25,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
-      padding: 7,
-    },
-    backgroundImage: {
-      width: '40@s',
-      height: '40@s',
-      position: 'absolute',
-      resizeMode: 'contain',
-      zIndex: -1,
-    },
-    backgroundImage2: {
-      position: 'absolute',
-      resizeMode: 'contain',
-      zIndex: -1,
-      width: '52@s',
-      height: '52@s',
-    },
-    skinContent: {
-      marginTop: 20,
-      width: '100%',
-      height: '100%',
-      paddingHorizontal: 10,
-    },
-    row: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    comicContent: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-around',
-      padding: 10,
-    },
-    comicItem: {
-      width: '45%',
-      marginBottom: 20,
-      alignItems: 'center',
-    },
-    comicCover: {
-      width: '100%',
-      aspectRatio: 3 / 4,
-      borderRadius: 10,
-    },
-    comicTitle: {
-      marginTop: 5,
-      fontSize: 22,
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
-      color: '#fff',
-      textAlign: 'center',
-    },
-    skinRow: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginBottom: 50,
-    },
-    skinWrapper: {
-      right: '3%',
-      width: '30%',
-      aspectRatio: 1,
-    },
-    rarity: {
-      width: '122%',
-      height: '139%',
-      resizeMode: 'contain',
-      position: 'absolute',
-    },
-    sfondi: {
-      position: 'absolute',
-      top: '5%',
-      left: '20%',
-      width: '90%',
-      height: '110%',
-    },
-    nome: {
-      top: '5%',
-      left: '20%',
-      color: '#fff',
-      fontSize: 16,
-      zIndex: 1,
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 1,
-      color: '#fff',
-    },
-    skinImage: {
-      width: '119%',
-      height: '119%',
-      resizeMode: 'contain',
-    },
-    classe: {
-      position: 'absolute',
-      top: '120%',
-      left: '20%',
-      fontSize: 11,
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
-      color: '#fff',
-      zIndex: 1,
+      padding: 4,
     },
     mainContainer: {
       width: '100%',
@@ -463,86 +309,6 @@ const ProgressBar = ({ progress, total }) => {
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 20,
-    },
-    titleImage: {
-      width: '300%',
-      height: '20%',
-      resizeMode: 'cover',
-    },
-    buttonsRowTop: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    passiveButton: {
-      alignItems: 'flex-end',
-    },
-    rewardsButton: {
-      alignItems: 'flex-start',
-    },
-    buttonText: {
-      color: '#fff',
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 1,
-    },
-    buttonImageMenu: {
-      width: 50,
-      height: 50,
-    },
-    newsButton: {
-      alignSelf: 'flex-start',
-    },
-    characterContainer: {
-      position: 'absolute',
-      top: '35%',
-      left: '18%',
-    },
-    characterImage: {
-      width: 250,
-      height: 250,
-    },
-    playButton: {
-      top: '13%',
-      zIndex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '40%',
-      height: '15%',
-    },
-    playButtonImage: {
-      width: '100%',
-      height: '100%',
-      resizeMode: 'contain',
-    },
-    playButtonText: {
-      position: 'absolute',
-      color: '#fff',
-      fontSize: 50,
-      fontFamily: 'Chubby Cheeks',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 2,
-    },
-    buttonsRowBottom: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      width: '100%',
-    },
-    itemsButton: {
-      alignItems: 'flex-start',
-    },
-    mapButton: {
-      alignItems: 'flex-end',
-    },
-    fixedMapButton: {
-      position: 'absolute',
-      top: '514@s', 
-      right: '9@s',
-      zIndex: 10, 
-      width: '50@s', 
-      height: '50@s',
     },
     missionContainer: {
       marginLeft: 10,
@@ -558,31 +324,30 @@ const ProgressBar = ({ progress, total }) => {
       overflow: 'hidden',
       justifyContent: 'center',
     },
-  
     textContainer: {
       marginBottom: 10,
     },
     missionName: {
       fontSize: 18,
       color: '#fff',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 2,
     },
     missionDescription: {
       fontSize: 14,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     missionDetails: {
       fontSize: 12,
       color: '#888',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     backgroundText: {
       color: '#fff',
       fontSize: 10,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     progressContainer: {
       height: 15,
@@ -594,30 +359,44 @@ const ProgressBar = ({ progress, total }) => {
     },
     progress: {
       height: '100%',
-      backgroundColor: '#3b5998',
+      backgroundColor: '#3b5998', 
     },
     progressText: {
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       position: 'absolute',
       alignSelf: 'center',
       color: '#fff',
-      fontSize: 15,
-      bottom: '-2@s',
+      fontSize: 12,
     },
-  
+    achievementContent: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    achievementItem: {
+      width: '48%',
+      margin: 10,
+      alignItems: 'center',
+    },
+    achievementCover: {
+      width: '100vh',
+      height: '100vh',
+    },
+    achievementTitle: {
+      marginTop: 5,
+    },
     backgroundImageMission: {
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
-      width: '150@s',
-      height: '150@s',
+      width: 170,
+      height: 170,
     },
     backgroundImageAchievement: {
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
-      width: '150@s',
-      height: '150@s',
+      width: 170,
+      height: 170,
     },
     achievementScrollContainer: {
       flexDirection: 'column',
@@ -629,11 +408,11 @@ const ProgressBar = ({ progress, total }) => {
       borderRadius: 10,
       overflow: 'hidden',
       justifyContent: 'center',
-      backgroundColor: '#f0f0f0',
+      backgroundColor: '#f0f0f0', // Sfondo chiaro per i contenuti
     },
     achievementBackground: {
-      width: '100%',
-      height: 150,
+      width: '100%', // Riempie la larghezza del container
+      height: 150, // Altezza rettangolare
       justifyContent: 'center',
       alignItems: 'center',
       padding: 15,
@@ -643,11 +422,11 @@ const ProgressBar = ({ progress, total }) => {
     achievementTextContainer: {
       marginBottom: 10,
       paddingHorizontal: 10,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     achievementName: {
       fontSize: 21,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
@@ -655,13 +434,13 @@ const ProgressBar = ({ progress, total }) => {
     },
     achievementDescription: {
       fontSize: 14,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       color: '#444',
     },
     achievementDetails: {
       fontSize: 12,
       color: '#888',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     achievementProgressBarContainer: {
       height: 15,
@@ -670,7 +449,7 @@ const ProgressBar = ({ progress, total }) => {
       borderRadius: 5,
       marginTop: 5,
       position: 'relative',
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
     },
     achievementProgressBar: {
       height: '100%',
@@ -681,57 +460,9 @@ const ProgressBar = ({ progress, total }) => {
       position: 'absolute',
       alignSelf: 'center',
       color: '#fff',
-      fontSize: 18,
-      fontFamily: 'Chubby Cheeks',
-      bottom: '-3@s',
+      fontSize: 13,
+      fontFamily: 'Tricky Jimmy',
     },
-    itemContainer: {
-      width: width,
-      height: height,
-      justifyContent: 'center',
-      alignItems: 'center',
-      position: 'relative',
-    },
-    background: {
-      width: width,
-      height: height,
-    },
-    itemImage: {
-      resizeMode: 'contain',
-      width: '90@s',
-      height: '90@s',
-    },
-    itemText: {
-      position: 'absolute',
-      color: 'white',
-      fontSize: 40,
-      fontFamily: 'Chubby Cheeks',
-    },
-    scrollView: {
-      transform: [{ scaleY: -1 }],
-    },
-    scrollViewContent: {
-      flexDirection: 'column',
-      paddingBottom: 0,
-    },
-    itemWrapper: {
-      transform: [{ scaleY: -1 }],
-      bottom: 100,
-      marginBottom: -450,
-    },
-    dashedSegment: {
-      width: 4, 
-      height: 8, 
-      backgroundColor: 'gray', 
-      marginBottom: 4, 
-    },
-    dashedLineContainer: {
-      position: 'absolute',
-      left: '50%', 
-      transform: [{ translateX: -2 }], 
-      height: '100%',
-      flexDirection: 'column',
-      alignItems: 'center',
-    },
+
   });
   export default Mission;

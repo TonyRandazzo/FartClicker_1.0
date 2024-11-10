@@ -12,7 +12,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 const { width, height } = Dimensions.get('window');
 
 const Skin = () => {
@@ -56,7 +56,7 @@ const Skin = () => {
   
     return (
       <ImageBackground
-        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20record%201.png?alt=media&token=2bdf9f0a-4a01-411e-acea-26febe03b581' }}
         style={styles.page1}
         resizeMode="cover"
       >
@@ -128,7 +128,29 @@ const Skin = () => {
     );
   };
 
-  const styles = ScaledSheet.create({
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    topContainer: {
+      position: 'relative',
+      width: '100%',
+      height: 60, 
+    },
+    topImage: {
+      width: '100%',
+      height: '100%', 
+    },
+    button: {
+      position: 'absolute',
+      right: 16, 
+      top: '50%', 
+      transform: [{ translateY: -25 }], 
+      width: 50,
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     buttonImage: {
       width: '100%',
       height: '100%',
@@ -141,29 +163,161 @@ const Skin = () => {
       width: width,
       height: height,
     },
+    bottomImage: {
+      width: '100%', 
+      height: 90, 
+    },
+    rectangle: {
+      width: '400vh',
+      height: '350vh',
+      backgroundColor: '#ffb57a',
+      borderWidth: 15,
+      borderColor: '#f9923e',
+      position: 'relative',
+      top: '50%',
+      transform: [{ translateY: -500 }],
+      alignSelf: 'center',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    imageContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-around',
+      alignItems: 'center',
+      width: '100%',
+      padding: 20,
+    },
+    imageWrapper: {
+      backgroundColor: '#ffd3ae',
+      width: '30%',
+      aspectRatio: 1,
+      marginBottom: 50,
+      alignItems: 'center',
+    },
+    shopImage: {
+      width: '100%',
+      height: '100%',
+    },
+    shopButton: {
+      position: 'relative',
+      bottom: 30,
+      height: '80%',
+      width: '70%',
+    },
+    shopButtonImage: {
+      width: '100%',
+      height: '100%',
+      resizeMode: 'contain',
+    },
+    indicatorContainer: {
+      position: 'absolute',
+      bottom: 20,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      width: '100%',
+    },
+    indicator: {
+      width: 55,
+      height: 60,
+      marginHorizontal: 10,
+    },
+    buttonContainer: {
+      paddingRight: 0,
+      borderRightWidth: 4,
+      borderRightColor: '#fff',
+    },
+    newImage: {
+      width: 350, 
+      height: 350, 
+      resizeMode: 'contain', 
+    },
+    rotatedText: {
+      fontSize: 40, 
+      color: 'white',
+      transform: [{ rotate: '-3.3deg' }], 
+      marginVertical: 10, 
+      position: 'absolute',
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 1,
+    },
+    LimitedOffer: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      position: 'relative',
+    },
+    Timer: {
+      width: 50, 
+      height: 50, 
+      position: 'absolute',
+      left: 0, 
+      bottom: 90, 
+    },
     scrollContainer: {
-        alignItems: 'center',
-        paddingBottom: 220,
+      alignItems: 'center',
+      paddingBottom: 200, 
+    },
+    shopButtonText: {
+      top: '38%',
+      width: '100%',
+      position: 'absolute',
+      fontSize: 18,
+      color: '#fff',
+      textAlign: 'center',
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 1,
+    },
+    topRightText: {
+      position: 'absolute',
+      top: -15, 
+      right: -15, 
+      color: '#fff', 
+      fontSize: 18, 
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 1, 
+      textShadowColor: 'orange', 
+      textShadowOffset: { width: 1, height: 1 }, 
+      textShadowRadius: 4,
+      padding: 5, 
+      borderRadius: 5, 
+    },
+    zigzagImage: {
+      position: 'absolute',
+      width: width, 
+      height: height,  
+      resizeMode: 'cover',  
+    },
+    animatedBackground: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      top: 0,
+      left: 0,
+      overflow: 'hidden',
     },
     imageButtonContainer: {
       position: 'relative',
-      width: width,
-      height: '175@s',
+      width: '100%', 
+      height: 200, 
       alignItems: 'center',
     },
     topImage: {
-      resizeMode: 'contain',
-      width: width,
-      height: '300@s',
-      bottom: '61.5@s',
+      width: '100%',
+      height: '100%', 
     },
     sortButton: {
       position: 'absolute',
       justifyContent: 'center',
       alignItems: 'center',
       right: 45,
-      width: '45%',
-      height: '150%',
+      width: '45%', 
+      height: '150%', 
     },
     topButtonsContainer: {
       flexDirection: 'row',
@@ -176,22 +330,23 @@ const Skin = () => {
     topButton: {
       borderRadius: 5,
       paddingVertical: 10,
+      paddingHorizontal: 20,
       alignItems: 'center',
       justifyContent: 'center',
     },
     topButtonText: {
       top: 0,
-      color: '#FFF',
+      color: '#FFF', 
       fontSize: 25,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
-      padding: 7,
+      padding: 4,
     },
     backgroundImage: {
-      width: '150@s',
-      height: '150@s',
+      width: 170,
+      height: 170,
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
@@ -200,8 +355,8 @@ const Skin = () => {
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
-      width: '150@s',
-      height: '150@s',
+      width: 170,
+      height: 170,
     },
     skinContent: {
       marginTop: 20,
@@ -232,7 +387,7 @@ const Skin = () => {
     comicTitle: {
       marginTop: 5,
       fontSize: 22,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 1,
@@ -268,7 +423,7 @@ const Skin = () => {
       color: '#fff',
       fontSize: 16,
       zIndex: 1,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
@@ -278,19 +433,276 @@ const Skin = () => {
       width: '119%',
       height: '119%',
       resizeMode: 'contain',
-      bottom: '10@s',
+      bottom: 10,
     },
     classe: {
       position: 'absolute',
       top: '120%',
       left: '20%',
       fontSize: 11,
-      fontFamily: 'Chubby Cheeks',
+      fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
       textShadowRadius: 1,
       color: '#fff',
       zIndex: 1,
+    },
+    mainContainer: {
+      width: '100%',
+      height: '80%',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: 20,
+    },
+    titleImage: {
+      width: '300%',
+      height: '20%',
+      resizeMode: 'cover',
+    },
+    buttonsRowTop: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    passiveButton: {
+      alignItems: 'flex-end',
+    },
+    rewardsButton: {
+      alignItems: 'flex-start',
+    },
+    buttonText: {
+      color: '#fff',
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 1,
+    },
+    buttonImageMenu: {
+      width: 50,
+      height: 50,
+    },
+    newsButton: {
+      alignSelf: 'flex-start',
+    },
+    characterContainer: {
+      position: 'absolute',
+      top: '35%',
+      left: '18%',
+    },
+    characterImage: {
+      width: 250,
+      height: 250,
+    },
+    playButton: {
+      top: '13%',
+      zIndex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '200%',
+      height: '15%',
+    },
+    playButtonImage: {
+      width: '100%',
+      height: '100%',
+      resizeMode: 'contain',
+    },
+    playButtonText: {
+      position: 'absolute',
+      color: '#fff',
+      fontSize: 50,
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 2,
+    },
+    buttonsRowBottom: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+    },
+    itemsButton: {
+      alignItems: 'flex-start',
+    },
+    mapButton: {
+      alignItems: 'flex-end',
+    },
+    missionContainer: {
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 0,
+    },
+    missionWrapper: {
+      marginBottom: 40,
+    },
+    missionBackground: {
+      padding: 15,
+      borderRadius: 5,
+      overflow: 'hidden',
+      justifyContent: 'center',
+    },
+    textContainer: {
+      marginBottom: 10,
+    },
+    missionName: {
+      fontSize: 18,
+      color: '#fff',
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 2,
+    },
+    missionDescription: {
+      fontSize: 14,
+      fontFamily: 'Tricky Jimmy',
+    },
+    missionDetails: {
+      fontSize: 12,
+      color: '#888',
+      fontFamily: 'Tricky Jimmy',
+    },
+    backgroundText: {
+      color: '#fff',
+      fontSize: 10,
+      fontFamily: 'Tricky Jimmy',
+    },
+    progressContainer: {
+      height: 15,
+      width: '100%',
+      marginTop: 20,
+      backgroundColor: '#ddd',
+      borderRadius: 5,
+      overflow: 'hidden',
+    },
+    progress: {
+      height: '100%',
+      backgroundColor: '#3b5998', // Cambia il colore della barra
+    },
+    progressText: {
+      fontFamily: 'Tricky Jimmy',
+      position: 'absolute',
+      alignSelf: 'center',
+      color: '#fff',
+      fontSize: 15,
+    },
+    achievementContent: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+    },
+    achievementItem: {
+      width: '48%',
+      margin: 10,
+      alignItems: 'center',
+    },
+    achievementCover: {
+      width: '100vh',
+      height: '100vh',
+    },
+    achievementTitle: {
+      marginTop: 5,
+    },
+    backgroundImageMission: {
+      bottom: '14%',
+      position: 'absolute',
+      resizeMode: 'contain',
+      zIndex: -1,
+      width: '100%',
+      height: '100%',
+      transform: [{ scale: 2 }],
+    },
+    backgroundImageAchievement: {
+      position: 'absolute',
+      resizeMode: 'contain',
+      zIndex: -1,
+      width: '100%',
+      height: '100%',
+      transform: [{ scale: 2.35 }],
+    },
+    achievementScrollContainer: {
+      flexDirection: 'column',
+      paddingHorizontal: 10,
+      paddingBottom: 500,
+    },
+    achievementWrapper: {
+      marginBottom: 15,
+      borderRadius: 10,
+      overflow: 'hidden',
+      justifyContent: 'center',
+      backgroundColor: '#f0f0f0', 
+    },
+    achievementBackground: {
+      width: '100%', 
+      height: 150, 
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 15,
+      borderRadius: 10,
+      overflow: 'hidden',
+    },
+    achievementTextContainer: {
+      marginBottom: 10,
+      paddingHorizontal: 10,
+      fontFamily: 'Tricky Jimmy',
+    },
+    achievementName: {
+      fontSize: 21,
+      fontFamily: 'Tricky Jimmy',
+      textShadowColor: 'black',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 1,
+      color: '#fff',
+    },
+    achievementDescription: {
+      fontSize: 14,
+      fontFamily: 'Tricky Jimmy',
+      color: '#444',
+    },
+    achievementDetails: {
+      fontSize: 12,
+      color: '#888',
+      fontFamily: 'Tricky Jimmy',
+    },
+    achievementProgressBarContainer: {
+      height: 15,
+      width: '100%',
+      backgroundColor: '#ddd',
+      borderRadius: 5,
+      marginTop: 5,
+      position: 'relative',
+      fontFamily: 'Tricky Jimmy',
+    },
+    achievementProgressBar: {
+      height: '100%',
+      backgroundColor: '#3b5998',
+      borderRadius: 5,
+    },
+    achievementProgressText: {
+      position: 'absolute',
+      alignSelf: 'center',
+      color: '#fff',
+      fontSize: 18,
+      fontFamily: 'Tricky Jimmy',
+    },
+    itemContainer: {
+      width: width,
+      height: height,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'relative',
+    },
+    background: {
+      width: width,
+      height: height,
+    },
+    itemImage: {
+      width: '30%',
+      height: '15%',
+    },
+    itemText: {
+      position: 'absolute',
+      color: 'white',
+      fontSize: 30,
+      paddingBottom: '2%',
+      fontWeight: 'bold',
     },
   });
 export default Skin;
