@@ -13,8 +13,14 @@ import {
   ScrollView,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
+// Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
 
+// Calcola la diagonale dello schermo in pollici
+const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
+
+// Definisci una funzione che ritorna il valore di stili condizionali in base alla dimensione dello schermo
+const isSmallScreen = diagonal >= 5 && diagonal <= 7;
 const MapScreen = ({ toggleMapScreen }) => {
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
   const mapScaleAnim = useRef(new Animated.Value(1)).current;
@@ -196,11 +202,11 @@ const Home = () => {
       width: '100%',
       height: '100%', // Full height of the top container
     },
-    ombra:{
-      right: 120,
-      top: -385,
-      width: 500,
-      height: 500,
+    ombra: {
+      right: isSmallScreen ? 100 : 120, // Imposta valori diversi per schermi piccoli
+      top: isSmallScreen ? -350 : -385,
+      width: isSmallScreen ? 450 : 500, // Schermi più piccoli hanno dimensioni diverse
+      height: isSmallScreen ? 450 : 500,
     },
     button: {
       position: 'absolute',
@@ -228,10 +234,9 @@ const Home = () => {
       position: 'absolute',
       zIndex: 10, 
       right: 19,
-      top: 603,
-
+      top: isSmallScreen ? 550 : 603, // Cambia la posizione in base alle dimensioni dello schermo
     },
-
+  
     indicatorContainer: {
       position: 'absolute',
       bottom: 20,
@@ -296,16 +301,16 @@ const Home = () => {
     },
     characterImage: {
       zIndex: 1,
-      width: 250,
-      height: 250,
+      width: isSmallScreen ? 200 : 250, // Cambia la dimensione in base alla larghezza dello schermo
+      height: isSmallScreen ? 200 : 250,
     },
     playButton: {
       top: '13%',
       zIndex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      width: '40%',
-      height: '15%',
+      width: isSmallScreen ? '45%' : '40%',
+      height: isSmallScreen ? '12%' : '15%',
     },
     playButtonImage: {
       width: '100%',
@@ -315,7 +320,7 @@ const Home = () => {
     playButtonText: {
       position: 'absolute',
       color: '#fff',
-      fontSize: 50,
+      fontSize: isSmallScreen ? 40 : 50, // Font size più piccolo per schermi più piccoli
       fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 1, height: 1 },
@@ -352,7 +357,7 @@ const Home = () => {
     itemText: {
       position: 'absolute',
       color: 'white',
-      fontSize: 30,
+      fontSize: isSmallScreen ? 25 : 30, // Font size più piccolo per schermi più piccoli
       paddingBottom: '2%',
       fontWeight: 'bold',
     },

@@ -6,15 +6,28 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  Animated,
   Image,
   ImageBackground,
   Text,
   ScrollView,
 } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withTiming,
+  Easing,
+  withSpring 
+} from 'react-native-reanimated';
 const { width, height } = Dimensions.get('window');
 
+// Calcola la diagonale dello schermo in pollici
+const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
+
+// Verifica se il dispositivo è tra i 5 e i 7 pollici
+const isSmallScreen = diagonal >= 5 && diagonal <= 7;
+const isMediumScreen = diagonal > 7 && diagonal <= 8.5; // 7-8.5 pollici
+const isLargeScreen = diagonal > 8.5; // Maggiore di 8.5 pollici
 
 const shopItemImages = [
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%201.png?alt=media&token=1d60b34d-df85-4a42-88c5-a707df97f7a6',
@@ -48,52 +61,56 @@ const shopItemImages = [
   const backgroundImageUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fmoneta%20opaca%20sfondo%20shop.png?alt=media&token=3b835818-3b18-4622-b2d2-afb840d695b9'
 
   const Shop = () => {
-    const [animation] = useState(new Animated.Value(0));
-
-    const translateX = useSharedValue(0);
-    const translateY = useSharedValue(0);
+    const translateX = useSharedValue(0);  
+    const translateY = useSharedValue(0);  
   
     useEffect(() => {
-      // Start looping diagonal animation
       translateX.value = withRepeat(
-        withTiming(width * 0.2, {
-          duration: 30000, // Duration for diagonal movement
+        withTiming(width * 0.3, { 
+          duration: 10000,
           easing: Easing.linear,
         }),
-        -1, // -1 means infinite repetition
-        true // Reverse direction after each iteration
+        -1, 
+        true 
       );
   
       translateY.value = withRepeat(
-        withTiming(height * 0.2, {
-          duration: 30000, // Duration for diagonal movement
+        withTiming(height * 0.2, { 
+          duration: 10000,
           easing: Easing.linear,
         }),
-        -1, // Infinite repetition
-        true // Reverse direction after each iteration
+        -1, 
+        true 
       );
     }, [translateX, translateY]);
   
-    // Apply animated style to the background image
     const animatedStyle = useAnimatedStyle(() => {
       return {
         transform: [
           { translateX: translateX.value },
-          { translateY: translateY.value },
+          { translateY: translateY.value }, 
         ],
       };
     });
   
+    const numColumns = Math.ceil(width / 200); 
+    const numRows = Math.ceil(height / 200);
     return (
     <ImageBackground
       source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
       style={[styles.page, { justifyContent: 'center', alignItems: 'center' }]}
       resizeMode="cover"
     >
-       <Animated.Image
-        source={{ uri: backgroundImageUrl }}
-        style={[styles.animatedBackground, animatedStyle]}
-      />
+      <View style={styles.animatedBackgroundContainer}>
+        {[...Array(numColumns * numRows)].map((_, index) => (
+          <Animated.Image
+            key={index}
+            source={{ uri: backgroundImageUrl }}
+            style={[styles.animatedBackgroundImage, animatedStyle]}
+          />
+        ))}
+      </View>
+
 
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -157,12 +174,20 @@ const shopItemImages = [
     );
   }
   const styles = StyleSheet.create({
-    animatedBackground: {
+    animatedBackgroundContainer: {
       position: 'absolute',
-      width: '100%',
-      height: '100%',
+      width: width,
+      height: height,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      zIndex: 0,
+      right: isSmallScreen ? 150 : 200, // Riduci la distanza per schermi più piccoli
+      bottom: isSmallScreen ? 400 : 500,
+    },
+    animatedBackgroundImage: {
+      width: isSmallScreen ? 500 : 700, // Immagine più piccola su schermi più piccoli
+      height: isSmallScreen ? 500 : 700,
       resizeMode: 'cover',
-      zIndex: 0, 
     },
     container: {
       flex: 1,
@@ -170,19 +195,19 @@ const shopItemImages = [
     topContainer: {
       position: 'relative',
       width: '100%',
-      height: 60,
+      height: isSmallScreen ? 50 : 60, // Riduci l'altezza per schermi più piccoli
     },
     topImage: {
       width: '100%',
-      height: '100%', // Full height of the top container
+      height: '100%',
     },
     button: {
       position: 'absolute',
-      right: 16, // Adjust padding to position the button
-      top: '50%', // Center vertically within the image
-      transform: [{ translateY: -25 }], // Adjust to center based on button size
-      width: 50,
-      height: 50,
+      right: 16,
+      top: '50%',
+      transform: [{ translateY: -25 }],
+      width: isSmallScreen ? 40 : 50, // Riduci la larghezza e l'altezza per schermi più piccoli
+      height: isSmallScreen ? 40 : 50,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -199,12 +224,12 @@ const shopItemImages = [
       height: height,
     },
     bottomImage: {
-      width: '100%', // Full width of the screen
-      height: 90, // Adjust height as needed
+      width: '100%',
+      height: isSmallScreen ? 70 : 90, // Riduci l'altezza per schermi più piccoli
     },
     rectangle: {
-      width: '400vh',
-      height: '350vh',
+      width: isMediumScreen ? '350vh' : '400vh',
+      height: isMediumScreen ? '300vh' : '350vh',
       backgroundColor: '#ffb57a',
       borderWidth: 15,
       borderColor: '#f9923e',
@@ -263,15 +288,15 @@ const shopItemImages = [
       borderRightColor: '#fff',
     },
     newImage: {
-      width: 350, // Imposta la larghezza desiderata
-      height: 350, // Imposta l'altezza desiderata
-      resizeMode: 'contain', // Mantieni il rapporto di aspetto
+      width: isSmallScreen ? 300 : 350,
+      height: isSmallScreen ? 300 : 350,
+      resizeMode: 'contain',
     },
     rotatedText: {
-      fontSize: 40, // Imposta la dimensione del testo
+      fontSize: isSmallScreen ? 30 : 40, // Font size più piccolo per schermi più piccoli
       color: 'white',
-      transform: [{ rotate: '-3.3deg' }], // Ruota il testo di 30 gradi
-      marginVertical: 10, // Spazio verticale intorno al testo
+      transform: [{ rotate: '-3.3deg' }],
+      marginVertical: 10,
       position: 'absolute',
       fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
@@ -284,21 +309,21 @@ const shopItemImages = [
       position: 'relative',
     },
     Timer: {
-      width: 50, // Imposta la larghezza desiderata per l'altra immagine
-      height: 50, // Imposta l'altezza desiderata per l'altra immagine
+      width: isMediumScreen ? 40 : 50, // Modifica la dimensione della Timer per schermi più piccoli
+      height: isMediumScreen ? 40 : 50,
       position: 'absolute',
-      left: 0, // Posiziona a sinistra
-      bottom: 90, // Posiziona in basso
+      left: 0,
+      bottom: 90,
     },
     scrollContainer: {
       alignItems: 'center',
-      paddingBottom: 500, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
+      paddingBottom: 500,
     },
     shopButtonText: {
       top: '38%',
       width: '100%',
       position: 'absolute',
-      fontSize: 18,
+      fontSize: isSmallScreen ? 16 : 18, // Font size più piccolo per schermi più piccoli
       color: '#fff',
       textAlign: 'center',
       fontFamily: 'Tricky Jimmy',
@@ -308,80 +333,19 @@ const shopItemImages = [
     },
     topRightText: {
       position: 'absolute',
-      top: -15, // Puoi modificare questo valore in base a dove vuoi posizionare il testo
-      right: -15, // Posiziona il testo in alto a destra
-      color: '#fff', // Colore del testo
-      fontSize: 18, // Dimensione del testo
-      fontFamily: 'Tricky Jimmy',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 2, height: 2 },
-      textShadowRadius: 1, // Stile grassetto
-      textShadowColor: 'orange', // Colore dell'ombra (che simula il bordo)
-      textShadowOffset: { width: 1, height: 1 }, // Offset dell'ombra
-      textShadowRadius: 4,
-      padding: 5, // Padding interno per il testo
-      borderRadius: 5, // Bordo arrotondato per l'estetica
-    },
-
-    imageButtonContainer: {
-      position: 'relative',
-      width: '100%', // Larghezza totale
-      height: 200, // Imposta un'altezza desiderata per il contenitore
-      alignItems: 'center',
-    },
-    topImage: {
-      width: '100%',
-      height: '100%', // Immagine di sfondo a piena larghezza e altezza del contenitore
-    },
-    sortButton: {
-      position: 'absolute',
-      justifyContent: 'center',
-      alignItems: 'center',
-      right: 45,
-      width: '45%', // Larghezza del bottone
-      height: '150%', // Altezza del bottone
-    },
-    topButtonsContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      width: '100%',
-      zIndex: 2,
-      position: 'absolute',
-      top: 20,
-    },
-    topButton: {
-      borderRadius: 5,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    topButtonText: {
-      top: 0,
-      color: '#FFF', // Colore del testo del bottone
-      fontSize: 25,
+      top: -15,
+      right: -15,
+      color: '#fff',
+      fontSize: 18,
       fontFamily: 'Tricky Jimmy',
       textShadowColor: 'black',
       textShadowOffset: { width: 2, height: 2 },
       textShadowRadius: 1,
-      padding: 4,
+      textShadowColor: 'orange',
+      textShadowOffset: { width: 1, height: 1 },
+      textShadowRadius: 4,
+      padding: 5,
+      borderRadius: 5,
     },
-    backgroundImage: {
-      width: '100%',
-      height: '100%',
-      position: 'absolute',
-      resizeMode: 'contain',
-      transform: [{ scale: 3.8 }],
-      zIndex: -1,
-    },
-    backgroundImage2: {
-      position: 'absolute',
-      resizeMode: 'contain',
-      zIndex: -1,
-      width: '100%',
-      height: '100%',
-      transform: [{ scale: 2.9 }],
-    },
- 
   });
   export default Shop;
