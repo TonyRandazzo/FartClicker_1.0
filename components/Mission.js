@@ -14,6 +14,19 @@ import {
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 const { width, height } = Dimensions.get('window');
+// Calcola la diagonale dello schermo (in pollici)
+const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
+
+// Definisci i range per piccoli, medi e grandi schermi
+const isSmallScreen = diagonal >= 5 && diagonal <= 7;
+const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
+const isLargeScreen = diagonal > 8.5;
+
+const getSize = (small, medium, large) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  if (isLargeScreen) return large;
+};
 
 
 const ProgressBar = ({ progress, total }) => {
@@ -154,16 +167,7 @@ const ProgressBar = ({ progress, total }) => {
       width: '100%',
       height: '100%', // Full height of the top container
     },
-    button: {
-      position: 'absolute',
-      right: 16, // Adjust padding to position the button
-      top: '50%', // Center vertically within the image
-      transform: [{ translateY: -25 }], // Adjust to center based on button size
-      width: 50,
-      height: 50,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
+
     buttonImage: {
       width: '100%',
       height: '100%',
@@ -176,101 +180,9 @@ const ProgressBar = ({ progress, total }) => {
       width: width,
       height: height,
     },
-    bottomImage: {
-      width: '100%', // Full width of the screen
-      height: 90, // Adjust height as needed
-    },
-    rectangle: {
-      width: '400vh',
-      height: '350vh',
-      backgroundColor: '#ffb57a',
-      borderWidth: 15,
-      borderColor: '#f9923e',
-      position: 'relative',
-      top: '50%',
-      transform: [{ translateY: -500 }],
-      alignSelf: 'center',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    imageContainer: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-around',
-      alignItems: 'center',
-      width: '100%',
-      padding: 20,
-    },
-    imageWrapper: {
-      backgroundColor: '#ffd3ae',
-      width: '30%',
-      aspectRatio: 1,
-      marginBottom: 50,
-      alignItems: 'center',
-    },
-    shopImage: {
-      width: '100%',
-      height: '100%',
-    },
-    shopButton: {
-      position: 'relative',
-      bottom: 30,
-      height: '80%',
-      width: '70%',
-    },
-    shopButtonImage: {
-      width: '100%',
-      height: '100%',
-      resizeMode: 'contain',
-    },
-    indicatorContainer: {
-      position: 'absolute',
-      bottom: 20,
-      flexDirection: 'row',
-      justifyContent: 'center',
-      width: '100%',
-    },
-    indicator: {
-      width: 55,
-      height: 60,
-      marginHorizontal: 10,
-    },
-    buttonContainer: {
-      paddingRight: 0,
-      borderRightWidth: 4,
-      borderRightColor: '#fff',
-    },
-    newImage: {
-      width: 350, // Imposta la larghezza desiderata
-      height: 350, // Imposta l'altezza desiderata
-      resizeMode: 'contain', // Mantieni il rapporto di aspetto
-    },
-    rotatedText: {
-      fontSize: 40, // Imposta la dimensione del testo
-      color: 'white',
-      transform: [{ rotate: '-3.3deg' }], // Ruota il testo di 30 gradi
-      marginVertical: 10, // Spazio verticale intorno al testo
-      position: 'absolute',
-      fontFamily: 'Tricky Jimmy',
-      textShadowColor: 'black',
-      textShadowOffset: { width: 1, height: 1 },
-      textShadowRadius: 1,
-    },
-    LimitedOffer: {
-      alignItems: 'center',
-      justifyContent: 'center',
-      position: 'relative',
-    },
-    Timer: {
-      width: 50, // Imposta la larghezza desiderata per l'altra immagine
-      height: 50, // Imposta l'altezza desiderata per l'altra immagine
-      position: 'absolute',
-      left: 0, // Posiziona a sinistra
-      bottom: 90, // Posiziona in basso
-    },
     scrollContainer: {
       alignItems: 'center',
-      paddingBottom: 500, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
+      paddingBottom: 50, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
     },
     imageButtonContainer: {
       position: 'relative',
@@ -303,13 +215,7 @@ const ProgressBar = ({ progress, total }) => {
       textShadowRadius: 1,
       padding: 4,
     },
-    mainContainer: {
-      width: '100%',
-      height: '80%',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 20,
-    },
+
     missionContainer: {
       marginLeft: 10,
       marginRight: 10,
@@ -324,9 +230,7 @@ const ProgressBar = ({ progress, total }) => {
       overflow: 'hidden',
       justifyContent: 'center',
     },
-    textContainer: {
-      marginBottom: 10,
-    },
+
     missionName: {
       fontSize: 18,
       color: '#fff',
@@ -388,15 +292,17 @@ const ProgressBar = ({ progress, total }) => {
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
-      width: 170,
-      height: 170,
+      bottom: getSize(0,0, -60),
+      width: getSize(0, 0, 152),
+      height: getSize(0,0, 170),
     },
     backgroundImageAchievement: {
       position: 'absolute',
       resizeMode: 'contain',
       zIndex: -1,
-      width: 170,
-      height: 170,
+      bottom: getSize(0,0, -60),
+      width: getSize(0, 0, 152),
+      height: getSize(0,0, 170),
     },
     achievementScrollContainer: {
       flexDirection: 'column',

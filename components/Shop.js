@@ -21,13 +21,19 @@ import Animated, {
 } from 'react-native-reanimated';
 const { width, height } = Dimensions.get('window');
 
-// Calcola la diagonale dello schermo in pollici
+// Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
-// Verifica se il dispositivo è tra i 5 e i 7 pollici
+// Definisci i range per piccoli, medi e grandi schermi
 const isSmallScreen = diagonal >= 5 && diagonal <= 7;
-const isMediumScreen = diagonal > 7 && diagonal <= 8.5; // 7-8.5 pollici
-const isLargeScreen = diagonal > 8.5; // Maggiore di 8.5 pollici
+const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
+const isLargeScreen = diagonal > 8.5;
+
+const getSize = (small, medium, large) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  if (isLargeScreen) return large;
+};
 
 const shopItemImages = [
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%201.png?alt=media&token=1d60b34d-df85-4a42-88c5-a707df97f7a6',
@@ -181,12 +187,12 @@ const shopItemImages = [
       flexDirection: 'row',
       flexWrap: 'wrap',
       zIndex: 0,
-      right: isSmallScreen ? 150 : 200, // Riduci la distanza per schermi più piccoli
-      bottom: isSmallScreen ? 400 : 500,
+      right:  200, // Riduci la distanza per schermi più piccoli
+      bottom: 500,
     },
     animatedBackgroundImage: {
-      width: isSmallScreen ? 500 : 700, // Immagine più piccola su schermi più piccoli
-      height: isSmallScreen ? 500 : 700,
+      width:  700, // Immagine più piccola su schermi più piccoli
+      height:  700,
       resizeMode: 'cover',
     },
     container: {
@@ -195,7 +201,7 @@ const shopItemImages = [
     topContainer: {
       position: 'relative',
       width: '100%',
-      height: isSmallScreen ? 50 : 60, // Riduci l'altezza per schermi più piccoli
+      height: 60, // Riduci l'altezza per schermi più piccoli
     },
     topImage: {
       width: '100%',
@@ -206,8 +212,8 @@ const shopItemImages = [
       right: 16,
       top: '50%',
       transform: [{ translateY: -25 }],
-      width: isSmallScreen ? 40 : 50, // Riduci la larghezza e l'altezza per schermi più piccoli
-      height: isSmallScreen ? 40 : 50,
+      width:  50, // Riduci la larghezza e l'altezza per schermi più piccoli
+      height:  50,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -225,11 +231,11 @@ const shopItemImages = [
     },
     bottomImage: {
       width: '100%',
-      height: isSmallScreen ? 70 : 90, // Riduci l'altezza per schermi più piccoli
+      height: 90, // Riduci l'altezza per schermi più piccoli
     },
     rectangle: {
-      width: isMediumScreen ? '350vh' : '400vh',
-      height: isMediumScreen ? '300vh' : '350vh',
+      width: '400vh',
+      height: '350vh',
       backgroundColor: '#ffb57a',
       borderWidth: 15,
       borderColor: '#f9923e',
@@ -288,12 +294,12 @@ const shopItemImages = [
       borderRightColor: '#fff',
     },
     newImage: {
-      width: isSmallScreen ? 300 : 350,
-      height: isSmallScreen ? 300 : 350,
+      width: 350,
+      height:  350,
       resizeMode: 'contain',
     },
     rotatedText: {
-      fontSize: isSmallScreen ? 30 : 40, // Font size più piccolo per schermi più piccoli
+      fontSize: 40, // Font size più piccolo per schermi più piccoli
       color: 'white',
       transform: [{ rotate: '-3.3deg' }],
       marginVertical: 10,
@@ -309,8 +315,8 @@ const shopItemImages = [
       position: 'relative',
     },
     Timer: {
-      width: isMediumScreen ? 40 : 50, // Modifica la dimensione della Timer per schermi più piccoli
-      height: isMediumScreen ? 40 : 50,
+      width:  50, // Modifica la dimensione della Timer per schermi più piccoli
+      height: 50,
       position: 'absolute',
       left: 0,
       bottom: 90,
@@ -320,10 +326,10 @@ const shopItemImages = [
       paddingBottom: 500,
     },
     shopButtonText: {
-      top: '38%',
+      top: getSize(0,0, '33%'),
       width: '100%',
       position: 'absolute',
-      fontSize: isSmallScreen ? 16 : 18, // Font size più piccolo per schermi più piccoli
+      fontSize: 16, // Font size più piccolo per schermi più piccoli
       color: '#fff',
       textAlign: 'center',
       fontFamily: 'Tricky Jimmy',

@@ -23,7 +23,11 @@ const isSmallScreen = diagonal >= 5 && diagonal <= 7;
 const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
 const isLargeScreen = diagonal > 8.5;
 
-
+const getSize = (small, medium, large) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  if (isLargeScreen) return large;
+};
 
 const Skin = () => {
   const [activeButton, setActiveButton] = useState('skin');
@@ -192,6 +196,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  scrollContainer: {
+    alignItems: 'center',
+    paddingBottom: 200, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
+  },
   topContainer: {
     position: 'relative',
     width: '100%',
@@ -225,7 +233,7 @@ const styles = StyleSheet.create({
   },
   bottomImage: {
     width: '100%',
-    height: isSmallScreen ? 70 : 90, // Riduci l'altezza per schermi più piccoli
+    height: 90, // Riduci l'altezza per schermi più piccoli
   },
   imageContainer: {
     flexDirection: 'row',
@@ -237,7 +245,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     backgroundColor: '#ffd3ae',
-    width: isSmallScreen ? '40%' : '30%', // Modifica la larghezza su schermi piccoli
+    width: '30%', // Modifica la larghezza su schermi piccoli
     aspectRatio: 1,
     marginBottom: 50,
     alignItems: 'center',
@@ -262,7 +270,7 @@ const styles = StyleSheet.create({
   imageButtonContainer: {
     position: 'relative',
     width: '100%',
-    height: isMediumScreen ? 180 : 200, // Modifica l'altezza per schermi medi
+    height: 200, // Modifica l'altezza per schermi medi
     alignItems: 'center',
   },
   topButtonsContainer: {
@@ -283,7 +291,7 @@ const styles = StyleSheet.create({
   topButtonText: {
     top: 0,
     color: '#FFF',
-    fontSize: isSmallScreen ? 20 : 25, // Riduci la dimensione del font per schermi piccoli
+    fontSize: 25,
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
@@ -291,8 +299,9 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   backgroundImage: {
-    width: isSmallScreen ? 140 : 170,
-    height: isSmallScreen ? 140 : 170,
+    bottom: getSize(0,0, -60),
+    width: getSize(0, 0, 152),
+    height: getSize(0,0, 170),
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
@@ -301,8 +310,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    width: isSmallScreen ? 140 : 170,
-    height: isSmallScreen ? 140 : 170,
+    bottom: getSize(0,0, -60),
+    width: getSize(0, 0, 152),
+    height: getSize(0,0, 170),
   },
   skinContent: {
     marginTop: 20,
@@ -321,7 +331,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   comicItem: {
-    width: isSmallScreen ? '48%' : '45%', // Adatta la larghezza per schermi piccoli
+    width: '45%', // Adatta la larghezza per schermi piccoli
     marginBottom: 20,
     alignItems: 'center',
   },
@@ -332,7 +342,7 @@ const styles = StyleSheet.create({
   },
   comicTitle: {
     marginTop: 5,
-    fontSize: isSmallScreen ? 18 : 22, // Riduci la dimensione del font per schermi piccoli
+    fontSize: 22, // Riduci la dimensione del font per schermi piccoli
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
@@ -347,12 +357,12 @@ const styles = StyleSheet.create({
   },
   skinWrapper: {
     right: '3%',
-    width: isSmallScreen ? '35%' : '30%', // Adatta la larghezza per schermi piccoli
+    width: '30%', // Adatta la larghezza per schermi piccoli
     aspectRatio: 1,
   },
   rarity: {
-    width: isSmallScreen ? '110%' : '122%', // Adatta la larghezza per schermi piccoli
-    height: isSmallScreen ? '120%' : '139%',
+    width: '122%', // Adatta la larghezza per schermi piccoli
+    height: '139%',
     resizeMode: 'contain',
     position: 'absolute',
   },
@@ -364,10 +374,10 @@ const styles = StyleSheet.create({
     height: '110%',
   },
   nome: {
-    top: '5%',
-    left: '20%',
+    top: getSize(0,0, 0),
+    left: getSize(0,0, '20%'),
     color: '#fff',
-    fontSize: isSmallScreen ? 14 : 16, // Riduci la dimensione del font per schermi piccoli
+    fontSize: getSize(0,0, 14), // Riduci la dimensione del font per schermi piccoli
     zIndex: 1,
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',
@@ -375,8 +385,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   skinImage: {
-    width: isSmallScreen ? '110%' : '119%',
-    height: isSmallScreen ? '110%' : '119%',
+    width: '119%',
+    height: '119%',
     resizeMode: 'contain',
     bottom: 10,
   },
