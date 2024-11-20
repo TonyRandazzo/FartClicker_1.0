@@ -11,14 +11,8 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withRepeat, 
-  withTiming,
-  Easing,
-  withSpring 
-} from 'react-native-reanimated';
+import Video from 'react-native-video';
+
 const { width, height } = Dimensions.get('window');
 
 // Calcola la diagonale dello schermo (in pollici)
@@ -67,57 +61,20 @@ const shopItemImages = [
   const backgroundImageUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fmoneta%20opaca%20sfondo%20shop.png?alt=media&token=3b835818-3b18-4622-b2d2-afb840d695b9'
 
   const Shop = () => {
-    const translateX = useSharedValue(0);  
-    const translateY = useSharedValue(0);  
   
-    useEffect(() => {
-      translateX.value = withRepeat(
-        withTiming(width * 0.3, { 
-          duration: 10000,
-          easing: Easing.linear,
-        }),
-        -1, 
-        true 
-      );
-  
-      translateY.value = withRepeat(
-        withTiming(height * 0.2, { 
-          duration: 10000,
-          easing: Easing.linear,
-        }),
-        -1, 
-        true 
-      );
-    }, [translateX, translateY]);
-  
-    const animatedStyle = useAnimatedStyle(() => {
-      return {
-        transform: [
-          { translateX: translateX.value },
-          { translateY: translateY.value }, 
-        ],
-      };
-    });
-  
-    const numColumns = Math.ceil(width / 200); 
-    const numRows = Math.ceil(height / 200);
     return (
-    <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
-      style={[styles.page, { justifyContent: 'center', alignItems: 'center' }]}
-      resizeMode="cover"
-    >
-      <View style={styles.animatedBackgroundContainer}>
-        {[...Array(numColumns * numRows)].map((_, index) => (
-          <Animated.Image
-            key={index}
-            source={{ uri: backgroundImageUrl }}
-            style={[styles.animatedBackgroundImage, animatedStyle]}
-          />
-        ))}
-      </View>
-
-
+          <View style={styles.page}>
+      <Video
+        source={{
+          uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330',
+        }}
+        style={styles.backgroundVideo}
+        resizeMode="cover"
+        repeat={true}
+        controls={false}
+        muted={true}
+        playInBackground={true}
+      />
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -176,7 +133,7 @@ const shopItemImages = [
           </View>
         </View>
       </ScrollView>
-    </ImageBackground>
+    </View>
     );
   }
   const styles = StyleSheet.create({
@@ -197,6 +154,13 @@ const shopItemImages = [
     },
     container: {
       flex: 1,
+    },
+    backgroundVideo: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
     },
     topContainer: {
       position: 'relative',

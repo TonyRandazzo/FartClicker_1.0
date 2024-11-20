@@ -20,8 +20,8 @@ const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
 // Definisci i range per piccoli, medi e grandi schermi
 const isSmallScreen = diagonal >= 5 && diagonal < 6;
-const isMediumScreen = diagonal > 6 && diagonal < 7;
-const isLargeScreen = diagonal > 7.5;
+const isMediumScreen = diagonal >= 6 && diagonal <= 7;
+const isLargeScreen = diagonal > 7;
 
 const getSize = (small, medium, large) => {
   if (isSmallScreen) return small;
@@ -29,131 +29,57 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-const MapScreen = ({ toggleMapScreen }) => {
-  const data = Array.from({ length: 100 }, (_, index) => index + 1);
-  const mapScaleAnim = useRef(new Animated.Value(1)).current;
-
-  const bounceAnimation = (scaleAnim) => {
-    Animated.sequence([
-      Animated.timing(scaleAnim, {
-        toValue: 1.3,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-
-  // Funzione per determinare la posizione left in base al numero
-  const getLeftPosition = (item) => {
-    const itemTextLength = item.toString().length; // Calcola la lunghezza del numero (2 o 3 cifre)
-
-    if (itemTextLength === 2) {
-      return getSize(0, 0, '10%'); // Imposta left a 10% per numeri a 2 cifre
-    } else if (itemTextLength === 3) {
-      return getSize(0, 0, '7%'); // Imposta left a 5% per numeri a 3 cifre
-    }
-    return getSize(0, 0, '13%'); // Default per altri casi, se necessario
-  };
-
-  return (
-    <ImageBackground
-      source={{
-        uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf',
-      }}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <View style={styles.containerContent}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
-          style={styles.scrollView}
-        >
-          {data.map((item) => (
-            <View key={item.toString()} style={[styles.itemContainer, styles.itemWrapper]}>
-              <View style={styles.dashedLineContainer}>
-                {Array.from({ length: 35 }).map((_, index) => (
-                  <View key={index} style={styles.dashedSegment} />
-                ))}
-              </View>
-
-              <Image
-                source={{
-                  uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8',
-                }}
-                style={styles.itemImage}
-              />
-
-              <Text
-                style={[styles.itemText, { left: getLeftPosition(item) }]}
-              >
-                {item}
-              </Text>
-
-              {/* Aggiungi due bottoni con immagini nere */}
-              <View style={styles.ricompensaContainer}>
-                <View style={styles.ricompensa}>
-                  <Image
-                    source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
-                    }}
-                    style={styles.ricompensaImage}
-                  />
-                  <Text style={styles.ricompensaText}> 40 </Text>
-                </View>
-                <View style={styles.ricompensa}>
-                  <Image
-                    source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
-                    }}
-                    style={styles.ricompensaImage}
-                  />
-                  <Text style={styles.ricompensaText}> 20 </Text>
-                </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-
-      <TouchableOpacity
-        style={styles.fixedMapButton}
-        activeOpacity={1}
-        onPressIn={() => bounceAnimation(mapScaleAnim)}
-        onPress={toggleMapScreen}
-      >
-        <Animated.Image
-          source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6',
-          }}
-          style={[styles.buttonImageMenu, { transform: [{ scale: mapScaleAnim }] }]}
-        />
-      </TouchableOpacity>
-    </ImageBackground>
-  );
-};
 
 const Home = () => {
-  const [showMapScreen, setShowMapScreen] = useState(false);
   const rewardsScaleAnim = useRef(new Animated.Value(1)).current;
   const itemsScaleAnim = useRef(new Animated.Value(1)).current;
   const newsScaleAnim = useRef(new Animated.Value(1)).current;
   const playScaleAnim = useRef(new Animated.Value(1)).current;
-  const mapScaleAnim = useRef(new Animated.Value(1)).current;
+  const passiveScaleAnim = useRef(new Animated.Value(1)).current;
+  const impulsoOpacity = useRef(new Animated.Value(1)).current;
+  const opacityValues = useRef(
+    Array(6).fill(null).map(() => new Animated.Value(0)) // 6 è il numero di onde che vuoi creare
+  ).current;
 
-  const toggleMapScreen = () => {
-    setShowMapScreen((prev) => !prev);
-  };
+  useEffect(() => {
+    const animations = opacityValues.map((animatedValue, index) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(animatedValue, {
+            toValue: 1, // visibile
+            duration: 500,
+            delay: index * 300, // ritardo per creare l'effetto ola
+            useNativeDriver: true,
+          }),
+          Animated.timing(animatedValue, {
+            toValue: 0, // invisibile
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      )
+    );
+    // Avvia tutte le animazioni
+    Animated.stagger(300, animations).start();
+  }, []);
 
-
-  if (showMapScreen) {
-    return <MapScreen toggleMapScreen={toggleMapScreen} />;
-  }
+  useEffect(() => {
+    // Animation loop for impulso opacity
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(impulsoOpacity, {
+          toValue: 0.5, // Decrease opacity
+          duration: 3000, // Duration in ms
+          useNativeDriver: true,
+        }),
+        Animated.timing(impulsoOpacity, {
+          toValue: 1, // Increase opacity
+          duration: 3000, // Duration in ms
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
 
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
@@ -171,25 +97,56 @@ const Home = () => {
   };
   return (
     <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf' }}
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e' }}
       style={styles.page1}
       resizeMode="cover"
     >
+          <View style={styles.tema}>
+      <ImageBackground
+        source={{uri: "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac"}} // Sostituisci con il percorso della tua immagine
+        style={styles.checkerboard}
+        resizeMode="repeat"
+      />
+    </View>
       <View style={styles.mainContainer}>
-        <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Ftitolo.png?alt=media&token=2b91b8c6-7da2-4d47-993e-bf3b08eb8fdf' }}
-          style={styles.titleImage}
-          resizeMode="contain"
+      <Animated.Image
+          source={{
+            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
+          }}
+          style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
-
         <View style={styles.buttonsRowTop}>
+          <View style={styles.buttonsRowTopLeft}>
+            <ImageBackground 
+            style = {styles.buttonsRowTopLeftBackground}
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915'}}
+            />
           <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
             <Animated.Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' }}
               style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
             />
           </TouchableOpacity>
-
+          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
+            <Animated.Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
+              style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
+            />
+            <Text style={styles.buttonText}></Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.buttonsRowTopRight}>
+        <ImageBackground 
+            style = {styles.buttonsRowTopRightBackground}
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915'}}
+            />
+        <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
+            <Animated.Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073' }}
+              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
+            />
+            <Text style={styles.buttonText}></Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
             <Animated.Image
               source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398' }}
@@ -198,33 +155,9 @@ const Home = () => {
             <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
-          <Animated.Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
-            style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
-          />
-          <Text style={styles.playButtonText} activeOpacity={1} onPressIn={bounceAnimation} >Play</Text>
-        </TouchableOpacity>
-
-        <View style={styles.buttonsRowBottom}>
-          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
-            <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
-              style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
-            />
-            <Text style={styles.buttonText}></Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.mapButton} activeOpacity={1} onPressIn={() => bounceAnimation(mapScaleAnim)} onPress={toggleMapScreen}>
-            <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6' }}
-              style={[styles.buttonImageMenu, { transform: [{ scale: mapScaleAnim }] }]}
-            />
-          </TouchableOpacity>
         </View>
-      </View>
 
-      <View style={styles.characterContainer}>
+        <View style={styles.characterContainer}>
         <Image
           source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
           style={styles.characterImage}
@@ -236,6 +169,15 @@ const Home = () => {
           resizeMode="contain"
         />
       </View>
+        <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
+          <Animated.Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
+            style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
+          />
+          <Text style={styles.playButtonText} activeOpacity={1} onPressIn={bounceAnimation} >Play</Text>
+        </TouchableOpacity>
+      </View>
+
     </ImageBackground>
   );
 };
@@ -244,80 +186,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  ricompensaContainer: {
+  tema: {
+    opacity: 0.15,
     position: 'absolute',
-    flexDirection: 'row', // Posiziona le ricompense orizzontalmente
-    justifyContent: 'flex-end', // Allinea le ricompense a sinistra
-    alignItems: 'flex-end', // Centra verticalmente
-    marginLeft: 160, // Spazio tra il testo e le ricompense
-  },
-
-  ricompensa: {
+    width: width,
+    height: height,
     justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 50, // Distanza tra le ricompense
   },
-
-  ricompensaImage: {
-    width: getSize(0, 0, 50), // Imposta la larghezza dell'immagine
-    height: getSize(0, 0, 50), // Imposta l'altezza dell'immagine
-    tintColor: 'black', // Applica il filtro nero all'immagine
-    marginBottom: 5, // Distanza tra l'immagine e il testo
-    shadowColor: 'rgba(255, 255, 255, 1)',
-    shadowOpacity: 1,
-    shadowOffset: { width: 10, height: 10 },
-    shadowRadius: 10,
-    elevation: 4,
+  checkerboard: {
+    position: 'absolute',
+    flex: 1,
+    width: width,
+    height: height,
   },
-
-  ricompensaText: {
-    color: 'white',
-    fontSize: 12,
-    textAlign: 'center',
-    fontFamily: 'Tricky Jimmy', // Usa il font che preferisci
-  },
-  topContainer: {
+  characterContainer: {
+    flex: 1, // Occupa tutto lo spazio disponibil
+    justifyContent: 'center', // Centra verticalmente
+    alignItems: 'center', // Centra orizzontalmente
     position: 'relative',
-    width: '100%',
-    height: 60, // Adjust height as needed
+    marginTop: height * 0.2
   },
-  topImage: {
-    width: '100%',
-    height: '100%', // Full height of the top container
+  characterImage: {
+    zIndex: 1,
+    width: 350, // Puoi regolare dinamicamente se necessario
+    height: 350,
   },
   ombra: {
-    right: 120, // Imposta valori diversi per schermi piccoli
-    top: -385,
-    width: 500, // Schermi più piccoli hanno dimensioni diverse
-    height: 500,
+    position: 'absolute', // Sovrappone l'immagine sotto
+    width: 550,
+    height: 600,
   },
-  button: {
+  impulso: {
     position: 'absolute',
-    right: 16, // Adjust padding to position the button
-    top: '50%', // Center vertically within the image
-    transform: [{ translateY: -25 }], // Adjust to center based on button size
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonImage: {
-    width: '100%',
-    height: '100%',
+    width: width,
+    height: height,
   },
   page: {
     width: width,
     height: height,
   },
   page1: {
-    width: width,
+      width: width,
     height: height,
-  },
-  fixedMapButton: {
-    position: 'absolute',
-    zIndex: 10,
-    right: getSize(0, 0, 20),
-    top: getSize(0, 0, 530),
   },
 
   indicatorContainer: {
@@ -343,18 +253,50 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
+    elevation: 6,
   },
   titleImage: {
     width: '300%',
     height: '20%',
     resizeMode: 'cover',
   },
-  buttonsRowTop: {
+  buttonsRowTopLeftBackground: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: '130%', 
+    height: '95%', 
+    flexDirection: 'row',
+    justifyContent: 'flex-start', 
+    right: 0,
+  },
+  buttonsRowTopRightBackground: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: '130%', 
+    height: '95%', 
+    flexDirection: 'row',
+    justifyContent: 'flex-start', 
+    left: 0,
+    transform: [{ scaleX: -1 }],
+  },
+  buttonsRowTopLeft: {
     zIndex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    bottom: getSize(0, 0, 50),
+    justifyContent: 'flex-start',
+    height: '90%',
+  },
+  buttonsRowTopRight: {
+    zIndex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: '90%',
+  },
+  buttonsRowTop: {
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'flex-start', 
     width: '100%',
+    top: getSize(0, 0, 50), 
   },
   rewardsButton: {
     alignItems: 'flex-start',
@@ -391,18 +333,8 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 4,
   },
-  characterContainer: {
-    position: 'absolute',
-    top: getSize('8%', '0%', '32%'),
-    left: getSize('4%', '4%', '14%'),
-  },
-  characterImage: {
-    zIndex: 1,
-    width: 250, // Cambia la dimensione in base alla larghezza dello schermo
-    height: 250,
-  },
   playButton: {
-    top: getSize(0, 0, '20%'),
+    top: 0,
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'center',

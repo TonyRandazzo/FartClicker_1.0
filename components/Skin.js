@@ -13,12 +13,11 @@ import {
   ScrollView,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import Video from 'react-native-video';
 const { width, height } = Dimensions.get('window');
 
-// Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
-// Definisci i range per piccoli, medi e grandi schermi
 const isSmallScreen = diagonal >= 5 && diagonal <= 7;
 const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
 const isLargeScreen = diagonal > 8.5;
@@ -31,7 +30,19 @@ const getSize = (small, medium, large) => {
 
 const Skin = () => {
   const [activeButton, setActiveButton] = useState('skin');
+  const images = [
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%201.png?alt=media&token=666a1520-3005-493c-9de6-ba1b93297cc5',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%205.png?alt=media&token=efb61365-c3b8-4cd5-8e29-fa7869ca6433',
+  ];
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const changeBackground = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
   const imageBehindSwitchSkin = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
   const imageBehindSwitchComic = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
 
@@ -76,16 +87,8 @@ const Skin = () => {
     non_comune: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20non%20comune.png?alt=media&token=9de28b8a-4d76-4d7e-8d63-b796756e73cf',
     epico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20epico.png?alt=media&token=3fb40852-9040-4352-93f8-d0841723978c',
     leggendario: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20leggendaria.png?alt=media&token=0fd106da-5e3f-41ec-b148-194922a843a5',
-    //  mitico: [
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfonfo%20mitico%20sotto.png?alt=media&token=68eda32d-6047-47ea-a740-f5c463f25171',
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfonfo%20mitico%20mezzo.png?alt=media&token=41e4df16-ea53-423c-815c-ffda366e99c3',
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfonfo%20mitico%20sopra.png?alt=media&token=b6d99982-b141-4bc5-8e46-5cc8cf8478f1'
-    //  ],
-    //  divinità: [
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20divinit%C3%A0%20primo%20livello.png?alt=media&token=80c5f3d0-b4aa-4b26-ac6d-25c3321c3e3f',
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20divinit%C3%A0%20secondo%20livello.png?alt=media&token=0eb41424-2bcd-42e9-8f7c-58377798bee4',
-    //    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20divinit%C3%A0%20terzo%20livello.png?alt=media&token=94bd3fb5-40e2-4df1-a86a-228d117a35da'
-    //  ],
+    mitico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fmitico.mp4?alt=media&token=eee7b7f6-d3d9-4eff-acf3-87a33abeee09',
+    divinità: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fdivinit%C3%A0.mp4?alt=media&token=437a6ae7-3988-46c0-bd49-880938e4b272',
   };
 
   const skinItems = [
@@ -120,11 +123,14 @@ const Skin = () => {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20record%201.png?alt=media&token=2bdf9f0a-4a01-411e-acea-26febe03b581' }}
+      source={{ uri: images[currentIndex] }}
       style={styles.page1}
       resizeMode="cover"
     >
       <View style={styles.topButtonsContainer}>
+        <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
+          <Text style={styles.testo}>{currentIndex + 1}</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
           <Text style={styles.topButtonText}>Skin</Text>
           {activeButton === 'skin' && (
@@ -164,8 +170,25 @@ const Skin = () => {
               <View key={rowIndex} style={styles.skinRow}>
                 {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                   <View key={item.id} style={styles.skinWrapper}>
-                      <ImageBackground source={{ uri: item.background }} style={styles.sfondi}>
-                </ImageBackground> 
+                    {(item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) ? (
+                      <Video
+                        source={{ uri: item.background }}
+                        style={styles.sfondiAnimati}
+                        resizeMode="cover"
+                        muted={true}
+                        repeat={true}
+                        disableFocus
+                        automaticallyWaitsToMinimizeStalling
+                      />
+                    ) : (
+                      <ImageBackground
+                        source={{
+                          uri: item.background,
+                        }}
+                        style={styles.sfondi}
+                      />
+                    )}
+
                     <Text style={styles.nome}>{item.name}</Text>
                     <Image source={{ uri: item.image }} style={styles.skinImage} />
                     <Text style={styles.classe}>{item.class}</Text>
@@ -195,6 +218,21 @@ const Skin = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  testo: {
+    color: 'white',
+    fontSize: 30,
+  },
+  dinamismo: {
+    position: 'absolute',
+    backgroundColor: 'black',
+    zIndex: 10,
+    width: 50,
+    height: 50,
+    left: 200,
+    top: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scrollContainer: {
     alignItems: 'center',
@@ -299,9 +337,9 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   backgroundImage: {
-    bottom: getSize(0,0, -60),
+    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
-    height: getSize(0,0, 170),
+    height: getSize(0, 0, 170),
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
@@ -310,9 +348,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    bottom: getSize(0,0, -60),
+    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
-    height: getSize(0,0, 170),
+    height: getSize(0, 0, 170),
   },
   skinContent: {
     marginTop: 20,
@@ -373,11 +411,18 @@ const styles = StyleSheet.create({
     width: '90%',
     height: '110%',
   },
+  sfondiAnimati: {
+    position: 'absolute',
+    top: '15%',
+    left: '20%',
+    width: '80%',
+    height: '110%',
+  },
   nome: {
-    top: getSize(0,0, 0),
-    left: getSize(0,0, '20%'),
+    top: getSize(0, 0, 0),
+    left: getSize(0, 0, '20%'),
     color: '#fff',
-    fontSize: getSize(0,0, 14), // Riduci la dimensione del font per schermi piccoli
+    fontSize: getSize(0, 0, 14), // Riduci la dimensione del font per schermi piccoli
     zIndex: 1,
     fontFamily: 'Tricky Jimmy',
     textShadowColor: 'black',

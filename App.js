@@ -11,27 +11,30 @@ import {
   ImageBackground,
   Text,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
-import User from './components/User';
 import Mission from './components/Mission';
 import Skin from './components/Skin';
 import Shop from './components/Shop';
 import Home from './components/Home';
+import MapScreen from './components/MapScreen';
+import Immersive from 'react-native-immersive';
+import User from './components/User';
 
 const { width, height } = Dimensions.get('window');
 
 
 
 
-const pages = [<Shop />, <Skin />, <Home />, <Mission />, <User />];
+const pages = [<Shop />, <Skin />, <Home />, <Mission />, <MapScreen />];
 
 const imageUrls = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Ftoilettatura.png?alt=media&token=ba9f3b7e-01ef-4c35-9874-c5f2f1061ecd',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Fpersonaggi%20icona%20men%C3%B9.png?alt=media&token=b45e969a-7a86-4b71-a0f4-399a001587f6',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Fhome%20simbolo.png?alt=media&token=25ccbe53-120e-4ca1-be13-45f2deee520b',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Frotolo%20missione.png?alt=media&token=1badebd8-2727-4840-a03f-2e7aa3c1105a',
-  'https://via.placeholder.com/150/FFFFFF/000000?text=5',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6',
 ];
 const ItemComponent = React.memo(({ item }) => {
   return (
@@ -88,24 +91,24 @@ const App = () => {
       return Animated.sequence([
         Animated.parallel([
           Animated.timing(scaleValues[index], {
-            toValue: isSelected ? 1.6 : 1,  
+            toValue: isSelected ? 1.6 : 1,
             duration: 200,
             useNativeDriver: true,
           }),
           Animated.timing(translateYValues[index], {
-            toValue: isSelected ? -20 : 0,  
+            toValue: isSelected ? -20 : 0,
             duration: 300,
             friction: 3.5,
             useNativeDriver: true,
           }),
         ]),
         Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.3 : 1,  
+          toValue: isSelected ? 1.3 : 1,
           duration: 100,
           useNativeDriver: true,
         }),
         Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.6 : 1,  
+          toValue: isSelected ? 1.6 : 1,
           duration: 100,
           useNativeDriver: true,
         }),
@@ -118,6 +121,15 @@ const App = () => {
   useEffect(() => {
     console.log('State Updated - Current Index:', currentIndex, 'Active Index:', activeIndex);
   }, [currentIndex, activeIndex]);
+
+  useEffect(() => {
+    Immersive.on();
+
+    return () => {
+      Immersive.off();
+    };
+  }, []);
+
 
   const getInterpolatedScale = (index) => {
     return scrollX.interpolate({
@@ -158,10 +170,12 @@ const App = () => {
 
 
   return (
+
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" hidden={true} />
       <View style={styles.topContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20alto%20schermata.png?alt=media&token=f05f1f2d-2286-41b3-9fa8-fe350d0dbe6e' }}
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
           style={styles.topImage}
           resizeMode="cover"
         />
@@ -173,6 +187,8 @@ const App = () => {
           />
         </TouchableOpacity>
       </View>
+      {currentIndex === 2 && <User />}
+
       <Animated.FlatList
         data={pages}
         renderItem={({ item, index }) => (
@@ -199,27 +215,25 @@ const App = () => {
           { useNativeDriver: true }
         )}
         scrollEventThrottle={16}
+        scrollEnabled={false}
       />
-      <Image
-        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20in%20basso.png?alt=media&token=62e385a2-831b-4421-aa8a-cfa55d3c7392' }}
-        style={styles.bottomImage}
-        resizeMode="cover"
-      />
+      <View style={styles.bottomContainer}>
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustra%20inferiore.png?alt=media&token=5222eb2e-a57a-487e-99d1-6eb0a3f59644' }}
+          style={styles.bottomImage}
+        />
+      </View>
       <View style={styles.indicatorContainer}>
         {imageUrls.map((url, index) => {
           const scale = scaleValues[index];
           const translateY = translateYValues[index];
-          const buttonContainerStyle = [
-            styles.buttonContainer,
-            index === 4 && { borderRightWidth: 0 }, 
-          ];
           return (
-            <TouchableOpacity key={index} onPress={() => goToPage(index)} style={buttonContainerStyle} activeOpacity={1}>
+            <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
               <Animated.View
                 style={{
                   transform: [
-                    { scale: scale },  
-                    { translateY: translateY },  
+                    { scale: scale },
+                    { translateY: translateY },
                   ],
                 }}
               >
@@ -244,14 +258,27 @@ const styles = ScaledSheet.create({
   topContainer: {
     position: 'relative',
     width: '100%',
-    height: 60,
+    height: 50,
+    elevation: 5,
   },
-
+  topImage: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: width,
+    height: 200,
+  },
+  flatListContainer: {
+    position: 'absolute',
+    zIndex: -1, // Lower z-index to push it behind other elements
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   button: {
     position: 'absolute',
     right: 16,
-    top: '50%',
-    transform: [{ translateY: -25 }],
+    top: '30%',
     width: 50,
     height: 50,
     justifyContent: 'center',
@@ -269,9 +296,18 @@ const styles = ScaledSheet.create({
     width: width,
     height: height,
   },
+  bottomContainer: {
+    position: 'absolute',
+    width: width,
+    height: 122,
+    elevation: 5,
+    bottom: 0,
+  },
   bottomImage: {
-    width: '100%',
-    height: 90,
+    position: 'absolute',
+    resizeMode: 'cover',
+    width: width,
+    height: 122,
   },
   rectangle: {
     width: '400vh',
@@ -302,6 +338,7 @@ const styles = ScaledSheet.create({
     alignItems: 'center',
   },
   indicatorContainer: {
+    elevation: 5,
     position: 'absolute',
     bottom: 20,
     flexDirection: 'row',
@@ -309,9 +346,9 @@ const styles = ScaledSheet.create({
     width: '100%',
   },
   indicator: {
-    width: '48@s',
-    height: '50@s',
-    marginHorizontal: '8@s',
+    width: 60,
+    height: 60,
+    marginHorizontal: 11,
   },
   buttonContainer: {
     paddingRight: 0,
@@ -397,10 +434,6 @@ const styles = ScaledSheet.create({
     width: '100%',
     height: 200,
     alignItems: 'center',
-  },
-  topImage: {
-    width: '100%',
-    height: '100%',
   },
 
 });
