@@ -14,6 +14,10 @@ import {
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Video from 'react-native-video';
+import VideoCache from './VideoCache';
+
+
+
 const { width, height } = Dimensions.get('window');
 
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
@@ -39,6 +43,66 @@ const Skin = () => {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [cachedVideoPaths, setCachedVideoPaths] = useState({});
+
+  // Initialize video cache when component mounts
+  useEffect(() => {
+    const initializeCache = async () => {
+      await VideoCache.initialize();
+
+      // Pre-cache all video backgrounds
+      const videoPaths = {};
+      for (const key in skinItemBackgrounds) {
+        const background = skinItemBackgrounds[key];
+        if (background.endsWith('.mp4')) {
+          const cachedPath = await VideoCache.getCachedVideoPath(background);
+          videoPaths[background] = cachedPath;
+        }
+      }
+      setCachedVideoPaths(videoPaths);
+    };
+
+    initializeCache();
+
+    // Clear cache when component unmounts
+    return () => {
+      // Optionally clear cache on unmount
+      // VideoCache.clearCache();
+    };
+  }, []);
+
+  const renderBackground = (item) => {
+    if (item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) {
+      const videoSource = cachedVideoPaths[item.background] || item.background;
+      return (
+        <Video
+          source={{ uri: videoSource }}
+          style={styles.sfondiAnimati}
+          resizeMode="cover"
+          muted={true}
+          repeat={true}
+          controls={false}
+          disableFocus
+          onError={(error) => {
+            console.error('Video playback error:', error);
+            if (videoSource !== item.background) {
+              setCachedVideoPaths(prev => ({
+                ...prev,
+                [item.background]: item.background
+              }));
+            }
+          }}
+        />
+      );
+    }
+    return (
+      <ImageBackground
+        source={{ uri: item.background }}
+        style={styles.sfondi}
+      />
+    );
+  };
 
   const changeBackground = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -88,7 +152,7 @@ const Skin = () => {
     epico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20epico.png?alt=media&token=3fb40852-9040-4352-93f8-d0841723978c',
     leggendario: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20leggendaria.png?alt=media&token=0fd106da-5e3f-41ec-b148-194922a843a5',
     mitico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fmitico.mp4?alt=media&token=eee7b7f6-d3d9-4eff-acf3-87a33abeee09',
-    divinità: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fdivinit%C3%A0.mp4?alt=media&token=437a6ae7-3988-46c0-bd49-880938e4b272',
+    divinità: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fdivinita.mp4?alt=media&token=aa041503-69aa-4ee7-9de5-135b005ff792',
   };
 
   const skinItems = [
@@ -170,25 +234,7 @@ const Skin = () => {
               <View key={rowIndex} style={styles.skinRow}>
                 {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                   <View key={item.id} style={styles.skinWrapper}>
-                    {(item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) ? (
-                      <Video
-                        source={{ uri: item.background }}
-                        style={styles.sfondiAnimati}
-                        resizeMode="cover"
-                        muted={true}
-                        repeat={true}
-                        disableFocus
-                        automaticallyWaitsToMinimizeStalling
-                      />
-                    ) : (
-                      <ImageBackground
-                        source={{
-                          uri: item.background,
-                        }}
-                        style={styles.sfondi}
-                      />
-                    )}
-
+                    {renderBackground(item)}
                     <Text style={styles.nome}>{item.name}</Text>
                     <Image source={{ uri: item.image }} style={styles.skinImage} />
                     <Text style={styles.classe}>{item.class}</Text>

@@ -12,6 +12,8 @@ import {
   ScrollView,
 } from 'react-native';
 import Video from 'react-native-video';
+import VideoCache from './VideoCache';
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -61,20 +63,47 @@ const shopItemImages = [
   const backgroundImageUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fmoneta%20opaca%20sfondo%20shop.png?alt=media&token=3b835818-3b18-4622-b2d2-afb840d695b9'
 
   const Shop = () => {
+    const [cachedVideoPath, setCachedVideoPath] = useState(
+      'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330'
+    );
   
+    useEffect(() => {
+      const initializeVideoCache = async () => {
+        await VideoCache.initialize();
+        
+        const videoUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330';
+        
+        try {
+          const cachedPath = await VideoCache.getCachedVideoPath(videoUrl);
+          setCachedVideoPath(cachedPath);
+        } catch (error) {
+          console.error('Error caching video:', error);
+        }
+      };
+  
+      initializeVideoCache();
+    }, []);
+  
+    const renderBackground = () => {
+      return (
+        <Video
+          source={{ uri: cachedVideoPath }}
+          style={styles.backgroundVideo}
+          resizeMode="cover"
+          repeat={true}
+          controls={false}
+          muted={true}
+          playInBackground={true}
+          onError={(error) => {
+            console.error('Video playback error:', error);
+            setCachedVideoPath('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330');
+          }}
+        />
+      );
+    };
     return (
           <View style={styles.page}>
-      <Video
-        source={{
-          uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330',
-        }}
-        style={styles.backgroundVideo}
-        resizeMode="cover"
-        repeat={true}
-        controls={false}
-        muted={true}
-        playInBackground={true}
-      />
+            {renderBackground()}
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}

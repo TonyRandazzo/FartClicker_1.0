@@ -40,7 +40,37 @@ const Home = () => {
   const opacityValues = useRef(
     Array(6).fill(null).map(() => new Animated.Value(0)) // 6 è il numero di onde che vuoi creare
   ).current;
+  const checkerboardOpacity = useRef(new Animated.Value(0)).current;
+  const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
 
+  useEffect(() => {
+    // Configura l'animazione per la scala
+    const scaleAnimation = Animated.timing(checkerboardScale, {
+      toValue: 1.1, // Diventa il doppio della dimensione originale
+      duration: 5000,
+      useNativeDriver: true,
+    });
+
+    // Configura l'animazione per l'opacità
+    const fadeAnimation = Animated.sequence([
+      Animated.timing(checkerboardOpacity, {
+        toValue: 0.8, // Diventa visibile
+        duration: 3000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(checkerboardOpacity, {
+        toValue: 0, // Diventa invisibile
+        duration: 3000,
+        useNativeDriver: true,
+      }),
+    ]);
+
+    // Combina scala e opacità
+    const combinedAnimation = Animated.parallel([scaleAnimation, fadeAnimation]);
+
+    // Loop continuo
+    Animated.loop(combinedAnimation).start();
+  }, []);
   useEffect(() => {
     const animations = opacityValues.map((animatedValue, index) =>
       Animated.loop(
@@ -101,13 +131,21 @@ const Home = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-          <View style={styles.tema}>
-      <ImageBackground
-        source={{uri: "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac"}} // Sostituisci con il percorso della tua immagine
-        style={styles.checkerboard}
-        resizeMode="repeat"
-      />
-    </View>
+          <SafeAreaView style={styles.tema}>
+          <Animated.Image
+          source={{
+            uri: "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
+          }}
+          style={[
+            styles.checkerboard,
+            {
+              opacity: checkerboardOpacity,
+              transform: [{ scale: checkerboardScale }],
+            },
+          ]}
+          resizeMode="repeat"
+        />
+    </SafeAreaView>
       <View style={styles.mainContainer}>
       <Animated.Image
           source={{
@@ -187,11 +225,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tema: {
-    opacity: 0.15,
     position: 'absolute',
     width: width,
     height: height,
-    justifyContent: 'center',
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',
   },
   checkerboard: {
     position: 'absolute',

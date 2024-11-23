@@ -35,11 +35,12 @@ const User = () => {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 5,
     elevation: 5,
     flex: 1, // Rende il contenitore a schermo intero
     alignItems: 'center', // Centra l'immagine orizzontalmente
     justifyContent: 'flex-start',
-    top: 20,
+    top: -10,
   },
   user: {
     width: 100, // Larghezza dell'immagine
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain', // Assicura che l'immagine mantenga il rapporto originale
   },
   button: {
-    position: 'absolute', // Sovrappone il bottone sopra l'immagine
+    position: 'absolute', 
     width: 95, 
     height: 95, 
     borderRadius: 360, 
