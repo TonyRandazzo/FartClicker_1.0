@@ -13,6 +13,9 @@ import {
   ScrollView,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
+import RNFS from 'react-native-fs';
+
+
 // Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
 // Calcola la diagonale dello schermo (in pollici)
@@ -28,6 +31,85 @@ const getSize = (small, medium, large) => {
   if (isMediumScreen) return medium;
   if (isLargeScreen) return large;
 };
+
+class ImageCache {
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
+
+  static async initialize() {
+    try {
+      // Create cache directory if it doesn't exist
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
+
+      // Load existing cached files
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+    
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
+    }
+  
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
+  
+      console.log(`Downloading image from: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
+  
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch (error) {
+      console.error(`Failed to cache image: ${uri}`, error);
+      return uri;
+    }
+  }
+
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
+    }
+  }
+}
+
+const images = [
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
+  "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e'
+];
+
+
 
 
 const Home = () => {
@@ -47,7 +129,7 @@ const Home = () => {
     // Configura l'animazione per la scala
     const scaleAnimation = Animated.timing(checkerboardScale, {
       toValue: 1.1, // Diventa il doppio della dimensione originale
-      duration: 5000,
+      duration: 4000,
       useNativeDriver: true,
     });
 
@@ -55,12 +137,12 @@ const Home = () => {
     const fadeAnimation = Animated.sequence([
       Animated.timing(checkerboardOpacity, {
         toValue: 0.8, // Diventa visibile
-        duration: 3000,
+        duration: 2000,
         useNativeDriver: true,
       }),
       Animated.timing(checkerboardOpacity, {
         toValue: 0, // Diventa invisibile
-        duration: 3000,
+        duration: 2000,
         useNativeDriver: true,
       }),
     ]);
@@ -125,16 +207,58 @@ const Home = () => {
       }),
     ]).start();
   };
+
+
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
+
+  // Initialize caches when component mounts
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+      ]);
+
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+
+      // Cache all image assets
+      const imagesToCache = [
+        ...images,
+      ];
+
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+    };
+
+    initializeCaches();
+
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+    };
+  }, []);
+
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
+
   return (
     <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e' }}
+      source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e') }}
       style={styles.page1}
       resizeMode="cover"
     >
           <SafeAreaView style={styles.tema}>
           <Animated.Image
           source={{
-            uri: "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
+            uri: getCachedImage("https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac"),
           }}
           style={[
             styles.checkerboard,
@@ -149,7 +273,7 @@ const Home = () => {
       <View style={styles.mainContainer}>
       <Animated.Image
           source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
+            uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86'),
           }}
           style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
@@ -157,17 +281,17 @@ const Home = () => {
           <View style={styles.buttonsRowTopLeft}>
             <ImageBackground 
             style = {styles.buttonsRowTopLeftBackground}
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915'}}
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915')}}
             />
           <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
             <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' }}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' )}}
               style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
             />
           </TouchableOpacity>
           <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
             <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' }}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' )}}
               style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
             />
             <Text style={styles.buttonText}></Text>
@@ -176,18 +300,18 @@ const Home = () => {
         <View style={styles.buttonsRowTopRight}>
         <ImageBackground 
             style = {styles.buttonsRowTopRightBackground}
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915'}}
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915')}}
             />
         <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
             <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073' }}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073') }}
               style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
             />
             <Text style={styles.buttonText}></Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
             <Animated.Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398' }}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398') }}
               style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
             />
             <Text style={styles.buttonText}></Text>
@@ -197,19 +321,19 @@ const Home = () => {
 
         <View style={styles.characterContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
+          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0') }}
           style={styles.characterImage}
           resizeMode="contain"
         />
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7' }}
+          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7') }}
           style={styles.ombra}
           resizeMode="contain"
         />
       </View>
         <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
           />
           <Text style={styles.playButtonText} activeOpacity={1} onPressIn={bounceAnimation} >Play</Text>
@@ -245,12 +369,13 @@ const styles = StyleSheet.create({
     marginTop: height * 0.2
   },
   characterImage: {
+    position: 'absolute',
     zIndex: 1,
     width: 350, // Puoi regolare dinamicamente se necessario
     height: 350,
   },
   ombra: {
-    position: 'absolute', // Sovrappone l'immagine sotto
+    position: 'relative', // Sovrappone l'immagine sotto
     width: 550,
     height: 600,
   },

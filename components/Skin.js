@@ -15,8 +15,71 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Video from 'react-native-video';
 import VideoCache from './VideoCache';
+import RNFS from 'react-native-fs';
 
 
+class ImageCache {
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
+
+  static async initialize() {
+    try {
+      // Create cache directory if it doesn't exist
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
+
+      // Load existing cached files
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+    
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
+    }
+  
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
+  
+      console.log(`Downloading image from: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
+  
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch (error) {
+      console.error(`Failed to cache image: ${uri}`, error);
+      return uri;
+    }
+  }
+
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
+    }
+  }
+}
 
 const { width, height } = Dimensions.get('window');
 
@@ -34,85 +97,6 @@ const getSize = (small, medium, large) => {
 
 const Skin = () => {
   const [activeButton, setActiveButton] = useState('skin');
-  const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%201.png?alt=media&token=666a1520-3005-493c-9de6-ba1b93297cc5',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%205.png?alt=media&token=efb61365-c3b8-4cd5-8e29-fa7869ca6433',
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const [cachedVideoPaths, setCachedVideoPaths] = useState({});
-
-  // Initialize video cache when component mounts
-  useEffect(() => {
-    const initializeCache = async () => {
-      await VideoCache.initialize();
-
-      // Pre-cache all video backgrounds
-      const videoPaths = {};
-      for (const key in skinItemBackgrounds) {
-        const background = skinItemBackgrounds[key];
-        if (background.endsWith('.mp4')) {
-          const cachedPath = await VideoCache.getCachedVideoPath(background);
-          videoPaths[background] = cachedPath;
-        }
-      }
-      setCachedVideoPaths(videoPaths);
-    };
-
-    initializeCache();
-
-    // Clear cache when component unmounts
-    return () => {
-      // Optionally clear cache on unmount
-      // VideoCache.clearCache();
-    };
-  }, []);
-
-  const renderBackground = (item) => {
-    if (item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) {
-      const videoSource = cachedVideoPaths[item.background] || item.background;
-      return (
-        <Video
-          source={{ uri: videoSource }}
-          style={styles.sfondiAnimati}
-          resizeMode="cover"
-          muted={true}
-          repeat={true}
-          controls={false}
-          disableFocus
-          onError={(error) => {
-            console.error('Video playback error:', error);
-            if (videoSource !== item.background) {
-              setCachedVideoPaths(prev => ({
-                ...prev,
-                [item.background]: item.background
-              }));
-            }
-          }}
-        />
-      );
-    }
-    return (
-      <ImageBackground
-        source={{ uri: item.background }}
-        style={styles.sfondi}
-      />
-    );
-  };
-
-  const changeBackground = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-  const imageBehindSwitchSkin = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
-  const imageBehindSwitchComic = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
-
-  const handleSwitchSkin = () => setActiveButton('skin');
-  const handleSwitchComic = () => setActiveButton('comic');
-
   const skinItemImages = {
     marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90',
     maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11',
@@ -184,10 +168,123 @@ const Skin = () => {
     title: `Comic ${index + 1}`,
     cover: 'https://via.placeholder.com/150x200'
   }));
+  const images = [
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%201.png?alt=media&token=666a1520-3005-493c-9de6-ba1b93297cc5',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%205.png?alt=media&token=efb61365-c3b8-4cd5-8e29-fa7869ca6433',
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
+  const [cachedVideoPaths, setCachedVideoPaths] = useState({});
+
+  // Initialize caches when component mounts
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+        VideoCache.initialize()
+      ]);
+
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+
+      // Cache all image assets
+      const imagesToCache = [
+        ...Object.values(skinItemImages),
+        ...Object.values(skinItemRarities),
+        ...Object.values(skinItemBackgrounds).filter(uri => !uri.endsWith('.mp4')),
+        ...images,
+        imageBehindSwitchSkin,
+        imageBehindSwitchComic
+      ];
+
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+
+      // Pre-cache videos (existing code)
+      const videoPaths = {};
+      for (const key in skinItemBackgrounds) {
+        const background = skinItemBackgrounds[key];
+        if (background.endsWith('.mp4')) {
+          const cachedPath = await VideoCache.getCachedVideoPath(background);
+          videoPaths[background] = cachedPath;
+        }
+      }
+      setCachedVideoPaths(videoPaths);
+    };
+
+    initializeCaches();
+
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+      // VideoCache.clearCache();
+    };
+  }, []);
+
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
+
+  // Modified render functions to use cached images
+  const renderBackground = (item) => {
+    if (item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) {
+      const videoSource = cachedVideoPaths[item.background] || item.background;
+      return (
+        <Video
+          source={{ uri: videoSource }}
+          style={styles.sfondiAnimati}
+          resizeMode="cover"
+          muted={true}
+          repeat={true}
+          controls={false}
+          disableFocus
+          onError={(error) => {
+            console.error('Video playback error:', error);
+            if (videoSource !== item.background) {
+              setCachedVideoPaths(prev => ({
+                ...prev,
+                [item.background]: item.background
+              }));
+            }
+          }}
+        />
+      );
+    }
+    return (
+      <ImageBackground
+        source={{ uri: getCachedImage(item.background) }}
+        style={styles.sfondi}
+      />
+    );
+  };
+
+
+  const changeBackground = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+  const imageBehindSwitchSkin = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
+  const imageBehindSwitchComic = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
+
+  const handleSwitchSkin = () => setActiveButton('skin');
+  const handleSwitchComic = () => setActiveButton('comic');
+
+
 
   return (
     <ImageBackground
-      source={{ uri: images[currentIndex] }}
+      source={{ uri: getCachedImage(images[currentIndex]) }}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -198,26 +295,26 @@ const Skin = () => {
         <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
           <Text style={styles.topButtonText}>Skin</Text>
           {activeButton === 'skin' && (
-            <Image source={{ uri: imageBehindSwitchSkin }} style={styles.backgroundImage} />
+            <Image source={{ uri: getCachedImage(imageBehindSwitchSkin)}} style={styles.backgroundImage} />
           )}
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchComic}>
           <Text style={styles.topButtonText}>Comic</Text>
           {activeButton === 'comic' && (
-            <Image source={{ uri: imageBehindSwitchComic }} style={styles.backgroundImage2} />
+            <Image source={{ uri: getCachedImage(imageBehindSwitchComic) }} style={styles.backgroundImage2} />
           )}
         </TouchableOpacity>
       </View>
 
       <View style={styles.imageButtonContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin.png?alt=media&token=35253d9d-7e56-4a86-802f-6a36a06d1085' }}
+          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin.png?alt=media&token=35253d9d-7e56-4a86-802f-6a36a06d1085') }}
           style={styles.topImage}
         />
         <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
           <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147' }}
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
             style={styles.buttonImage}
             resizeMode="contain"
           />

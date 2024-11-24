@@ -21,8 +21,6 @@ import Home from './components/Home';
 import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
 import User from './components/User';
-import barra from './assets/images/barra.png'
-import barra1 from './assets/images/barra1.png'
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,6 +29,15 @@ const { width, height } = Dimensions.get('window');
 
 const pages = [<Shop />, <Skin />, <Home />, <Mission />, <MapScreen />];
 
+const localImages = [
+  require('./assets/images/Sfondo.png'),
+  require('./assets/images/Scoreggia.png'),
+  require('./assets/images/PersonaggiTitolo.png'),
+  require('./assets/images/barra.png'),
+  require('./assets/images/barra1.png'),
+];
+
+
 const imageUrls = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Ftoilettatura.png?alt=media&token=ba9f3b7e-01ef-4c35-9874-c5f2f1061ecd',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Fpersonaggi%20icona%20men%C3%B9.png?alt=media&token=b45e969a-7a86-4b71-a0f4-399a001587f6',
@@ -38,6 +45,17 @@ const imageUrls = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Frotolo%20missione.png?alt=media&token=1badebd8-2727-4840-a03f-2e7aa3c1105a',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6',
 ];
+
+const preloadImages = async () => {
+  // Pre-caricamento immagini locali
+  const localPromises = localImages.map((image) =>
+    Image.prefetch(Image.resolveAssetSource(image).uri)
+  );
+
+
+  await Promise.all([...localPromises]);
+};
+
 const ItemComponent = React.memo(({ item }) => {
   return (
     <View style={styles.pageContainer}>
@@ -60,12 +78,49 @@ const App = () => {
   const [isVisible, setIsVisible] = useState(true); // Stato per visibilità dell'immagine a schermo intero
   const checkerboardOpacity = useRef(new Animated.Value(0)).current;
   const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
+  const [isReady, setIsReady] = useState(false);
+  const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
+  const goToPage = (index) => {
+    // Mostra la schermata di dissolvenza bianca prima di fare lo scroll
+    setFadeScreenVisible(true);
+    flatListRef.current?.scrollToIndex({ index, animated: false });
+
+    // Animazione di dissolvenza bianca
+    Animated.timing(fadeInOpacity, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({ index, animated: true });
+        setCurrentIndex(index);
+
+        // Dopo che la schermata di dissolvenza è apparsa, la facciamo scomparire
+        Animated.timing(fadeInOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          setFadeScreenVisible(false);
+        });
+      }, 500); // Mantieni la schermata bianca per 300ms prima di fare lo scroll
+    });
+  };
+  useEffect(() => {
+    // Pre-carica tutte le immagini prima di mostrare l'app
+    const loadAssets = async () => {
+      await preloadImages();
+      setIsReady(true); // Una volta pre-caricate, mostra l'app
+    };
+    loadAssets();
+  }, []);
+
 
   useEffect(() => {
     // Configura l'animazione per la scala
     const scaleAnimation = Animated.timing(checkerboardScale, {
       toValue: 1.1, // Diventa il doppio della dimensione originale
-      duration: 5000,
+      duration: 4000,
       useNativeDriver: true,
     });
 
@@ -73,12 +128,12 @@ const App = () => {
     const fadeAnimation = Animated.sequence([
       Animated.timing(checkerboardOpacity, {
         toValue: 0.8, // Diventa visibile
-        duration: 3000,
+        duration: 2000,
         useNativeDriver: true,
       }),
       Animated.timing(checkerboardOpacity, {
         toValue: 0, // Diventa invisibile
-        duration: 3000,
+        duration: 2000,
         useNativeDriver: true,
       }),
     ]);
@@ -95,7 +150,7 @@ const App = () => {
     // Avvia l'animazione della barra di caricamento
     const animation = Animated.timing(progressValue, {
       toValue: 100, // Fine dell'animazione (100%)
-      duration: 20000, // 20 secondi per completare
+      duration: 30000, // 20 secondi per completare
       useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
     });
 
@@ -118,24 +173,7 @@ const App = () => {
   });
 
 
-  const goToPage = (index) => {
-    Animated.sequence([
-      Animated.timing(fadeOutOpacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeInOpacity, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      })
-    ]).start(() => {
-      flatListRef.current?.scrollToIndex({ index, animated: false });
-      setCurrentIndex(index);
-      fadeOutOpacity.setValue(1);
-    });
-  };
+
 
 
 
@@ -245,9 +283,18 @@ const App = () => {
       flatListRef.current.scrollToIndex({ index: 2, animated: false });
     }
   }, []);
+  const [selectedText, setSelectedText] = useState('');
 
+  const textOptions = [
+    'ogni anno Robert partecipa alla "gara internazionale degli incontinenti" e fa sempre ultimo.',
+    "Anticamente in Cina si narrava di un leggendario Drago in grado di scorreggiare fuochi d'artificio. Purtroppo nel tempo questa leggenda è stata dimenticata...",
+    "Fartman ha fatto il giro del mondo per tre volte di fila volando con l'uso delle sue scoregge."
+  ];
 
-
+  useEffect(() => {
+    const randomText = textOptions[Math.floor(Math.random() * textOptions.length)];
+    setSelectedText(randomText);
+  }, []);
 
 
 
@@ -328,25 +375,24 @@ const App = () => {
           );
         })}
       </SafeAreaView>
-      {isVisible && (
+      {isVisible && isReady && (
         <Animated.View
           style={[
             styles.fullScreenButtonContainer,
             { opacity: fadeOutOpacity },
           ]}
         >
+          <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]}>
+
+          </Animated.View>
           <Image
-            source={{
-              uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2FSFONDO%20SCHERMATA%20DI%20CARICAMENTO.png?alt=media&token=c441339e-922d-4fab-888a-934a9989be9a',
-            }}
+            source={require('./assets/images/Sfondo.png')}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
           <SafeAreaView style={styles.tema}>
             <Animated.Image
-              source={{
-                uri: "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
-              }}
+              source={require('./assets/images/Scoreggia.png')}
               style={[
                 styles.checkerboard,
                 {
@@ -358,13 +404,16 @@ const App = () => {
             />
           </SafeAreaView>
           <Image
-            source={{ uri:'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2FSCHERMATA%20DI%20CARICAMENTO%201%20con%20titolo%20prova.png?alt=media&token=a25a9ca0-0eb2-4799-9325-1db26d630c3c' }}
+            source={require('./assets/images/PersonaggiTitolo.png')}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
+          <Text style={styles.gameText}>
+            {selectedText}
+          </Text>
           <View style={styles.progressBarContainer}>
             <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fbarra%20di%20caricamento.png?alt=media&token=693866c6-464c-4251-8b8b-0da37a9f36d3' }}
+              source={require('./assets/images/barra.png')}
               style={styles.progressBarBackground}
               resizeMode="stretch"
             />
@@ -372,19 +421,25 @@ const App = () => {
             <Animated.View
               style={[
                 styles.progressFill,
-                { width: progressInterpolation }, // Larghezza animata
+                { width: progressInterpolation },
               ]}
             >
               <Image
-                source={{
-                  uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fliquido%20della%20barra%20di%20caricamento.png?alt=media&token=b09af151-5a90-4f51-b701-4d9ddbce09ee',
-                }}
+                source={require('./assets/images/barra1.png')}
                 style={styles.progressFillImage}
                 resizeMode="stretch"
               />
             </Animated.View>
           </View>
         </Animated.View>
+      )}
+      {fadeScreenVisible && (
+        <Animated.View
+          style={[
+            styles.fadeScreen,
+            { opacity: fadeInOpacity }, // Controlla l'opacità della schermata di fade
+          ]}
+        />
       )}
     </SafeAreaView>
   );
@@ -401,6 +456,37 @@ const styles = ScaledSheet.create({
     alignItems: 'flex-start',
     top: 0,
   },
+  gameText: {
+    width: '90%',
+    top: 200,
+    fontSize: 24,
+    color: '#FFF',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  fadeScreen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'white',
+    width: width,
+    height: height,
+    zIndex: 10,
+  },
+  whiteBG: {
+    backgroundColor: 'white',
+    width: width,
+    height: height,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   tema: {
     position: 'absolute',
     width: width,
@@ -415,6 +501,7 @@ const styles = ScaledSheet.create({
     height: height,
   },
   fullScreenButtonContainer: {
+    backgroundColor: 'white',
     position: 'absolute',
     top: 0,
     left: 0,
