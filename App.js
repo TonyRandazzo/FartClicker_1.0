@@ -160,7 +160,10 @@ const App = () => {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      }).start(() => setIsVisible(false)); // Rimuove la schermata dopo l'animazione
+      }).start(() => {
+        setIsVisible(false); 
+        goToPage(2); 
+      }); 
     });
 
     return () => animation.stop(); // Ferma l'animazione in caso di smontaggio del componente
@@ -296,7 +299,66 @@ const App = () => {
     setSelectedText(randomText);
   }, []);
 
+if (isVisible) {
+  return (
+      <Animated.View
+        style={[
+          styles.fullScreenButtonContainer,
+          { opacity: fadeOutOpacity },
+        ]}
+      >
+        <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]}>
 
+        </Animated.View>
+        <Image
+          source={require('./assets/images/Sfondo.png')}
+          style={styles.fullScreenImage}
+          resizeMode="cover"
+        />
+        <SafeAreaView style={styles.tema}>
+          <Animated.Image
+            source={require('./assets/images/Scoreggia.png')}
+            style={[
+              styles.checkerboard,
+              {
+                opacity: checkerboardOpacity,
+                transform: [{ scale: checkerboardScale }],
+              },
+            ]}
+            resizeMode="repeat"
+          />
+        </SafeAreaView>
+        <Image
+          source={require('./assets/images/PersonaggiTitolo.png')}
+          style={styles.fullScreenImage}
+          resizeMode="cover"
+        />
+        <Text style={styles.gameText}>
+          {selectedText}
+        </Text>
+        <View style={styles.progressBarContainer}>
+          <Image
+            source={require('./assets/images/barra.png')}
+            style={styles.progressBarBackground}
+            resizeMode="stretch"
+          />
+
+          <Animated.View
+            style={[
+              styles.progressFill,
+              { width: progressInterpolation },
+            ]}
+          >
+            <Image
+              source={require('./assets/images/barra1.png')}
+              style={styles.progressFillImage}
+              resizeMode="stretch"
+            />
+          </Animated.View>
+        </View>
+      </Animated.View>
+  )
+}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -316,7 +378,6 @@ const App = () => {
         </TouchableOpacity>
       </SafeAreaView>
       {currentIndex === 2 && <User />}
-
       <Animated.FlatList
         data={pages}
         renderItem={({ item, index }) => (
@@ -375,64 +436,6 @@ const App = () => {
           );
         })}
       </SafeAreaView>
-      {isVisible && isReady && (
-        <Animated.View
-          style={[
-            styles.fullScreenButtonContainer,
-            { opacity: fadeOutOpacity },
-          ]}
-        >
-          <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]}>
-
-          </Animated.View>
-          <Image
-            source={require('./assets/images/Sfondo.png')}
-            style={styles.fullScreenImage}
-            resizeMode="cover"
-          />
-          <SafeAreaView style={styles.tema}>
-            <Animated.Image
-              source={require('./assets/images/Scoreggia.png')}
-              style={[
-                styles.checkerboard,
-                {
-                  opacity: checkerboardOpacity,
-                  transform: [{ scale: checkerboardScale }],
-                },
-              ]}
-              resizeMode="repeat"
-            />
-          </SafeAreaView>
-          <Image
-            source={require('./assets/images/PersonaggiTitolo.png')}
-            style={styles.fullScreenImage}
-            resizeMode="cover"
-          />
-          <Text style={styles.gameText}>
-            {selectedText}
-          </Text>
-          <View style={styles.progressBarContainer}>
-            <Image
-              source={require('./assets/images/barra.png')}
-              style={styles.progressBarBackground}
-              resizeMode="stretch"
-            />
-
-            <Animated.View
-              style={[
-                styles.progressFill,
-                { width: progressInterpolation },
-              ]}
-            >
-              <Image
-                source={require('./assets/images/barra1.png')}
-                style={styles.progressFillImage}
-                resizeMode="stretch"
-              />
-            </Animated.View>
-          </View>
-        </Animated.View>
-      )}
       {fadeScreenVisible && (
         <Animated.View
           style={[
@@ -460,9 +463,9 @@ const styles = ScaledSheet.create({
     width: '90%',
     top: 200,
     fontSize: 24,
-    color: '#FFF',
+    fontFamily: 'LuckiestGuy-8jyD',
+    color: 'white',
     textAlign: 'center',
-    fontWeight: 'bold',
   },
   fadeScreen: {
     position: 'absolute',

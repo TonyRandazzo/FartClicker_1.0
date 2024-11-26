@@ -2,7 +2,7 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "assets/fonts/CHUBBY.TTF",
+      "path": "assets/fonts/Chubby Cheeks.ttf",
       "sha1": "9d6765f0829a2fd79d7c12a3a6b052429c249008"
     },
     {
@@ -16,10 +16,6 @@
     {
       "path": "assets/fonts/thats-super.regular.ttf",
       "sha1": "60f3048ee34dc9e20ef9fdb006b053b634911042"
-    },
-    {
-      "path": "assets/fonts/Tricky Jimmy.ttf",
-      "sha1": "51f12df8ff12601e1d31337f3c7d603b5f55bf0d"
     }
   ]
 }

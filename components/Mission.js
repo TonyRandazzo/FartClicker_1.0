@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     top: 0,
     color: '#FFF',
     fontSize: 25,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -263,24 +263,24 @@ const styles = StyleSheet.create({
   missionName: {
     fontSize: 18,
     color: '#fff',
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
   missionDescription: {
     fontSize: 14,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   missionDetails: {
     fontSize: 12,
     color: '#888',
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   backgroundText: {
     color: '#fff',
     fontSize: 10,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   progressContainer: {
     height: 15,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#3b5998',
   },
   progressText: {
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     position: 'absolute',
     alignSelf: 'center',
     color: '#fff',
@@ -357,11 +357,11 @@ const styles = StyleSheet.create({
   achievementTextContainer: {
     marginBottom: 10,
     paddingHorizontal: 10,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   achievementName: {
     fontSize: 21,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -369,13 +369,13 @@ const styles = StyleSheet.create({
   },
   achievementDescription: {
     fontSize: 14,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     color: '#444',
   },
   achievementDetails: {
     fontSize: 12,
     color: '#888',
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   achievementProgressBarContainer: {
     height: 15,
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5,
     position: 'relative',
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
   achievementProgressBar: {
     height: '100%',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#fff',
     fontSize: 13,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
   },
 
 });

@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     top: 0,
     color: '#FFF',
     fontSize: 25,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -524,7 +524,7 @@ const styles = StyleSheet.create({
   comicTitle: {
     marginTop: 5,
     fontSize: 22, // Riduci la dimensione del font per schermi piccoli
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: getSize(0, 0, 14), // Riduci la dimensione del font per schermi piccoli
     zIndex: 1,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -583,7 +583,7 @@ const styles = StyleSheet.create({
     top: '120%',
     left: '20%',
     fontSize: 11,
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,

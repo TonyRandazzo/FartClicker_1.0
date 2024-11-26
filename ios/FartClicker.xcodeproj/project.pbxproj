@@ -17,8 +17,7 @@
 		48F040CA158C4541998745DC /* SinglyLinkedRegular-vmoRL.otf in Resources */ = {isa = PBXBuildFile; fileRef = F6B9B84931F3421FAD879B4B /* SinglyLinkedRegular-vmoRL.otf */; };
 		4160BEF8BDBC4EEFA56266BE /* LuckiestGuy-8jyD.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCDD8893015A4955897F0B71 /* LuckiestGuy-8jyD.ttf */; };
 		B8B212FAB8964663A889CA61 /* thats-super.regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 892C0293307543BC8484BF07 /* thats-super.regular.ttf */; };
-		8049835348A04D38B1EF6F77 /* Tricky Jimmy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E7E45BDC4CF4480AD1B2700 /* Tricky Jimmy.ttf */; };
-		C39BB57443594F58B7A8E600 /* CHUBBY.TTF in Resources */ = {isa = PBXBuildFile; fileRef = 714844DDFF97476393902D23 /* CHUBBY.TTF */; };
+		B275A35A859F43E69F139F6A /* Chubby Cheeks.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 32C7D2217EA54A4E8057FD06 /* Chubby Cheeks.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,8 +52,7 @@
 		F6B9B84931F3421FAD879B4B /* SinglyLinkedRegular-vmoRL.otf */ = {isa = PBXFileReference; name = "SinglyLinkedRegular-vmoRL.otf"; path = "../assets/fonts/SinglyLinkedRegular-vmoRL.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		CCDD8893015A4955897F0B71 /* LuckiestGuy-8jyD.ttf */ = {isa = PBXFileReference; name = "LuckiestGuy-8jyD.ttf"; path = "../assets/fonts/LuckiestGuy-8jyD.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		892C0293307543BC8484BF07 /* thats-super.regular.ttf */ = {isa = PBXFileReference; name = "thats-super.regular.ttf"; path = "../assets/fonts/thats-super.regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2E7E45BDC4CF4480AD1B2700 /* Tricky Jimmy.ttf */ = {isa = PBXFileReference; name = "Tricky Jimmy.ttf"; path = "../assets/fonts/Tricky Jimmy.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		714844DDFF97476393902D23 /* CHUBBY.TTF */ = {isa = PBXFileReference; name = "CHUBBY.TTF"; path = "../assets/fonts/CHUBBY.TTF"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		32C7D2217EA54A4E8057FD06 /* Chubby Cheeks.ttf */ = {isa = PBXFileReference; name = "Chubby Cheeks.ttf"; path = "../assets/fonts/Chubby Cheeks.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,8 +165,7 @@
 				F6B9B84931F3421FAD879B4B /* SinglyLinkedRegular-vmoRL.otf */,
 				CCDD8893015A4955897F0B71 /* LuckiestGuy-8jyD.ttf */,
 				892C0293307543BC8484BF07 /* thats-super.regular.ttf */,
-				2E7E45BDC4CF4480AD1B2700 /* Tricky Jimmy.ttf */,
-				714844DDFF97476393902D23 /* CHUBBY.TTF */,
+				32C7D2217EA54A4E8057FD06 /* Chubby Cheeks.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -272,8 +269,7 @@
 				48F040CA158C4541998745DC /* SinglyLinkedRegular-vmoRL.otf in Resources */,
 				4160BEF8BDBC4EEFA56266BE /* LuckiestGuy-8jyD.ttf in Resources */,
 				B8B212FAB8964663A889CA61 /* thats-super.regular.ttf in Resources */,
-				8049835348A04D38B1EF6F77 /* Tricky Jimmy.ttf in Resources */,
-				C39BB57443594F58B7A8E600 /* CHUBBY.TTF in Resources */,
+				B275A35A859F43E69F139F6A /* Chubby Cheeks.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

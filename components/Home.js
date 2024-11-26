@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'Tricky Jimmy',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
@@ -513,7 +513,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     color: '#fff',
     fontSize: 50, // Font size più piccolo per schermi più piccoli
-    fontFamily: 'Chubby Cheeks',
+    fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
