@@ -68,6 +68,20 @@ const MapScreen = ({ toggleMapScreen }) => {
       style={styles.background}
       resizeMode="cover"
     >
+              <View style={styles.topContainer}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+            style={styles.topImage}
+            resizeMode="cover"
+          />
+        </View>
+        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+            style={styles.buttonImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
       <View style={styles.containerContent}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -128,6 +142,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  topContainer: {
+    position: 'absolute',
+    width: width,
+    height: 190,
+    elevation: 10,
+    top: 0,
+    zIndex: 10,
+  },
+  topImage: {
+    position: 'absolute',
+    resizeMode: 'cover',
+    width: width,
+    height: '100%',
+
+  },
+
+  button: {
+    zIndex: 50,
+    left: 350,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonImage: {
+    width: '100%',
+    height: '100%',
+  },
   ricompensaContainer: {
     position: 'absolute',
     flexDirection: 'row', // Posiziona le ricompense orizzontalmente
@@ -160,35 +202,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'LuckiestGuy-8jyD', // Usa il font che preferisci
   },
-  topContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 60, // Adjust height as needed
-  },
-  topImage: {
-    width: '100%',
-    height: '100%', // Full height of the top container
-  },
-  ombra: {
-    right: 120, // Imposta valori diversi per schermi piccoli
-    top: -385,
-    width: 500, // Schermi più piccoli hanno dimensioni diverse
-    height: 500,
-  },
-  button: {
-    position: 'absolute',
-    right: 16, // Adjust padding to position the button
-    top: '50%', // Center vertically within the image
-    transform: [{ translateY: -25 }], // Adjust to center based on button size
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonImage: {
-    width: '100%',
-    height: '100%',
-  },
+
   page: {
     width: width,
     height: height,

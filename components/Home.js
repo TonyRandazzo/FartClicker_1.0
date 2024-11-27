@@ -57,16 +57,16 @@ class ImageCache {
 
   static async getCachedImagePath(uri) {
     if (!uri) return null;
-    
+
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-  
+
     try {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
-  
+
       console.log(`Downloading image from: ${uri}`);
       await RNFS.downloadFile({
         fromUrl: uri,
@@ -74,7 +74,7 @@ class ImageCache {
         background: true,
         discretionary: true,
       }).promise;
-  
+
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
@@ -106,7 +106,8 @@ const images = [
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
   'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e'
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
+  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21'
 ];
 
 
@@ -117,6 +118,7 @@ const Home = () => {
   const itemsScaleAnim = useRef(new Animated.Value(1)).current;
   const newsScaleAnim = useRef(new Animated.Value(1)).current;
   const playScaleAnim = useRef(new Animated.Value(1)).current;
+  const pauseScaleAnim = useRef(new Animated.Value(1)).current;
   const passiveScaleAnim = useRef(new Animated.Value(1)).current;
   const impulsoOpacity = useRef(new Animated.Value(1)).current;
   const opacityValues = useRef(
@@ -255,8 +257,8 @@ const Home = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-          <SafeAreaView style={styles.tema}>
-          <Animated.Image
+      <SafeAreaView style={styles.tema}>
+        <Animated.Image
           source={{
             uri: getCachedImage("https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac"),
           }}
@@ -269,68 +271,97 @@ const Home = () => {
           ]}
           resizeMode="repeat"
         />
-    </SafeAreaView>
+        <View style={styles.topContainer}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+            style={styles.topImage}
+            resizeMode="cover"
+          />
+        </View>
+        <TouchableOpacity style={styles.button} activeOpacity={1} onPressIn={() => bounceAnimation(pauseScaleAnim)}>
+          <Animated.Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+            style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
+      </SafeAreaView>
       <View style={styles.mainContainer}>
-      <Animated.Image
+        <Animated.Image
           source={{
             uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86'),
           }}
           style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
+        <View style={styles.containerUser}>
+          <Image
+            style={styles.buttonImageUser}
+            source={{
+              uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21'),
+            }}
+          />
+          <TouchableOpacity style={styles.buttonUser} activeOpacity={1} onPress={() => alert('Button is working!')}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4' }}
+              style={styles.buttonImageUser}
+            />
+          </TouchableOpacity>
+
+        </View>
         <View style={styles.buttonsRowTop}>
           <View style={styles.buttonsRowTopLeft}>
-            <ImageBackground 
-            style = {styles.buttonsRowTopLeftBackground}
-            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915')}}
+            <ImageBackground
+              style={styles.buttonsRowTopLeftBackground}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915') }}
             />
-          <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
-            <Animated.Image
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7' )}}
-              style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
+            <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
+              <Animated.Image
+                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7') }}
+                style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
+              <Animated.Image
+                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0') }}
+                style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
+              />
+              <Text style={styles.buttonText}></Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.buttonsRowTopRight}>
+            <ImageBackground
+              style={styles.buttonsRowTopRightBackground}
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915') }}
             />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
-            <Animated.Image
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0' )}}
-              style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
-            />
-            <Text style={styles.buttonText}></Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.buttonsRowTopRight}>
-        <ImageBackground 
-            style = {styles.buttonsRowTopRightBackground}
-            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915')}}
-            />
-        <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
-            <Animated.Image
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073') }}
-              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
-            />
-            <Text style={styles.buttonText}></Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
-            <Animated.Image
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398') }}
-              style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
-            />
-            <Text style={styles.buttonText}></Text>
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
+              <Animated.Image
+                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073') }}
+                style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
+              />
+              <Text style={styles.buttonText}></Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
+              <Animated.Image
+                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398') }}
+                style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
+              />
+              <Text style={styles.buttonText}></Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.characterContainer}>
-        <Image
-          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0') }}
-          style={styles.characterImage}
-          resizeMode="contain"
-        />
-        <Image
-          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7') }}
-          style={styles.ombra}
-          resizeMode="contain"
-        />
-      </View>
+          <Image
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0') }}
+            style={styles.characterImage}
+            resizeMode="contain"
+          />
+          <Image
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7') }}
+            style={styles.ombra}
+            resizeMode="contain"
+          />
+        </View>
         <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
             source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
@@ -347,6 +378,62 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  topContainer: {
+    position: 'absolute',
+    width: width,
+    height: 190,
+    elevation: 1,
+    top: 0,
+
+  },
+  topImage: {
+    position: 'absolute',
+    resizeMode: 'cover',
+    width: width,
+    height: '100%',
+
+  },
+
+  button: {
+    zIndex: 50,
+    left: 350,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  containerUser: {
+    zIndex: 10,
+    elevation: 10,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    top: 60,
+  },
+  user: {
+    width: 100, // Larghezza dell'immagine
+    height: 100, // Altezza dell'immagine
+    resizeMode: 'contain', // Assicura che l'immagine mantenga il rapporto originale
+  },
+  buttonUser: {
+    position: 'absolute',
+    width: 95,
+    height: 95,
+    borderRadius: 360,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonImageUser: {
+    borderRadius: 360,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   tema: {
     position: 'absolute',
@@ -389,7 +476,7 @@ const styles = StyleSheet.create({
     height: height,
   },
   page1: {
-      width: width,
+    width: width,
     height: height,
   },
 
@@ -411,6 +498,8 @@ const styles = StyleSheet.create({
     borderRightColor: '#fff',
   },
   mainContainer: {
+    zIndex: 15,
+    elevation: 15,
     width: '100%',
     height: '80%',
     justifyContent: 'space-between',
@@ -418,27 +507,23 @@ const styles = StyleSheet.create({
     padding: 20,
     elevation: 6,
   },
-  titleImage: {
-    width: '300%',
-    height: '20%',
-    resizeMode: 'cover',
-  },
+
   buttonsRowTopLeftBackground: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '130%', 
-    height: '95%', 
+    width: '130%',
+    height: '95%',
     flexDirection: 'row',
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
     right: 0,
   },
   buttonsRowTopRightBackground: {
     position: 'absolute',
     resizeMode: 'contain',
-    width: '130%', 
-    height: '95%', 
+    width: '130%',
+    height: '95%',
     flexDirection: 'row',
-    justifyContent: 'flex-start', 
+    justifyContent: 'flex-start',
     left: 0,
     transform: [{ scaleX: -1 }],
   },
@@ -455,11 +540,11 @@ const styles = StyleSheet.create({
     height: '90%',
   },
   buttonsRowTop: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'flex-start', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     width: '100%',
-    top: getSize(0, 0, 50), 
+    top: getSize(0, 0, 80),
   },
   rewardsButton: {
     alignItems: 'flex-start',

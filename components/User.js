@@ -15,20 +15,20 @@ import {
 const User = () => {
   return (
     <View style={styles.container}>
-        <TouchableOpacity style={styles.button} onPress={() => console.log('Button Pressed')}>
-        <Image
-          style={styles.buttonImage}
-          source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21',
-          }}
-        />
-      </TouchableOpacity>
-      <Image
-        style={styles.user}
-        source={{
-          uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4',
-        }}
-      />
+              <View style={styles.topContainer}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+            style={styles.topImage}
+            resizeMode="cover"
+          />
+        </View>
+        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+            style={styles.buttonImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
     </View>
   );
 };
@@ -41,6 +41,34 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Centra l'immagine orizzontalmente
     justifyContent: 'flex-start',
     top: -10,
+  },
+  topContainer: {
+    position: 'absolute',
+    width: width,
+    height: 190,
+    elevation: 1,
+    top: 0,
+
+  },
+  topImage: {
+    position: 'absolute',
+    resizeMode: 'cover',
+    width: width,
+    height: '100%',
+
+  },
+
+  button: {
+    zIndex: 50,
+    left: 350,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonImage: {
+    width: '100%',
+    height: '100%',
   },
   user: {
     width: 100, // Larghezza dell'immagine

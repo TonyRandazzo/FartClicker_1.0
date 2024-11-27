@@ -20,8 +20,6 @@ import Shop from './components/Shop';
 import Home from './components/Home';
 import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
-import User from './components/User';
-
 const { width, height } = Dimensions.get('window');
 
 
@@ -161,9 +159,9 @@ const App = () => {
         duration: 500,
         useNativeDriver: true,
       }).start(() => {
-        setIsVisible(false); 
-        goToPage(2); 
-      }); 
+        setIsVisible(false);
+        goToPage(2);
+      });
     });
 
     return () => animation.stop(); // Ferma l'animazione in caso di smontaggio del componente
@@ -299,8 +297,8 @@ const App = () => {
     setSelectedText(randomText);
   }, []);
 
-if (isVisible) {
-  return (
+  if (isVisible) {
+    return (
       <Animated.View
         style={[
           styles.fullScreenButtonContainer,
@@ -357,33 +355,19 @@ if (isVisible) {
           </Animated.View>
         </View>
       </Animated.View>
-  )
-}
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" hidden={true} />
-      <SafeAreaView style={styles.topContainer}>
-        <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
-          style={styles.topImage}
-          resizeMode="cover"
-        />
-        <TouchableOpacity style={styles.button} activeOpacity={1}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
-            style={styles.buttonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </SafeAreaView>
-      {currentIndex === 2 && <User />}
+      {currentIndex === 2}
       <Animated.FlatList
         data={pages}
         renderItem={({ item, index }) => (
-          <View style={styles.pageContainer}>
+          <SafeAreaView style={styles.pageContainer}>
             {item}
-          </View>
+          </SafeAreaView>
         )}
         horizontal
         pagingEnabled
@@ -406,12 +390,12 @@ if (isVisible) {
         scrollEventThrottle={16}
         scrollEnabled={false}
       />
-      <View style={styles.bottomContainer}>
+      <SafeAreaView style={styles.bottomContainer}>
         <Image
           source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustra%20inferiore.png?alt=media&token=5222eb2e-a57a-487e-99d1-6eb0a3f59644' }}
           style={styles.bottomImage}
         />
-      </View>
+      </SafeAreaView>
       <SafeAreaView style={styles.indicatorContainer}>
         {imageUrls.map((url, index) => {
           const scale = scaleValues[index];
@@ -440,7 +424,7 @@ if (isVisible) {
         <Animated.View
           style={[
             styles.fadeScreen,
-            { opacity: fadeInOpacity }, // Controlla l'opacità della schermata di fade
+            { opacity: fadeInOpacity },
           ]}
         />
       )}
@@ -452,6 +436,7 @@ const styles = ScaledSheet.create({
   container: {
     flex: 1,
   },
+
   titolo: {
     width: 120,
     height: 120,
@@ -459,13 +444,17 @@ const styles = ScaledSheet.create({
     alignItems: 'flex-start',
     top: 0,
   },
+
   gameText: {
-    width: '90%',
+    width: '80%',
     top: 200,
-    fontSize: 24,
+    fontSize: 18,
     fontFamily: 'LuckiestGuy-8jyD',
     color: 'white',
-    textAlign: 'center',
+    textAlign: 'justify',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
   },
   fadeScreen: {
     position: 'absolute',
@@ -521,10 +510,10 @@ const styles = ScaledSheet.create({
     height: '100%',
   },
   progressBarContainer: {
-    width: '90%',
+    width: '100%',
+    bottom: 0,
     height: 25,
-    top: 300,
-    position: 'relative',
+    position: 'absolute',
   },
   progressBarBackground: {
     position: 'absolute',
@@ -539,39 +528,7 @@ const styles = ScaledSheet.create({
     width: '100%',
     height: '100%',
   },
-  topContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 50,
-    elevation: 5,
-  },
-  topImage: {
-    position: 'absolute',
-    resizeMode: 'contain',
-    width: width,
-    height: 200,
-  },
-  flatListContainer: {
-    position: 'absolute',
-    zIndex: -1, // Lower z-index to push it behind other elements
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  button: {
-    position: 'absolute',
-    right: 16,
-    top: '30%',
-    width: 50,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonImage: {
-    width: '100%',
-    height: '100%',
-  },
+
   page: {
     width: width,
     height: height,

@@ -103,6 +103,20 @@ const shopItemImages = [
     };
     return (
           <View style={styles.page}>
+                    <View style={styles.topContainer}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+            style={styles.topImage}
+            resizeMode="cover"
+          />
+        </View>
+        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+            style={styles.buttonImage}
+            resizeMode="contain"
+          />
+        </TouchableOpacity>
             {renderBackground()}
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
@@ -176,6 +190,35 @@ const shopItemImages = [
       right:  200, // Riduci la distanza per schermi più piccoli
       bottom: 500,
     },
+    topContainer: {
+      position: 'absolute',
+      width: width,
+      height: 190,
+      elevation: 1,
+      top: 0,
+      zIndex: 1,
+  
+    },
+    topImage: {
+      position: 'absolute',
+      resizeMode: 'cover',
+      width: width,
+      height: '100%',
+  
+    },
+  
+    button: {
+      zIndex: 50,
+      left: 350,
+      width: 50,
+      height: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    buttonImage: {
+      width: '100%',
+      height: '100%',
+    },
     animatedBackgroundImage: {
       width:  700, // Immagine più piccola su schermi più piccoli
       height:  700,
@@ -191,29 +234,7 @@ const shopItemImages = [
       bottom: 0,
       right: 0,
     },
-    topContainer: {
-      position: 'relative',
-      width: '100%',
-      height: 60, // Riduci l'altezza per schermi più piccoli
-    },
-    topImage: {
-      width: '100%',
-      height: '100%',
-    },
-    button: {
-      position: 'absolute',
-      right: 16,
-      top: '50%',
-      transform: [{ translateY: -25 }],
-      width:  50, // Riduci la larghezza e l'altezza per schermi più piccoli
-      height:  50,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    buttonImage: {
-      width: '100%',
-      height: '100%',
-    },
+
     page: {
       width: width,
       height: height,
