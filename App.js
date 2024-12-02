@@ -68,7 +68,7 @@ const App = () => {
   const [activeIndex, setActiveIndex] = useState(2);
 
   const scrollX = useRef(new Animated.Value(0)).current;
-  const scaleValues = useRef(imageUrls.map(() => new Animated.Value(1))).current;
+  const scaleValues = useRef(imageUrls.map(() => new Animated.Value(0.8))).current;
   const translateYValues = useRef(imageUrls.map(() => new Animated.Value(0))).current;
   const fadeOutOpacity = useRef(new Animated.Value(1)).current;
   const fadeInOpacity = useRef(new Animated.Value(0)).current;
@@ -209,7 +209,7 @@ const App = () => {
       return Animated.sequence([
         Animated.parallel([
           Animated.timing(scaleValues[index], {
-            toValue: isSelected ? 1.6 : 1,
+            toValue: isSelected ? 1.3 : 0.9,
             duration: 200,
             useNativeDriver: true,
           }),
@@ -220,16 +220,6 @@ const App = () => {
             useNativeDriver: true,
           }),
         ]),
-        Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.3 : 1,
-          duration: 100,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scaleValues[index], {
-          toValue: isSelected ? 1.6 : 1,
-          duration: 100,
-          useNativeDriver: true,
-        }),
       ]);
     });
 
@@ -539,16 +529,20 @@ const styles = ScaledSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    width: 70,
-    height: 122,
-    elevation: 5,
     bottom: 0,
-  },
-  bottomImage: {
-    position: 'absolute',
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     resizeMode: 'cover',
-    width: width,
-    height: 122,
+    zIndex: 5,
+    height: height * 0.14, // 15% dell'altezza dello schermo
+  },
+  
+  bottomImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   rectangle: {
     width: '400vh',
@@ -581,7 +575,7 @@ const styles = ScaledSheet.create({
   indicatorContainer: {
     elevation: 5,
     position: 'absolute',
-    bottom: 20,
+    bottom: 30,
     flexDirection: 'row',
     justifyContent: 'center',
     width: '100%',

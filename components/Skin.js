@@ -16,6 +16,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import Video from 'react-native-video';
 import VideoCache from './VideoCache';
 import RNFS from 'react-native-fs';
+import HUD from './HUD'
 
 
 class ImageCache {
@@ -173,6 +174,7 @@ const Skin = () => {
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin%20(1).png?alt=media&token=a217bcd9-ea08-48b5-88af-204cc6caebf9',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%205.png?alt=media&token=efb61365-c3b8-4cd5-8e29-fa7869ca6433',
   ];
 
@@ -288,20 +290,7 @@ const Skin = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-              <View style={styles.topContainer}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
-            style={styles.topImage}
-            resizeMode="cover"
-          />
-        </View>
-        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
-            style={styles.buttonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+      <View style={styles.mainContainer}>
       <View style={styles.topButtonsContainer}>
         <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
           <Text style={styles.testo}>{currentIndex + 1}</Text>
@@ -323,8 +312,8 @@ const Skin = () => {
 
       <View style={styles.imageButtonContainer}>
         <Image
-          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin.png?alt=media&token=35253d9d-7e56-4a86-802f-6a36a06d1085') }}
-          style={styles.topImage}
+          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin%20(1).png?alt=media&token=a217bcd9-ea08-48b5-88af-204cc6caebf9') }}
+          style={styles.balaustra}
         />
         <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
           <Image
@@ -368,6 +357,9 @@ const Skin = () => {
           </View>
         )}
       </ScrollView>
+      </View>
+      <HUD/>
+
     </ImageBackground>
   );
 };
@@ -375,6 +367,10 @@ const Skin = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  mainContainer: {
+    top: 80,
+    height: height,
   },
   topContainer: {
     position: 'absolute',
@@ -470,7 +466,7 @@ const styles = StyleSheet.create({
   imageButtonContainer: {
     position: 'relative',
     width: '100%',
-    height: 200, // Modifica l'altezza per schermi medi
+    height: 165, // Modifica l'altezza per schermi medi
     alignItems: 'center',
   },
   topButtonsContainer: {
@@ -498,8 +494,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
     padding: 4,
   },
+  balaustra: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: width,
+    height: '100%',
+  },
   backgroundImage: {
-    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
     height: getSize(0, 0, 170),
     position: 'absolute',
@@ -510,7 +511,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
     height: getSize(0, 0, 170),
   },

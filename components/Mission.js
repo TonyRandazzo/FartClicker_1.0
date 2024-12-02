@@ -13,6 +13,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import HUD from './HUD'
+
 const { width, height } = Dimensions.get('window');
 // Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
@@ -100,84 +102,74 @@ const Mission = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-              <View style={styles.topContainer}>
+      <View style={styles.mainContainer}>
+        <View style={styles.topButtonsContainer}>
+          <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
+            <Text style={styles.testo}>{currentIndex + 1}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
+            <Text style={styles.topButtonText}>Mission</Text>
+            {activeButton === 'missions' && (
+              <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+            <Text style={styles.topButtonText}>Achievement</Text>
+            {activeButton === 'achievements' && (
+              <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.imageButtonContainer}>
           <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
-            style={styles.topImage}
-            resizeMode="cover"
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni%20(1).png?alt=media&token=34fa862d-1de6-4c83-9845-b3f242c3dfd7' }}
+            style={styles.balaustra}
           />
         </View>
-        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
-            style={styles.buttonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      <View style={styles.topButtonsContainer}>
-        <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
-          <Text style={styles.testo}>{currentIndex + 1}</Text>
-        </TouchableOpacity>          
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
-          <Text style={styles.topButtonText}>Mission</Text>
+
+        <View style={styles.missionContent}>
           {activeButton === 'missions' && (
-            <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
+            <View style={styles.missionContainer}>
+              {missionItems.map((item) => (
+                <View key={item.id} style={styles.missionWrapper}>
+                  <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
+                    <View style={styles.textContainer}>
+                      <Text style={styles.missionName}>{item.name}</Text>
+                      <Text style={styles.missionDescription}>{item.description}</Text>
+                      <Text style={styles.missionDetails}>Dettagli</Text>
+                    </View>
+                    <ProgressBar progress={item.progress} total={item.total} />
+                  </ImageBackground>
+                </View>
+              ))}
+            </View>
           )}
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
-          <Text style={styles.topButtonText}>Achievement</Text>
           {activeButton === 'achievements' && (
-            <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
+            <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
+              {achievementItems.map((item) => (
+                <View key={item.id} style={styles.achievementWrapper}>
+                  <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
+                    <View style={styles.achievementTextContainer}>
+                      <Text style={styles.achievementName}>{item.title}</Text>
+                      <Text style={styles.achievementDescription}>{item.description}</Text>
+                      <Text style={styles.achievementDetails}>More Info</Text>
+                    </View>
+                    <View style={styles.achievementProgressBarContainer}>
+                      <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
+                      <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
+              ))}
+            </ScrollView>
           )}
-        </TouchableOpacity>
+        </View>
       </View>
+      <HUD />
 
-      <View style={styles.imageButtonContainer}>
-        <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni.png?alt=media&token=b40d4936-da6c-4863-97b8-6247e33f3969' }}
-          style={styles.topImage}
-        />
-      </View>
-
-      <View style={styles.missionContent}>
-        {activeButton === 'missions' && (
-          <View style={styles.missionContainer}>
-            {missionItems.map((item) => (
-              <View key={item.id} style={styles.missionWrapper}>
-                <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
-                  <View style={styles.textContainer}>
-                    <Text style={styles.missionName}>{item.name}</Text>
-                    <Text style={styles.missionDescription}>{item.description}</Text>
-                    <Text style={styles.missionDetails}>Dettagli</Text>
-                  </View>
-                  <ProgressBar progress={item.progress} total={item.total} />
-                </ImageBackground>
-              </View>
-            ))}
-          </View>
-        )}
-
-        {activeButton === 'achievements' && (
-          <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
-            {achievementItems.map((item) => (
-              <View key={item.id} style={styles.achievementWrapper}>
-                <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
-                  <View style={styles.achievementTextContainer}>
-                    <Text style={styles.achievementName}>{item.title}</Text>
-                    <Text style={styles.achievementDescription}>{item.description}</Text>
-                    <Text style={styles.achievementDetails}>More Info</Text>
-                  </View>
-                  <View style={styles.achievementProgressBarContainer}>
-                    <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
-                    <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
-                  </View>
-                </ImageBackground>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-      </View>
     </ImageBackground>
   );
 };
@@ -185,6 +177,10 @@ const Mission = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  mainContainer: {
+    height: height,
+    top: 80,
   },
   topContainer: {
     position: 'absolute',
@@ -244,8 +240,8 @@ const styles = StyleSheet.create({
   },
   imageButtonContainer: {
     position: 'relative',
-    width: '100%', // Larghezza totale
-    height: 200, // Imposta un'altezza desiderata per il contenitore
+    width: '100%',
+    height: 150, // Modifica l'altezza per schermi medi
     alignItems: 'center',
   },
   topButtonsContainer: {
@@ -346,11 +342,16 @@ const styles = StyleSheet.create({
   achievementTitle: {
     marginTop: 5,
   },
+  balaustra: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    width: width,
+    height: '100%',
+  },
   backgroundImageMission: {
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
     height: getSize(0, 0, 170),
   },
@@ -358,7 +359,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    bottom: getSize(0, 0, -60),
     width: getSize(0, 0, 152),
     height: getSize(0, 0, 170),
   },

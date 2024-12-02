@@ -12,23 +12,12 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
+import HUD from './HUD'
+
 const User = () => {
   return (
-    <View style={styles.container}>
-              <View style={styles.topContainer}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
-            style={styles.topImage}
-            resizeMode="cover"
-          />
-        </View>
-        <TouchableOpacity style={styles.button} activeOpacity={1} onPress={() => alert('Halloween!')}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
-            style={styles.buttonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+    <View>
+      <HUD/>
     </View>
   );
 };
