@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         height: 190,
         elevation: 10,
         top: 0,
-        zIndex: 10,
+        zIndex: 11,
       },
       topImage: {
         position: 'absolute',

@@ -436,7 +436,12 @@ const styles = ScaledSheet.create({
   },
 
   gameText: {
-    width: '80%',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    borderRadius: 10,
+    borderColor: '#87CEFA',
+    borderWidth: 5,
+    padding: 20,
+    width: '75%',
     top: 200,
     fontSize: 18,
     fontFamily: 'LuckiestGuy-8jyD',
@@ -535,7 +540,8 @@ const styles = ScaledSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     resizeMode: 'cover',
-    zIndex: 5,
+    elevation: 5,
+    zIndex: 11,
     height: height * 0.14, // 15% dell'altezza dello schermo
   },
   

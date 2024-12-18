@@ -12,71 +12,288 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
+import { ScaledSheet } from 'react-native-size-matters';
 import HUD from './HUD'
+// Ottieni la larghezza e l'altezza del dispositivo
+const { width, height } = Dimensions.get('window');
+// Calcola la diagonale dello schermo (in pollici)
+const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
-const User = () => {
+// Definisci i range per piccoli, medi e grandi schermi
+const isSmallScreen = diagonal >= 5 && diagonal < 6;
+const isMediumScreen = diagonal > 6 && diagonal < 7;
+const isLargeScreen = diagonal > 7.5;
+
+const getSize = (small, medium, large) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  if (isLargeScreen) return large;
+};
+
+const imageBehindSwitchUser = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
+const imageBehindSwitchrecord = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
+
+const User = ({ goBack }) => {
+  const [activeButton, setActiveButton] = useState('records');
+
+  const handleSwitchUsers = () => setActiveButton('Users');
+  const handleSwitchrecords = () => setActiveButton('records');
+
   return (
-    <View>
-      <HUD/>
-    </View>
+    <ImageBackground
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e' }}
+      style={styles.page1}
+      resizeMode="cover"
+    >
+      <View style={styles.container}>
+        <View style={styles.topButtonsContainer}>
+
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchrecords}>
+            <Text style={styles.topButtonText}>record</Text>
+            {activeButton === 'records' && (
+              <Image source={{ uri: imageBehindSwitchrecord }} style={styles.backgroundImagerecord} />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchUsers}>
+            <Text style={styles.topButtonText}>User</Text>
+            {activeButton === 'Users' && (
+              <Image source={{ uri: imageBehindSwitchUser }} style={styles.backgroundImageUser} />
+            )}
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+        activeOpacity={1}
+          style={styles.backButton}
+          onPress={goBack}
+        >
+          <Image
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
+            style={styles.backButtonImage}
+          />
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        {activeButton === 'records' && (
+          <View style={styles.content}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
+                style={styles.characterImage}
+                resizeMode="contain"
+              />
+              <Image
+                source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7' }}
+                style={styles.ombra}
+                resizeMode="contain"
+              />
+            </View>
+
+            <ScrollView
+              style={styles.scrollContainer}
+              showsVerticalScrollIndicator={false}
+            >
+              {Array(15).fill(0).map((_, index) => (
+                <View key={index} style={styles.card}>
+                  <Text style={styles.cardText}>Record {index + 1}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+        {activeButton === 'Users' && (
+          <View style={styles.container}>
+            <View style={styles.UserScreen}>
+              <View style={styles.avatar}>
+                <Image
+                  source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
+                  style={styles.characterImage}
+                  resizeMode="contain"
+                />
+                <Image
+                  source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7' }}
+                  style={styles.ombra}
+                  resizeMode="contain"
+                />
+              </View>
+            </View>
+            <View style={styles.settings}>
+              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
+                <Text style={styles.settingsText}> Settings</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
+                <Text style={styles.settingsText}> Settings</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
+                <Text style={styles.settingsText}> Settings</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+      </View>
+      <HUD />
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    zIndex: 5,
-    elevation: 5,
-    flex: 1, // Rende il contenitore a schermo intero
-    alignItems: 'center', // Centra l'immagine orizzontalmente
-    justifyContent: 'flex-start',
-    top: -10,
+  settingsText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontFamily: 'LuckiestGuy-8jyD',
+    textShadowColor: 'black',
+    padding: 8,
   },
-  topContainer: {
-    position: 'absolute',
+  settingsButton: {
+    margin: 8,
+    alignSelf: 'center',
+    backgroundColor: 'orange',
+    width: '90%',
+    borderColor: 'gold',
+    borderWidth: 5,
+  },
+  settings: {
+    paddingTop: 7,
+    borderRadius: 10,
+    borderColor: 'orange',
+    borderWidth: 5,
+    backgroundColor: '#FF8C00',
     width: width,
-    height: 190,
-    elevation: 1,
+    height: height,
+  },
+  UserScreen: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '45%',
+  },
+  topButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    zIndex: 51,
+    position: 'absolute',
+    top: 20,
+  },
+
+  topButton: {
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topButtonText: {
     top: 0,
-
+    color: '#FFF',
+    fontSize: 25,
+    fontFamily: 'LuckiestGuy-8jyD',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    padding: 4,
   },
-  topImage: {
+  backgroundImageUser: {
     position: 'absolute',
-    resizeMode: 'cover',
-    width: width,
-    height: '100%',
-
+    resizeMode: 'contain',
+    zIndex: -1,
+    width: getSize(0, 0, 152),
+    height: getSize(0, 0, 170),
   },
-
-  button: {
+  backgroundImagerecord: {
+    position: 'absolute',
+    resizeMode: 'contain',
+    zIndex: -1,
+    width: getSize(0, 0, 152),
+    height: getSize(0, 0, 170),
+  },
+  page1: {
+    width: width,
+    height: height,
+  },
+  container: {
+    top: 80,
+    width: width,
+    height: height,
+    flex: 1,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 100,
+    left: 20,
     zIndex: 50,
-    left: 350,
-    width: 50,
-    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  characterImage: {
+    position: 'absolute',
+    zIndex: 1,
+    width: 250, // Puoi regolare dinamicamente se necessario
+    height: 250,
+  },
+  ombra: {
+    position: 'relative', // Sovrappone l'immagine sotto
+    width: 500,
+    height: 450,
+  },
+  backButtonImage: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
+  },
+  backButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    marginLeft: 5,
+  },
+  content: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  avatar: {
+    top: 20,
+    width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
   },
-  buttonImage: {
+  imageContainer: {
+    width: '60%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  image: {
     width: '100%',
-    height: '100%',
+    height: undefined,
+    aspectRatio: 1,
+    borderRadius: 10,
   },
-  user: {
-    width: 100, // Larghezza dell'immagine
-    height: 100, // Altezza dell'immagine
-    resizeMode: 'contain', // Assicura che l'immagine mantenga il rapporto originale
+  scrollContainer: {
+    zIndex: 11,
+    elevation: 11,
+    flex: 1,
+    padding: 10,
+    top: '10%',
+    height: '73%',
   },
-  button: {
-    position: 'absolute', 
-    width: 95, 
-    height: 95, 
-    borderRadius: 360, 
-    justifyContent: 'center', 
-    alignItems: 'center', 
+  card: {
+    backgroundColor: 'white',
+    padding: 15,
+    marginBottom: 20,
+    right: 0,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  buttonImage: {
-    borderRadius: 360, 
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover', 
+  cardText: {
+    fontSize: 16,
+    color: '#333',
   },
 });
 

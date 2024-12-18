@@ -123,10 +123,6 @@ const Mission = () => {
         </View>
 
         <View style={styles.imageButtonContainer}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fsepar%C3%A9%20schermata%20missioni%20(1).png?alt=media&token=34fa862d-1de6-4c83-9845-b3f242c3dfd7' }}
-            style={styles.balaustra}
-          />
         </View>
 
         <View style={styles.missionContent}>
@@ -248,7 +244,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    zIndex: 2,
+    zIndex: 51,
     position: 'absolute',
     top: 20,
   },

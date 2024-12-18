@@ -15,7 +15,7 @@ import {
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 import HUD from './HUD';
-
+import User from './User'
 
 // Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
@@ -115,6 +115,7 @@ const images = [
 
 
 const Home = () => {
+  const [activeComponent, setActiveComponent] = useState('Home'); 
   const rewardsScaleAnim = useRef(new Animated.Value(1)).current;
   const itemsScaleAnim = useRef(new Animated.Value(1)).current;
   const newsScaleAnim = useRef(new Animated.Value(1)).current;
@@ -127,6 +128,14 @@ const Home = () => {
   ).current;
   const checkerboardOpacity = useRef(new Animated.Value(0)).current;
   const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
+  const handleButtonUserPress = () => {
+    setActiveComponent('User'); // Cambia lo stato per mostrare il componente User
+  };
+
+  const handleBackToHome = () => {
+    setActiveComponent('Home'); // Cambia lo stato per tornare al componente Home
+  };
+
 
   useEffect(() => {
     // Configura l'animazione per la scala
@@ -251,7 +260,9 @@ const Home = () => {
   const getCachedImage = (uri) => {
     return cachedImagePaths[uri] || uri;
   };
-
+  if (activeComponent === 'User') {
+    return <User goBack={handleBackToHome} />; // Mostra il componente User con il callback per tornare indietro
+  }
   return (
     <ImageBackground
       source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e') }}
@@ -292,7 +303,7 @@ const Home = () => {
             <TouchableOpacity
               style={styles.buttonUser}
               activeOpacity={1}
-              onPress={() => alert('Schermata utente')}
+              onPress={handleButtonUserPress}
             >
               <Image
                 source={{

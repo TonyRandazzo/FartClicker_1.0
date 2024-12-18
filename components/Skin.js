@@ -311,10 +311,6 @@ const Skin = () => {
       </View>
 
       <View style={styles.imageButtonContainer}>
-        <Image
-          source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin%20(1).png?alt=media&token=a217bcd9-ea08-48b5-88af-204cc6caebf9') }}
-          style={styles.balaustra}
-        />
         <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
           <Image
             source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
@@ -473,7 +469,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    zIndex: 2,
+    zIndex: 51,
     position: 'absolute',
     top: 20,
   },
@@ -553,7 +549,7 @@ const styles = StyleSheet.create({
   skinRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 50,
+    marginBottom: 90,
   },
   skinWrapper: {
     right: '3%',

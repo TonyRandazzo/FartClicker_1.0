@@ -97,7 +97,6 @@ const MapScreen = ({ toggleMapScreen }) => {
                 {item}
               </Text>
 
-              {/* Aggiungi due bottoni con immagini nere */}
               <View style={styles.ricompensaContainer}>
                 <View style={styles.ricompensa}>
                   <Image
@@ -130,7 +129,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
+containerContent: {
+  top: 100,
+},
   topContainer: {
     position: 'absolute',
     width: width,
@@ -351,6 +352,7 @@ const styles = StyleSheet.create({
     height: height,
   },
   itemImage: {
+    resizeMode: 'contain',
     width: '30%',
     height: '15%',
   },
