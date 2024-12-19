@@ -66,6 +66,10 @@ const App = () => {
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(2);
   const [activeIndex, setActiveIndex] = useState(2);
+  const block1Animation = useRef(new Animated.Value(0)).current;
+  const block2Animation = useRef(new Animated.Value(0)).current;
+  const block3Animation = useRef(new Animated.Value(0)).current;
+  const [transitionVisible, setTransitionVisible] = useState(false);
 
   const scrollX = useRef(new Animated.Value(0)).current;
   const scaleValues = useRef(imageUrls.map(() => new Animated.Value(0.8))).current;
@@ -78,15 +82,67 @@ const App = () => {
   const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
   const [isReady, setIsReady] = useState(false);
   const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
+
   const goToPage = (index) => {
     // Mostra la schermata di dissolvenza bianca prima di fare lo scroll
-    setFadeScreenVisible(true);
-    flatListRef.current?.scrollToIndex({ index, animated: false });
+    setFadeScreenVisible(true)
+    setTransitionVisible(true);
+
+    // Animazione dei blocchi che salgono
+    const upAnimation = Animated.parallel([
+      Animated.timing(block1Animation, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block2Animation, {
+        toValue: 1,
+        duration: 400,
+        delay: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block3Animation, {
+        toValue: 1,
+        duration: 400,
+        delay: 300,
+        useNativeDriver: true,
+      })
+    ]);
+
+    // Animazione dei blocchi che scendono
+    const downAnimation = Animated.parallel([
+      Animated.timing(block1Animation, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block2Animation, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block3Animation, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      })
+    ]);
+
+    // Sequenza completa
+    Animated.sequence([
+      upAnimation,
+      Animated.delay(500),
+      downAnimation
+    ]).start(() => {
+      setTransitionVisible(false);
+      flatListRef.current?.scrollToIndex({ index, animated: false });
+      setCurrentIndex(index);
+    }); flatListRef.current?.scrollToIndex({ index, animated: false });
 
     // Animazione di dissolvenza bianca
     Animated.timing(fadeInOpacity, {
       toValue: 1,
-      duration: 300,
+      duration: 500,
       useNativeDriver: true,
     }).start(() => {
       setTimeout(() => {
@@ -96,7 +152,7 @@ const App = () => {
         // Dopo che la schermata di dissolvenza è apparsa, la facciamo scomparire
         Animated.timing(fadeInOpacity, {
           toValue: 0,
-          duration: 300,
+          duration: 500,
           useNativeDriver: true,
         }).start(() => {
           setFadeScreenVisible(false);
@@ -418,11 +474,69 @@ const App = () => {
           ]}
         />
       )}
+      {transitionVisible && (
+        <View style={[styles.cascade]}>
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'red',
+                height: '70%',
+                transform: [{
+                  translateY: block1Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, 0]
+                  })
+                }],
+                zIndex: 3
+              }
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'yellow',
+                height: '20%',
+                transform: [{
+                  translateY: block2Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, -height * 0.7]
+                  })
+                }],
+                zIndex: 2
+              }
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'orange',
+                height: '10%',
+                transform: [{
+                  translateY: block3Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, -height * 0.9]
+                  })
+                }],
+                zIndex: 1
+              }
+            ]}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
 const styles = ScaledSheet.create({
+  animatedBlock: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
   container: {
     flex: 1,
   },
@@ -446,10 +560,20 @@ const styles = ScaledSheet.create({
     fontSize: 18,
     fontFamily: 'LuckiestGuy-8jyD',
     color: 'white',
-    textAlign: 'justify',
+    textAlign: 'center',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 1,
+  },
+  cascade: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: width,
+    height: height,
+    zIndex: 10, 
   },
   fadeScreen: {
     position: 'absolute',
@@ -544,7 +668,7 @@ const styles = ScaledSheet.create({
     zIndex: 11,
     height: height * 0.14, // 15% dell'altezza dello schermo
   },
-  
+
   bottomImage: {
     width: '100%',
     height: '100%',

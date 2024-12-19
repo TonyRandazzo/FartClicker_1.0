@@ -44,16 +44,16 @@ class ImageCache {
 
   static async getCachedImagePath(uri) {
     if (!uri) return null;
-    
+
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-  
+
     try {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
-  
+
       console.log(`Downloading image from: ${uri}`);
       await RNFS.downloadFile({
         fromUrl: uri,
@@ -61,7 +61,7 @@ class ImageCache {
         background: true,
         discretionary: true,
       }).promise;
-  
+
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
@@ -98,6 +98,7 @@ const getSize = (small, medium, large) => {
 
 const Skin = () => {
   const [activeButton, setActiveButton] = useState('skin');
+  const [visibleOptionsId, setVisibleOptionsId] = useState(false);
   const skinItemImages = {
     marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90',
     maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11',
@@ -291,70 +292,89 @@ const Skin = () => {
       resizeMode="cover"
     >
       <View style={styles.mainContainer}>
-      <View style={styles.topButtonsContainer}>
-        <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
-          <Text style={styles.testo}>{currentIndex + 1}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
-          <Text style={styles.topButtonText}>Skin</Text>
+        <View style={styles.topButtonsContainer}>
+          <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
+            <Text style={styles.testo}>{currentIndex + 1}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
+            <Text style={styles.topButtonText}>Skin</Text>
+            {activeButton === 'skin' && (
+              <Image source={{ uri: getCachedImage(imageBehindSwitchSkin) }} style={styles.backgroundImage} />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchComic}>
+            <Text style={styles.topButtonText}>Comic</Text>
+            {activeButton === 'comic' && (
+              <Image source={{ uri: getCachedImage(imageBehindSwitchComic) }} style={styles.backgroundImage2} />
+            )}
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.imageButtonContainer}>
+          <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
+            <Image
+              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
+              style={styles.buttonImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
           {activeButton === 'skin' && (
-            <Image source={{ uri: getCachedImage(imageBehindSwitchSkin)}} style={styles.backgroundImage} />
-          )}
-        </TouchableOpacity>
+            <View style={styles.skinContent}>
+              {Array(7).fill().map((_, rowIndex) => (
+                <View key={rowIndex} style={styles.skinRow}>
+                  {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
+                    <View key={item.id} style={styles.skinWrapper}>
+                      {renderBackground(item)}
+                      <TouchableOpacity style={styles.selection}
+                      activeOpacity={1}
+                        onPress={() =>
+                          setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))
+                        }></TouchableOpacity>
+                      <Text style={styles.nome}>{item.name}</Text>
+                      <Image source={{ uri: item.image }} style={styles.skinImage} />
+                      <Text style={styles.classe}>{item.class}</Text>
+                      <Image source={{ uri: item.rarity }} style={styles.rarity} />
+                      {visibleOptionsId === item.id && (
+                        <>
+                        <View style={styles.aura}></View>
+                        <View style={styles.optionsContainer}>
+                        <TouchableOpacity style={styles.optionButton}>
+                          <Text style={styles.optionText}>Select</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.optionButton}>
+                          <Text style={styles.optionText}>Info</Text>
+                        </TouchableOpacity>
+                      </View>
+                        </>
 
-        <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchComic}>
-          <Text style={styles.topButtonText}>Comic</Text>
+                      )}
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+          )}
+
           {activeButton === 'comic' && (
-            <Image source={{ uri: getCachedImage(imageBehindSwitchComic) }} style={styles.backgroundImage2} />
+            <View style={styles.comicContent}>
+              {comicItems.map((item) => (
+                <View key={item.id} style={styles.comicItem}>
+                  <Image source={{ uri: item.cover }} style={styles.comicCover} />
+                  <Text style={styles.comicTitle}>{item.title}</Text>
+                </View>
+              ))}
+            </View>
           )}
-        </TouchableOpacity>
+        </ScrollView>
       </View>
-
-      <View style={styles.imageButtonContainer}>
-        <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
-          <Image
-            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
-            style={styles.buttonImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {activeButton === 'skin' && (
-          <View style={styles.skinContent}>
-            {Array(7).fill().map((_, rowIndex) => (
-              <View key={rowIndex} style={styles.skinRow}>
-                {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
-                  <View key={item.id} style={styles.skinWrapper}>
-                    {renderBackground(item)}
-                    <Text style={styles.nome}>{item.name}</Text>
-                    <Image source={{ uri: item.image }} style={styles.skinImage} />
-                    <Text style={styles.classe}>{item.class}</Text>
-                    <Image source={{ uri: item.rarity }} style={styles.rarity} />
-                  </View>
-                ))}
-              </View>
-            ))}
-          </View>
-        )}
-
-        {activeButton === 'comic' && (
-          <View style={styles.comicContent}>
-            {comicItems.map((item) => (
-              <View key={item.id} style={styles.comicItem}>
-                <Image source={{ uri: item.cover }} style={styles.comicCover} />
-                <Text style={styles.comicTitle}>{item.title}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </ScrollView>
-      </View>
-      <HUD/>
+      <HUD />
 
     </ImageBackground>
   );
@@ -363,6 +383,40 @@ const Skin = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  aura:{
+    zIndex: -1,
+    left: '16%',
+    width: '95%', // Adatta la larghezza per schermi piccoli
+    height: '139%',
+    resizeMode: 'contain',
+    position: 'absolute',
+    backgroundColor: 'rgba(255, 255, 0, 0.5)', // Colore giallino opaco
+    borderColor: 'rgba(255, 255, 0, 0.3)', // Colore nero opaco per il bordo
+    borderWidth: 2, // Spessore del bordo
+    borderRadius: 2, // Angoli arrotondati (opzionale)
+  },
+  optionsContainer: {
+    left: '15%',
+    flexDirection: 'row',
+    marginTop: 5,
+    alignItems: 'center',
+  },
+  optionButton: {
+    backgroundColor: 'orange', // Colore di sfondo del pulsante
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderColor: 'white',
+    borderWidth: 2,
+  },
+  optionText: {
+    fontSize: 12,
+    color: 'white', // Colore del testo
+    fontFamily: 'LuckiestGuy-8jyD',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 1,
+    textAlign: 'center',
   },
   mainContainer: {
     top: 80,
@@ -561,6 +615,15 @@ const styles = StyleSheet.create({
     height: '139%',
     resizeMode: 'contain',
     position: 'absolute',
+  },
+  selection: {
+    zIndex: 5,
+    left: '16%',
+    width: '95%', // Adatta la larghezza per schermi piccoli
+    height: '139%',
+    resizeMode: 'contain',
+    position: 'absolute',
+    backgroundColor: 'transparent',
   },
   sfondi: {
     position: 'absolute',
