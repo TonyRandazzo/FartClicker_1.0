@@ -92,19 +92,19 @@ const App = () => {
     const upAnimation = Animated.parallel([
       Animated.timing(block1Animation, {
         toValue: 1,
-        duration: 400,
+        duration: 200,
         useNativeDriver: true,
       }),
       Animated.timing(block2Animation, {
         toValue: 1,
-        duration: 400,
-        delay: 150,
+        duration: 200,
+        delay: 100,
         useNativeDriver: true,
       }),
       Animated.timing(block3Animation, {
         toValue: 1,
-        duration: 400,
-        delay: 300,
+        duration: 200,
+        delay: 150,
         useNativeDriver: true,
       })
     ]);

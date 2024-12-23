@@ -171,7 +171,7 @@ const Skin = () => {
     cover: 'https://via.placeholder.com/150x200'
   }));
   const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%201.png?alt=media&token=666a1520-3005-493c-9de6-ba1b93297cc5',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
@@ -386,18 +386,19 @@ const styles = StyleSheet.create({
   },
   aura:{
     zIndex: -1,
-    left: '16%',
-    width: '95%', // Adatta la larghezza per schermi piccoli
+    top: '10%',
+    left: '18%',
+    width: '90%', // Adatta la larghezza per schermi piccoli
     height: '139%',
     resizeMode: 'contain',
     position: 'absolute',
-    backgroundColor: 'rgba(255, 255, 0, 0.5)', // Colore giallino opaco
-    borderColor: 'rgba(255, 255, 0, 0.3)', // Colore nero opaco per il bordo
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Colore giallino opaco
+    borderColor: 'rgba(255, 255, 255, 0.3)', // Colore nero opaco per il bordo
     borderWidth: 2, // Spessore del bordo
     borderRadius: 2, // Angoli arrotondati (opzionale)
   },
   optionsContainer: {
-    left: '15%',
+    left: '19%',
     flexDirection: 'row',
     marginTop: 5,
     alignItems: 'center',
@@ -410,7 +411,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   optionText: {
-    fontSize: 12,
+    fontSize: 10,
     color: 'white', // Colore del testo
     fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
