@@ -17,6 +17,7 @@ import Video from 'react-native-video';
 import VideoCache from './VideoCache';
 import RNFS from 'react-native-fs';
 import HUD from './HUD'
+import Info from './Info';
 
 
 class ImageCache {
@@ -65,8 +66,8 @@ class ImageCache {
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to cache image: ${uri}`, error);
+    } catch {
+      
       return uri;
     }
   }
@@ -97,6 +98,7 @@ const getSize = (small, medium, large) => {
 };
 
 const Skin = () => {
+  const [switchComponent, setSwitchComponent] = useState('Select')
   const [activeButton, setActiveButton] = useState('skin');
   const [visibleOptionsId, setVisibleOptionsId] = useState(false);
   const skinItemImages = {
@@ -183,6 +185,14 @@ const Skin = () => {
 
   const [cachedImagePaths, setCachedImagePaths] = useState({});
   const [cachedVideoPaths, setCachedVideoPaths] = useState({});
+
+  const handleInfoPress = () => {
+    setSwitchComponent('Info'); // Cambia lo stato per mostrare il componente User
+  };
+
+  const handleSelectPress = () => {
+    setSwitchComponent('Select'); // Cambia lo stato per tornare al componente Home
+  };
 
   // Initialize caches when component mounts
   useEffect(() => {
@@ -283,7 +293,9 @@ const Skin = () => {
   const handleSwitchSkin = () => setActiveButton('skin');
   const handleSwitchComic = () => setActiveButton('comic');
 
-
+  if (switchComponent === 'Info') {
+    return <Info goBack={handleSelectPress} />; // Mostra il componente User con il callback per tornare indietro
+  }
 
   return (
     <ImageBackground
@@ -348,7 +360,7 @@ const Skin = () => {
                         <TouchableOpacity style={styles.optionButton}>
                           <Text style={styles.optionText}>Select</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton}>
+                        <TouchableOpacity style={styles.optionButton} onPress={handleInfoPress}>
                           <Text style={styles.optionText}>Info</Text>
                         </TouchableOpacity>
                       </View>
@@ -386,7 +398,7 @@ const styles = StyleSheet.create({
   },
   aura:{
     zIndex: -1,
-    top: '10%',
+    top: '5%',
     left: '18%',
     width: '90%', // Adatta la larghezza per schermi piccoli
     height: '139%',

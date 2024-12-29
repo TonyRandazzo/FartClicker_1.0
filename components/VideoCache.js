@@ -50,7 +50,7 @@ class VideoCache {
       }).promise;
 
       return filePath;
-    } catch (error) {
+    } catch{
       console.error('Error caching video:', error);
       return url; 
     }
@@ -63,7 +63,7 @@ class VideoCache {
         return this.getCacheFilePath(url);
       }
       return await this.cacheVideo(url);
-    } catch (error) {
+    } catch{
       console.error('Error getting cached video:', error);
       return url; 
     }

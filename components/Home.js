@@ -79,8 +79,8 @@ class ImageCache {
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to cache image: ${uri}`, error);
+    } catch {
+      
       return uri;
     }
   }
