@@ -16,6 +16,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 import HUD from './HUD';
 import User from './User'
+import Gameplay from './Gameplay';
 
 // Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
@@ -80,7 +81,7 @@ class ImageCache {
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch {
-      
+
       return uri;
     }
   }
@@ -115,12 +116,13 @@ const images = [
 
 
 const Home = () => {
-  const [activeComponent, setActiveComponent] = useState('Home'); 
+  const [activeComponent, setActiveComponent] = useState('Home');
   const rewardsScaleAnim = useRef(new Animated.Value(1)).current;
   const itemsScaleAnim = useRef(new Animated.Value(1)).current;
   const newsScaleAnim = useRef(new Animated.Value(1)).current;
   const playScaleAnim = useRef(new Animated.Value(1)).current;
   const pauseScaleAnim = useRef(new Animated.Value(1)).current;
+  const [transitionVisible, setTransitionVisible] = useState(false);
   const passiveScaleAnim = useRef(new Animated.Value(1)).current;
   const impulsoOpacity = useRef(new Animated.Value(1)).current;
   const opacityValues = useRef(
@@ -135,6 +137,41 @@ const Home = () => {
   const handleBackToHome = () => {
     setActiveComponent('Home'); // Cambia lo stato per tornare al componente Home
   };
+  const block1Animation = useRef(new Animated.Value(0)).current;
+  const block2Animation = useRef(new Animated.Value(0)).current;
+  const block3Animation = useRef(new Animated.Value(0)).current;
+
+  const handlePlayPress = () => {
+    setTransitionVisible(true);
+
+    // Start the transition animation
+    const upAnimation = Animated.parallel([
+      Animated.timing(block1Animation, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block2Animation, {
+        toValue: 1,
+        duration: 200,
+        delay: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(block3Animation, {
+        toValue: 1,
+        duration: 200,
+        delay: 150,
+        useNativeDriver: true,
+      })
+    ]);
+
+    upAnimation.start(() => {
+      // After animation completes, navigate to the game component
+      setActiveComponent('Gameplay');
+    });
+  };
+
+
 
 
   useEffect(() => {
@@ -260,8 +297,13 @@ const Home = () => {
   const getCachedImage = (uri) => {
     return cachedImagePaths[uri] || uri;
   };
+  // Render different components based on activeComponent
   if (activeComponent === 'User') {
-    return <User goBack={handleBackToHome} />; // Mostra il componente User con il callback per tornare indietro
+    return <User goBack={handleBackToHome} />;
+  }
+
+  if (activeComponent === 'Gameplay') {
+    return <Gameplay />; // Your game component
   }
   return (
     <ImageBackground
@@ -284,7 +326,7 @@ const Home = () => {
           resizeMode="repeat"
         />
       </SafeAreaView>
-          <HUD/>
+      <HUD />
       <View style={styles.mainContainer}>
         <Animated.Image
           source={{
@@ -368,15 +410,73 @@ const Home = () => {
             resizeMode="contain"
           />
         </View>
-        <TouchableOpacity style={styles.playButton} activeOpacity={1} onPressIn={() => bounceAnimation(playScaleAnim)} >
+        <TouchableOpacity style={styles.playButton}
+          activeOpacity={1}
+          onPressIn={() => {
+            bounceAnimation(playScaleAnim);
+            handlePlayPress();
+          }} >
           <Animated.Image
             source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
           />
-          <Text style={styles.playButtonText} activeOpacity={1} onPressIn={bounceAnimation} >Play</Text>
+          <Text style={styles.playButtonText}>
+            Play
+          </Text>
         </TouchableOpacity>
       </View>
-
+      {transitionVisible && (
+        <View style={[styles.cascade]}>
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'red',
+                height: '70%',
+                transform: [{
+                  translateY: block1Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, 0]
+                  })
+                }],
+                zIndex: 3
+              }
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'yellow',
+                height: '20%',
+                transform: [{
+                  translateY: block2Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, -height * 0.7]
+                  })
+                }],
+                zIndex: 2
+              }
+            ]}
+          />
+          <Animated.View
+            style={[
+              styles.animatedBlock,
+              {
+                backgroundColor: 'orange',
+                height: '10%',
+                transform: [{
+                  translateY: block3Animation.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [height, -height * 0.9]
+                  })
+                }],
+                zIndex: 1
+              }
+            ]}
+          />
+        </View>
+      )}
     </ImageBackground>
   );
 };

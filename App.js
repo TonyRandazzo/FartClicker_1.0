@@ -711,9 +711,9 @@ const styles = ScaledSheet.create({
     width: '100%',
   },
   indicator: {
-    width: 60,
-    height: 60,
-    marginHorizontal: 11,
+    width: 58,
+    height: 58,
+    marginHorizontal: 10,
   },
   buttonContainer: {
     paddingRight: 0,

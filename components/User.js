@@ -36,7 +36,7 @@ const imageBehindSwitchrecord = 'https://firebasestorage.googleapis.com/v0/b/far
 const User = ({ goBack }) => {
   const [activeButton, setActiveButton] = useState('records');
 
-  const handleSwitchUsers = () => setActiveButton('Users');
+  const handleSwitchAccount = () => setActiveButton('Account');
   const handleSwitchrecords = () => setActiveButton('records');
 
   return (
@@ -55,9 +55,9 @@ const User = ({ goBack }) => {
             )}
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchUsers}>
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAccount}>
             <Text style={styles.topButtonText}>User</Text>
-            {activeButton === 'Users' && (
+            {activeButton === 'Account' && (
               <Image source={{ uri: imageBehindSwitchUser }} style={styles.backgroundImageUser} />
             )}
           </TouchableOpacity>
@@ -100,9 +100,9 @@ const User = ({ goBack }) => {
             </ScrollView>
           </View>
         )}
-        {activeButton === 'Users' && (
+        {activeButton === 'Account' && (
           <View style={styles.container}>
-            <View style={styles.UserScreen}>
+            <View style={styles.Accountcreen}>
               <View style={styles.avatar}>
                 <Image
                   source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0' }}
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
   },
-  UserScreen: {
+  Accountcreen: {
     alignItems: 'center',
     justifyContent: 'center',
     height: '45%',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     zIndex: -1,
     width: getSize(0, 0, 152),
-    height: getSize(0, 0, 170),
+    height: getSize(0, 0, 100),
   },
   page1: {
     width: width,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   },
   ombra: {
     position: 'relative', // Sovrappone l'immagine sotto
-    width: 500,
+    width: 450,
     height: 450,
   },
   backButtonImage: {
@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   backButtonText: {
+    position: 'absolute',
     color: '#fff',
     fontSize: 16,
     marginLeft: 5,

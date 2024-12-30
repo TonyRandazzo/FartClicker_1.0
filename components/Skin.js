@@ -185,8 +185,10 @@ const Skin = () => {
 
   const [cachedImagePaths, setCachedImagePaths] = useState({});
   const [cachedVideoPaths, setCachedVideoPaths] = useState({});
+  const [selectedItemId, setSelectedItemId] = useState(null);
 
-  const handleInfoPress = () => {
+  const handleInfoPress = (id) => {
+    setSelectedItemId(id);
     setSwitchComponent('Info'); // Cambia lo stato per mostrare il componente User
   };
 
@@ -294,7 +296,7 @@ const Skin = () => {
   const handleSwitchComic = () => setActiveButton('comic');
 
   if (switchComponent === 'Info') {
-    return <Info goBack={handleSelectPress} />; // Mostra il componente User con il callback per tornare indietro
+    return <Info goBack={handleSelectPress} itemId={selectedItemId} />;
   }
 
   return (
@@ -360,7 +362,7 @@ const Skin = () => {
                         <TouchableOpacity style={styles.optionButton}>
                           <Text style={styles.optionText}>Select</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton} onPress={handleInfoPress}>
+                        <TouchableOpacity style={styles.optionButton} onPress={() => handleInfoPress(item.id)}>
                           <Text style={styles.optionText}>Info</Text>
                         </TouchableOpacity>
                       </View>
