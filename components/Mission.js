@@ -98,31 +98,37 @@ const Mission = () => {
 
   return (
     <ImageBackground
-      source={{ uri: images[currentIndex] }}
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fnuova%20schermata%20mission.png?alt=media&token=484d1a77-5d98-42ec-b053-2b680f013852' }}
       style={styles.page1}
       resizeMode="cover"
     >
       <View style={styles.mainContainer}>
         <View style={styles.topButtonsContainer}>
-          <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
-            <Text style={styles.testo}>{currentIndex + 1}</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
             <Text style={styles.topButtonText}>Mission</Text>
             {activeButton === 'missions' && (
-              <Image source={{ uri: imageBehindSwitchmission }} style={styles.backgroundImageMission} />
+              <View style={styles.backgroundImageMission} />
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
             <Text style={styles.topButtonText}>Achievement</Text>
             {activeButton === 'achievements' && (
-              <Image source={{ uri: imageBehindSwitchAchievement }} style={styles.backgroundImageAchievement} />
+              <View style={styles.backgroundImageMission} />
             )}
           </TouchableOpacity>
         </View>
 
         <View style={styles.imageButtonContainer}>
+          <Image
+            source={{
+              uri: activeButton === 'missions'
+                ? 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Schlein.png?alt=media&token=a77600ef-295e-408f-afa7-e765edd1afe7'
+                : 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Meloni.png?alt=media&token=286b1d32-110a-46a1-97be-b2a2d3b1f733'
+            }}
+            style={styles.topImage}
+          />
+
         </View>
 
         <View style={styles.missionContent}>
@@ -176,7 +182,12 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     height: height,
-    top: 80,
+    top: 30,
+  },
+  missionContent: {
+    position: 'absolute',
+    top: '30%',
+    width: width,
   },
   topContainer: {
     position: 'absolute',
@@ -235,18 +246,20 @@ const styles = StyleSheet.create({
     paddingBottom: 50, // Aggiungi uno spazio di fondo per evitare che l'ultimo contenuto sia nascosto
   },
   imageButtonContainer: {
-    position: 'relative',
+    position: 'absolute',
+    zIndex: 51,
     width: '100%',
-    height: 150, // Modifica l'altezza per schermi medi
+    height: '100%', // Modifica l'altezza per schermi medi
     alignItems: 'center',
   },
   topButtonsContainer: {
+    top: '8%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    zIndex: 51,
+    left: '4%',
+    zIndex: 52,
     position: 'absolute',
-    top: 20,
   },
   topButton: {
     borderRadius: 5,
@@ -258,7 +271,7 @@ const styles = StyleSheet.create({
   topButtonText: {
     top: 0,
     color: '#FFF',
-    fontSize: 25,
+    fontSize: 20,
     fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
@@ -348,16 +361,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     resizeMode: 'contain',
     zIndex: -1,
-    width: getSize(0, 0, 152),
-    height: getSize(0, 0, 170),
+    width: 150,
+    height: 60,
+    backgroundColor: 'transparent',
   },
-  backgroundImageAchievement: {
-    position: 'absolute',
-    resizeMode: 'contain',
-    zIndex: -1,
-    width: getSize(0, 0, 152),
-    height: getSize(0, 0, 170),
-  },
+
   achievementScrollContainer: {
     flexDirection: 'column',
     paddingHorizontal: 10,

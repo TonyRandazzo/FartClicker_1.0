@@ -16,12 +16,13 @@ import { ScaledSheet } from 'react-native-size-matters';
 import HUD from './HUD'
 const { width, height } = Dimensions.get('window');
 
-function Gameplay() {
+function Gameplay({ isPlaying, setIsPlaying }) {
   const [progress, setProgress] = useState(0);
+  if (isPlaying) return null;
 
   return (
     <View style={styles.container}>
-      <HUD/>
+      <HUD setIsPlaying={setIsPlaying} />
       <View style={styles.progressContainer}>
         <View style={styles.progressBackground}>
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
@@ -34,16 +35,16 @@ function Gameplay() {
           <Image
             source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMarvick.png?alt=media&token=d5346127-30e1-4fc6-9ac4-e092f4d86175' }}
             style={styles.player}
-                      accessible={true}
-          accessibilityLabel="Sbarra di combattimento"
+            accessible={true}
+            accessibilityLabel="Sbarra di combattimento"
           />
         </View>
         <View style={styles.imageWrapper}>
           <Image
             source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMarvick.png?alt=media&token=d5346127-30e1-4fc6-9ac4-e092f4d86175' }}
             style={styles.enemy}
-                      accessible={true}
-          accessibilityLabel="Sbarra di combattimento"
+            accessible={true}
+            accessibilityLabel="Sbarra di combattimento"
           />
         </View>
       </View>
@@ -110,7 +111,7 @@ const styles = ScaledSheet.create({
     resizeMode: 'contain',
   },
   enemy: {
-    transform: [{ scaleX: -1 }],    width: '100%',
+    transform: [{ scaleX: -1 }], width: '100%',
     height: '100%',
     resizeMode: 'contain',
   },

@@ -69,7 +69,7 @@ const MapScreen = ({ toggleMapScreen }) => {
       style={styles.background}
       resizeMode="cover"
     >
-      <HUD/>
+      <HUD />
       <View style={styles.containerContent}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -129,9 +129,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-containerContent: {
-  top: 100,
-},
+  containerContent: {
+    top: 100,
+  },
   topContainer: {
     position: 'absolute',
     width: width,
@@ -340,6 +340,7 @@ containerContent: {
     elevation: 4,
   },
   itemContainer: {
+    fontFamily: 'LuckiestGuy-8jyD', // Usa il font che preferisci
     left: getSize(0, 0, '8%'),
     width: width,
     height: height,
@@ -357,20 +358,22 @@ containerContent: {
     height: '15%',
   },
   itemText: {
+    fontFamily: 'LuckiestGuy-8jyD',
     position: 'absolute',
     color: 'white',
-    fontSize: 30, // Font size più piccolo per schermi più piccoli
+    fontSize: 40,
     paddingBottom: '2%',
-    fontWeight: 'bold',
   },
   scrollView: {
     transform: [{ scaleY: -1 }],
   },
   scrollViewContent: {
+    fontFamily: 'LuckiestGuy-8jyD',
     flexDirection: 'column',
     paddingBottom: 0,
   },
   itemWrapper: {
+    fontFamily: 'LuckiestGuy-8jyD', // Usa il font che preferisci
     transform: [{ scaleY: -1 }],
     bottom: 100,
     marginBottom: -450,

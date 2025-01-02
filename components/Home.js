@@ -115,7 +115,7 @@ const images = [
 
 
 
-const Home = () => {
+const Home = ({ isPlaying, setIsPlaying }) => {
   const [activeComponent, setActiveComponent] = useState('Home');
   const rewardsScaleAnim = useRef(new Animated.Value(1)).current;
   const itemsScaleAnim = useRef(new Animated.Value(1)).current;
@@ -142,33 +142,8 @@ const Home = () => {
   const block3Animation = useRef(new Animated.Value(0)).current;
 
   const handlePlayPress = () => {
-    setTransitionVisible(true);
-
-    // Start the transition animation
-    const upAnimation = Animated.parallel([
-      Animated.timing(block1Animation, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-      Animated.timing(block2Animation, {
-        toValue: 1,
-        duration: 200,
-        delay: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(block3Animation, {
-        toValue: 1,
-        duration: 200,
-        delay: 150,
-        useNativeDriver: true,
-      })
-    ]);
-
-    upAnimation.start(() => {
-      // After animation completes, navigate to the game component
-      setActiveComponent('Gameplay');
-    });
+    setIsPlaying(false);
+    setActiveComponent('Gameplay');
   };
 
 
@@ -303,7 +278,12 @@ const Home = () => {
   }
 
   if (activeComponent === 'Gameplay') {
-    return <Gameplay />; // Your game component
+    // Se isPlaying è false, torna alla home
+    if (isPlaying) {
+      setActiveComponent('Home');
+      return <Home setIsPlaying={setIsPlaying} />;
+    }
+    return <Gameplay setIsPlaying={setIsPlaying} />;
   }
   return (
     <ImageBackground

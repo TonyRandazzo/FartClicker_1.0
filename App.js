@@ -23,9 +23,9 @@ import Immersive from 'react-native-immersive';
 const { width, height } = Dimensions.get('window');
 
 
+const pages = [<Shop />, <Skin />,   <Home/>, <Mission />, <MapScreen />];
+// isPlaying={isPlaying} setIsPlaying={setIsPlaying} 
 
-
-const pages = [<Shop />, <Skin />, <Home />, <Mission />, <MapScreen />];
 
 const localImages = [
   require('./assets/images/Sfondo.png'),
@@ -63,6 +63,7 @@ const ItemComponent = React.memo(({ item }) => {
 });
 
 const App = () => {
+  const [isPlaying, setIsPlaying] = useState(true);
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(2);
   const [activeIndex, setActiveIndex] = useState(2);
@@ -82,6 +83,7 @@ const App = () => {
   const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
   const [isReady, setIsReady] = useState(false);
   const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
+
 
   const goToPage = (index) => {
     // Mostra la schermata di dissolvenza bianca prima di fare lo scroll
@@ -403,7 +405,6 @@ const App = () => {
       </Animated.View>
     )
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" hidden={true} />
@@ -436,36 +437,40 @@ const App = () => {
         scrollEventThrottle={16}
         scrollEnabled={false}
       />
-      <SafeAreaView style={styles.bottomContainer}>
-        <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustra%20inferiore.png?alt=media&token=5222eb2e-a57a-487e-99d1-6eb0a3f59644' }}
-          style={styles.bottomImage}
-        />
-      </SafeAreaView>
-      <SafeAreaView style={styles.indicatorContainer}>
-        {imageUrls.map((url, index) => {
-          const scale = scaleValues[index];
-          const translateY = translateYValues[index];
-          return (
-            <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
-              <Animated.View
-                style={{
-                  transform: [
-                    { scale: scale },
-                    { translateY: translateY },
-                  ],
-                }}
-              >
-                <Image
-                  source={{ uri: url }}
-                  style={styles.indicator}
-                  resizeMode="contain"
-                />
-              </Animated.View>
-            </TouchableOpacity>
-          );
-        })}
-      </SafeAreaView>
+      {isPlaying && (
+        <>
+          <SafeAreaView style={styles.bottomContainer}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustra%20inferiore.png?alt=media&token=5222eb2e-a57a-487e-99d1-6eb0a3f59644' }}
+              style={styles.bottomImage}
+            />
+          </SafeAreaView>
+          <SafeAreaView style={styles.indicatorContainer}>
+            {imageUrls.map((url, index) => {
+              const scale = scaleValues[index];
+              const translateY = translateYValues[index];
+              return (
+                <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
+                  <Animated.View
+                    style={{
+                      transform: [
+                        { scale: scale },
+                        { translateY: translateY },
+                      ],
+                    }}
+                  >
+                    <Image
+                      source={{ uri: url }}
+                      style={styles.indicator}
+                      resizeMode="contain"
+                    />
+                  </Animated.View>
+                </TouchableOpacity>
+              );
+            })}
+          </SafeAreaView>
+        </>
+      )}
       {fadeScreenVisible && (
         <Animated.View
           style={[
@@ -573,7 +578,7 @@ const styles = ScaledSheet.create({
     bottom: 0,
     width: width,
     height: height,
-    zIndex: 10, 
+    zIndex: 10,
   },
   fadeScreen: {
     position: 'absolute',
@@ -711,9 +716,9 @@ const styles = ScaledSheet.create({
     width: '100%',
   },
   indicator: {
-    width: 58,
-    height: 58,
-    marginHorizontal: 10,
+    width: 55,
+    height: 55,
+    marginHorizontal: 11,
   },
   buttonContainer: {
     paddingRight: 0,

@@ -11,6 +11,7 @@ import {
   ImageBackground,
   Text,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
@@ -35,9 +36,10 @@ const getSize = (small, medium, large) => {
 
 
 
-function PauseButton() {
-    const pauseScaleAnim = useRef(new Animated.Value(1)).current;
-const bounceAnimation = (scaleAnim) => {
+function PauseButton({ setIsPlaying }) {
+  const [isPaused, setIsPaused] = useState(false);
+  const pauseScaleAnim = useRef(new Animated.Value(1)).current;
+  const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
         toValue: 1.3,
@@ -53,54 +55,121 @@ const bounceAnimation = (scaleAnim) => {
   };
   return (
     <>
-    <View style={styles.topContainer}>
-    <Image
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
-      style={styles.topImage}
-      resizeMode="cover"
-    />
-  </View>
-    <TouchableOpacity style={styles.button} activeOpacity={1} onPressIn={() => bounceAnimation(pauseScaleAnim)}>
-    <Animated.Image
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
-      style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
-      resizeMode="contain"
-    />
-  </TouchableOpacity>
+      <View style={styles.topContainer}>
+        <Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+          style={styles.topImage}
+          resizeMode="cover"
+        />
+      </View>
+      <TouchableOpacity style={styles.button} activeOpacity={1}
+        onPressIn={() => {
+          bounceAnimation(pauseScaleAnim);
+          setIsPaused(true);
+        }}>
+        <Animated.Image
+          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+          style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
+          resizeMode="contain"
+        />
+      </TouchableOpacity>
+      {isPaused && (
+        <View style={styles.overlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setIsPaused(false)}
+            >
+              <Text style={styles.modalButtonText}>Resume</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                setIsPaused(false);
+                setIsPlaying(true);
+                console.log('Exit action triggered');
+              }}
+            >
+              <Text style={styles.modalButtonText}>Exit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </>
 
   )
 }
 
 const styles = StyleSheet.create({
-    button: {
-        position: 'absolute',
-        zIndex: 50,
-        right: 5,
-        width: 50,
-        height: 50,
-        justifyContent: 'center',
-        alignItems: 'center',
-      },
-      buttonImage: {
-        width: '100%',
-        height: '100%',
-      },
-      topContainer: {
-        position: 'absolute',
-        width: width,
-        height: 190,
-        elevation: 10,
-        top: 0,
-        zIndex: 11,
-      },
-      topImage: {
-        position: 'absolute',
-        resizeMode: 'cover',
-        width: width,
-        height: '100%',
-    
-      },
+  pauseButton: {
+    padding: 15,
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  pauseButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  overlay: {
+    position: 'absolute',
+    zIndex: 50,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    gap: 15,
+  },
+  modalButton: {
+    padding: 15,
+    backgroundColor: '#4CAF50',
+    borderRadius: 5,
+    width: 200,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  button: {
+    position: 'absolute',
+    zIndex: 50,
+    right: 5,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonImage: {
+    width: '100%',
+    height: '100%',
+  },
+  topContainer: {
+    position: 'absolute',
+    width: width,
+    height: 190,
+    elevation: 10,
+    top: 0,
+    zIndex: 11,
+  },
+  topImage: {
+    position: 'absolute',
+    resizeMode: 'cover',
+    width: width,
+    height: '100%',
+
+  },
 });
 
 export default PauseButton

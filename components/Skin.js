@@ -67,7 +67,7 @@ class ImageCache {
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch {
-      
+
       return uri;
     }
   }
@@ -299,12 +299,43 @@ const Skin = () => {
     return <Info goBack={handleSelectPress} itemId={selectedItemId} />;
   }
 
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loopAnimation = () => {
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 2000, // Durata dell'opacità a 0
+          useNativeDriver: true,
+        }),
+        Animated.delay(1000), // Ritardo prima di tornare a 1
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 2000, // Durata dell'opacità a 1
+          useNativeDriver: true,
+        }),
+      ]).start(() => loopAnimation());
+    };
+  
+    loopAnimation();
+  }, [opacity]);
+
   return (
     <ImageBackground
-      source={{ uri: getCachedImage(images[currentIndex]) }}
+      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20skin%20fermo%201.png?alt=media&token=f2490f4f-5e0a-414e-8374-5d691de55ada' }}
       style={styles.page1}
       resizeMode="cover"
     >
+            <Animated.View style={[styles.page2, { opacity }]}>
+        <Image
+          source={{
+            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20skin%20fermo%202.png?alt=media&token=2a12b12f-e15b-4761-9978-6fb714118008',
+          }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </Animated.View>
       <View style={styles.mainContainer}>
         <View style={styles.topButtonsContainer}>
           <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
@@ -398,7 +429,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  aura:{
+  image: {
+    width: width,
+    height: height,
+  },
+  aura: {
     zIndex: -1,
     top: '5%',
     left: '18%',
@@ -436,6 +471,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     top: 80,
     height: height,
+    zIndex: 50,
   },
   topContainer: {
     position: 'absolute',
@@ -492,10 +528,16 @@ const styles = StyleSheet.create({
     width: width,
     height: height,
   },
+  page2: {
+    position: 'absolute',
+    width: width,
+    height: height,
+  },
   bottomImage: {
     width: '100%',
     height: 90, // Riduci l'altezza per schermi più piccoli
   },
+
   imageContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
