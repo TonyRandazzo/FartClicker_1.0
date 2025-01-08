@@ -14,6 +14,7 @@ import {
 import Video from 'react-native-video';
 import VideoCache from './VideoCache';
 import HUD from './HUD'
+import RNFS from 'react-native-fs';
 
 
 const { width, height } = Dimensions.get('window');
@@ -61,9 +62,76 @@ const topRightTexts = [
 
 const buttonImage = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FButtonText_Small_Orange_Round.png?alt=media&token=072178ce-843d-4a0d-b8e8-63787564dab3';
 
-const backgroundImageUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fmoneta%20opaca%20sfondo%20shop.png?alt=media&token=3b835818-3b18-4622-b2d2-afb840d695b9'
+class ImageCache {
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
 
-const Shop = () => {
+  static async initialize() {
+    try {
+      // Create cache directory if it doesn't exist
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
+
+      // Load existing cached files
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
+    }
+
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
+
+      console.log(`Downloading image from: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
+
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch {
+
+      return uri;
+    }
+  }
+
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
+    }
+  }
+}
+const Shop = ({ isPlaying, setIsPlaying }) => {
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
+  const images = [
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20bluina.png?alt=media&token=b92e883e-ec4f-4f3d-bbb1-b25d78f58aeb',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20magentine.png?alt=media&token=bd8eb3f4-31ea-4faf-adfa-a52dcbaafbbf',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fchronometer-timer-counter-free-png.webp?alt=media&token=df07c4c0-eab9-4de9-85c9-487b65cac239',
+
+  ];
   const [cachedVideoPath, setCachedVideoPath] = useState(
     'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330'
   );
@@ -84,7 +152,46 @@ const Shop = () => {
 
     initializeVideoCache();
   }, []);
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+      ]);
 
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+
+      // Cache all image assets
+      const imagesToCache = [
+        ...Object.values(shopItemImages),
+        ...buttonImage,
+        ...images,
+      ];
+
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+
+    };
+
+    initializeCaches();
+
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+      // VideoCache.clearCache();
+    };
+  }, []);
+
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
   const renderBackground = () => {
     return (
       <Video
@@ -105,67 +212,67 @@ const Shop = () => {
   return (
     <View style={styles.page}>
       <View style={styles.mainContainer}>
-      {renderBackground()}
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
+        {renderBackground()}
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
 
-      >
-        <View style={styles.rectangle}>
-          <View style={styles.imageContainer}>
-            {shopItemImages.map((imageUrl, index) => (
-              <View key={index} style={styles.imageWrapper}>
-                <Image source={{ uri: imageUrl }} style={styles.shopImage} />
+        >
+          <View style={styles.rectangle}>
+            <View style={styles.imageContainer}>
+              {shopItemImages.map((imageUrl, index) => (
+                <View key={index} style={styles.imageWrapper}>
+                  <Image source={{ uri: imageUrl }} style={styles.shopImage} />
 
-                {index > 0 && (
-                  <Text style={styles.topRightText}>{topRightTexts[index]}</Text>
-                )}
+                  {index > 0 && (
+                    <Text style={styles.topRightText}>{topRightTexts[index]}</Text>
+                  )}
 
-                <TouchableOpacity style={styles.shopButton} activeOpacity={1}>
-                  <Image source={{ uri: buttonImage }} style={styles.shopButtonImage} />
-                  <Text style={styles.shopButtonText}>{buttonTexts[index]}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+                  <TouchableOpacity style={styles.shopButton} activeOpacity={1}>
+                    <Image source={{ uri: buttonImage }} style={styles.shopButtonImage} />
+                    <Text style={styles.shopButtonText}>{buttonTexts[index]}</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.LimitedOffer}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20bluina.png?alt=media&token=b92e883e-ec4f-4f3d-bbb1-b25d78f58aeb' }}
-            style={styles.newImage}
-          />
-          <Text style={styles.rotatedText}>La tua scritta</Text>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fchronometer-timer-counter-free-png.webp?alt=media&token=df07c4c0-eab9-4de9-85c9-487b65cac239' }}
-            style={styles.Timer}
-          />
-        </View>
-
-        <View style={styles.LimitedOffer}>
-          <Image
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20magentine.png?alt=media&token=bd8eb3f4-31ea-4faf-adfa-a52dcbaafbbf' }}
-            style={styles.newImage}
-          />
-          <Text style={styles.rotatedText}>Testo Rotato</Text>
-          <View style={styles.threeImagesContainer}>
+          <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: 'https://via.placeholder.com/100' }}
-              style={styles.smallImage}
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20bluina.png?alt=media&token=b92e883e-ec4f-4f3d-bbb1-b25d78f58aeb' }}
+              style={styles.newImage}
             />
+            <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri: 'https://via.placeholder.com/100' }}
-              style={styles.smallImage}
-            />
-            <Image
-              source={{ uri: 'https://via.placeholder.com/100' }}
-              style={styles.smallImage}
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fchronometer-timer-counter-free-png.webp?alt=media&token=df07c4c0-eab9-4de9-85c9-487b65cac239' }}
+              style={styles.Timer}
             />
           </View>
-        </View>
-      </ScrollView>
+
+          <View style={styles.LimitedOffer}>
+            <Image
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20magentine.png?alt=media&token=bd8eb3f4-31ea-4faf-adfa-a52dcbaafbbf' }}
+              style={styles.newImage}
+            />
+            <Text style={styles.rotatedText}>Testo Rotato</Text>
+            <View style={styles.threeImagesContainer}>
+              <Image
+                source={{ uri: 'https://via.placeholder.com/100' }}
+                style={styles.smallImage}
+              />
+              <Image
+                source={{ uri: 'https://via.placeholder.com/100' }}
+                style={styles.smallImage}
+              />
+              <Image
+                source={{ uri: 'https://via.placeholder.com/100' }}
+                style={styles.smallImage}
+              />
+            </View>
+          </View>
+        </ScrollView>
       </View>
-      <HUD />
+      <HUD setIsPlaying={setIsPlaying} />
     </View>
   );
 }

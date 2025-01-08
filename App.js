@@ -4,6 +4,7 @@ import {
   View,
   FlatList,
   StyleSheet,
+  Modal,
   Dimensions,
   TouchableOpacity,
   Animated,
@@ -13,6 +14,8 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NativeModules, Platform } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Mission from './components/Mission';
 import Skin from './components/Skin';
@@ -23,8 +26,7 @@ import Immersive from 'react-native-immersive';
 const { width, height } = Dimensions.get('window');
 
 
-const pages = [<Shop />, <Skin />,   <Home/>, <Mission />, <MapScreen />];
-// isPlaying={isPlaying} setIsPlaying={setIsPlaying} 
+
 
 
 const localImages = [
@@ -63,7 +65,10 @@ const ItemComponent = React.memo(({ item }) => {
 });
 
 const App = () => {
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const pages = [<Shop isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <Skin isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} />, <Mission isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <MapScreen isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>];
+
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(2);
   const [activeIndex, setActiveIndex] = useState(2);
@@ -200,13 +205,43 @@ const App = () => {
     // Loop continuo
     Animated.loop(combinedAnimation).start();
   }, []);
+  useEffect(() => {
+    const checkFirstLaunch = async () => {
+      const hasLaunched = await AsyncStorage.getItem('hasLaunched');
+      if (!hasLaunched) {
+        await AsyncStorage.setItem('hasLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    };
+
+    checkFirstLaunch();
+  }, []);
+
+  useEffect(() => {
+    if (isFirstLaunch === true) {
+      // Riavvia l'app alla fine del primo lancio
+      restartApp();
+    }
+  }, [isFirstLaunch]);
+
+  const restartApp = () => {
+    if (Platform.OS === 'android') {
+      NativeModules.DevSettings.reload(); // Per Android
+    } else {
+      NativeModules.Reloader.reload(); // Per iOS, usa una libreria come react-native-restart
+    }
+  };
+
 
 
   useEffect(() => {
     // Avvia l'animazione della barra di caricamento
+    const animationDuration = isFirstLaunch ? 30000 : 3000;
     const animation = Animated.timing(progressValue, {
       toValue: 100, // Fine dell'animazione (100%)
-      duration: 30000, // 20 secondi per completare
+      duration: animationDuration, 
       useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
     });
 
@@ -231,7 +266,72 @@ const App = () => {
     outputRange: ['0%', '100%'],
   });
 
-
+  const ConnectionModal = ({ visible, onRetry }) => (
+    <Modal
+      transparent
+      visible={visible}
+      animationType="fade"
+    >
+      <View style={styles.modalContainer}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>
+            La connessione internet non è sufficiente per giocare
+          </Text>
+          <TouchableOpacity 
+            style={styles.retryButton}
+            onPress={onRetry}
+          >
+            <Text style={styles.buttonText}>Riprova</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+  
+  // Nel componente principale:
+  const [isConnectionPoor, setIsConnectionPoor] = useState(false);
+  
+  useEffect(() => {
+    const checkConnection = async () => {
+      try {
+        const start = Date.now();
+        await fetch('https://www.google.com/generate_204');
+        const latency = Date.now() - start;
+        
+        if (latency > 1000) { // Latenza maggiore di 1 secondo
+          setIsConnectionPoor(true);
+          return false;
+        }
+        return true;
+      } catch {
+        setIsConnectionPoor(true);
+        return false;
+      }
+    };
+  
+    const animationDuration = isFirstLaunch ? 30000 : 3000;
+    
+    checkConnection().then(isConnected => {
+      if (isConnected) {
+        Animated.timing(progressValue, {
+          toValue: 100,
+          duration: animationDuration,
+          useNativeDriver: false,
+        }).start(() => {
+          Animated.timing(fadeOutOpacity, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true,
+          }).start(() => {
+            setIsVisible(false);
+            goToPage(2);
+          });
+        });
+      }
+    });
+  
+    return () => progressValue.stopAnimation();
+  }, []);
 
 
 
@@ -267,7 +367,7 @@ const App = () => {
       return Animated.sequence([
         Animated.parallel([
           Animated.timing(scaleValues[index], {
-            toValue: isSelected ? 1.3 : 0.9,
+            toValue: isSelected ? 1.1 : 0.8,
             duration: 200,
             useNativeDriver: true,
           }),

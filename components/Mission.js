@@ -12,7 +12,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import RNFS from 'react-native-fs';
 import HUD from './HUD'
 
 const { width, height } = Dimensions.get('window');
@@ -29,7 +29,68 @@ const getSize = (small, medium, large) => {
   if (isMediumScreen) return medium;
   if (isLargeScreen) return large;
 };
+class ImageCache {
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
 
+  static async initialize() {
+    try {
+      // Create cache directory if it doesn't exist
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
+
+      // Load existing cached files
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
+    }
+
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
+
+      console.log(`Downloading image from: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
+
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch {
+
+      return uri;
+    }
+  }
+
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
+    }
+  }
+}
 
 const ProgressBar = ({ progress, total }) => {
   const percentage = (progress / total) * 100;
@@ -42,22 +103,16 @@ const ProgressBar = ({ progress, total }) => {
   );
 };
 
-const Mission = () => {
+const Mission = ({ isPlaying, setIsPlaying }) => {
+    const [cachedImagePaths, setCachedImagePaths] = useState({});
+
   const [activeButton, setActiveButton] = useState('missions');
   const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20missioni%202.png?alt=media&token=706f9ac9-3e8b-4cf8-b83b-124b62d2ae5c',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20missioni%202.png?alt=media&token=706f9ac9-3e8b-4cf8-b83b-124b62d2ae5c',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fnuova%20schermata%20mission.png?alt=media&token=484d1a77-5d98-42ec-b053-2b680f013852',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Schlein.png?alt=media&token=a77600ef-295e-408f-afa7-e765edd1afe7',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Meloni.png?alt=media&token=286b1d32-110a-46a1-97be-b2a2d3b1f733',
   ];
 
-  // Stato per l'indice corrente
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // Funzione per cambiare immagine
-  const changeBackground = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-  const imageBehindSwitchAchievement = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
-  const imageBehindSwitchmission = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
 
   const handleSwitchMissions = () => setActiveButton('missions');
   const handleSwitchAchievements = () => setActiveButton('achievements');
@@ -95,6 +150,47 @@ const Mission = () => {
     },
     // Aggiungi altri achievement secondo necessità
   ];
+
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+      ]);
+
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+
+      // Cache all image assets
+      const imagesToCache = [
+        ...Object.values(missionItems),
+        ...Object.values(achievementItems),
+        ...images,
+      ];
+
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+
+    };
+
+    initializeCaches();
+
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+      // VideoCache.clearCache();
+    };
+  }, []);
+
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
 
   return (
     <ImageBackground
@@ -170,7 +266,7 @@ const Mission = () => {
           )}
         </View>
       </View>
-      <HUD />
+      <HUD setIsPlaying={setIsPlaying} />
 
     </ImageBackground>
   );
@@ -247,7 +343,7 @@ const styles = StyleSheet.create({
   },
   imageButtonContainer: {
     position: 'absolute',
-    zIndex: 51,
+    zIndex: 49,
     width: '100%',
     height: '100%', // Modifica l'altezza per schermi medi
     alignItems: 'center',
@@ -258,7 +354,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     left: '4%',
-    zIndex: 52,
+    zIndex: 50,
     position: 'absolute',
   },
   topButton: {

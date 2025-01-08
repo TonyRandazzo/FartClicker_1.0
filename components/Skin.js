@@ -97,10 +97,32 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-const Skin = () => {
+const Skin = ({ isPlaying, setIsPlaying }) => {
   const [switchComponent, setSwitchComponent] = useState('Select')
   const [activeButton, setActiveButton] = useState('skin');
   const [visibleOptionsId, setVisibleOptionsId] = useState(false);
+  const opacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const loopAnimation = () => {
+      Animated.sequence([
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 2000, // Durata dell'opacità a 0
+          useNativeDriver: true,
+        }),
+        Animated.delay(1000), // Ritardo prima di tornare a 1
+        Animated.timing(opacity, {
+          toValue: 1,
+          duration: 2000, // Durata dell'opacità a 1
+          useNativeDriver: true,
+        }),
+      ]).start(() => loopAnimation());
+    };
+
+    loopAnimation();
+  }, [opacity]);
+
   const skinItemImages = {
     marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90',
     maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11',
@@ -219,8 +241,6 @@ const Skin = () => {
         ...Object.values(skinItemRarities),
         ...Object.values(skinItemBackgrounds).filter(uri => !uri.endsWith('.mp4')),
         ...images,
-        imageBehindSwitchSkin,
-        imageBehindSwitchComic
       ];
 
       await Promise.all(imagesToCache.map(cacheImage));
@@ -286,40 +306,14 @@ const Skin = () => {
   };
 
 
-  const changeBackground = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-  const imageBehindSwitchSkin = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
-  const imageBehindSwitchComic = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fskin%20targa.png?alt=media&token=a248bd60-061d-4695-a2f8-bdebf47b9a7d';
 
   const handleSwitchSkin = () => setActiveButton('skin');
   const handleSwitchComic = () => setActiveButton('comic');
 
   if (switchComponent === 'Info') {
-    return <Info goBack={handleSelectPress} itemId={selectedItemId} />;
+    return <Info goBack={handleSelectPress} itemId={selectedItemId} isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>;
   }
 
-  const opacity = useRef(new Animated.Value(1)).current;
-
-  useEffect(() => {
-    const loopAnimation = () => {
-      Animated.sequence([
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 2000, // Durata dell'opacità a 0
-          useNativeDriver: true,
-        }),
-        Animated.delay(1000), // Ritardo prima di tornare a 1
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 2000, // Durata dell'opacità a 1
-          useNativeDriver: true,
-        }),
-      ]).start(() => loopAnimation());
-    };
-  
-    loopAnimation();
-  }, [opacity]);
 
   return (
     <ImageBackground
@@ -327,7 +321,7 @@ const Skin = () => {
       style={styles.page1}
       resizeMode="cover"
     >
-            <Animated.View style={[styles.page2, { opacity }]}>
+      <Animated.View style={[styles.page2, { opacity }]}>
         <Image
           source={{
             uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20skin%20fermo%202.png?alt=media&token=2a12b12f-e15b-4761-9978-6fb714118008',
@@ -338,25 +332,30 @@ const Skin = () => {
       </Animated.View>
       <View style={styles.mainContainer}>
         <View style={styles.topButtonsContainer}>
-          <TouchableOpacity title="Cambia Immagine" onPress={changeBackground} style={styles.dinamismo}>
-            <Text style={styles.testo}>{currentIndex + 1}</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
             <Text style={styles.topButtonText}>Skin</Text>
             {activeButton === 'skin' && (
-              <Image source={{ uri: getCachedImage(imageBehindSwitchSkin) }} style={styles.backgroundImage} />
+              <View style={styles.backgroundImage} />
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchComic}>
             <Text style={styles.topButtonText}>Comic</Text>
             {activeButton === 'comic' && (
-              <Image source={{ uri: getCachedImage(imageBehindSwitchComic) }} style={styles.backgroundImage2} />
+              <View style={styles.backgroundImage2} />
             )}
           </TouchableOpacity>
         </View>
+        <View style={styles.imageButtonContainer} pointerEvents="none">
+          <Image
+            source={{
+              uri: activeButton === 'skin'
+                ? 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20skin%20Schlein%20(1).png?alt=media&token=4b0b50ab-9e8a-447a-9722-7a44b6212f88'
+                : 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20skin%20Meloni%20(1).png?alt=media&token=6d682e7c-9951-45cf-a0a2-6123c6d241cb'
+            }}
+            style={styles.topImage}
+          />
 
-        <View style={styles.imageButtonContainer}>
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
             <Image
               source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
@@ -364,6 +363,8 @@ const Skin = () => {
               resizeMode="contain"
             />
           </TouchableOpacity>
+        </View>
+        <View style={styles.separator} pointerEvents="none">
         </View>
 
         <ScrollView
@@ -378,7 +379,7 @@ const Skin = () => {
                     <View key={item.id} style={styles.skinWrapper}>
                       {renderBackground(item)}
                       <TouchableOpacity style={styles.selection}
-                      activeOpacity={1}
+                        activeOpacity={1}
                         onPress={() =>
                           setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))
                         }></TouchableOpacity>
@@ -388,15 +389,15 @@ const Skin = () => {
                       <Image source={{ uri: item.rarity }} style={styles.rarity} />
                       {visibleOptionsId === item.id && (
                         <>
-                        <View style={styles.aura}></View>
-                        <View style={styles.optionsContainer}>
-                        <TouchableOpacity style={styles.optionButton}>
-                          <Text style={styles.optionText}>Select</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.optionButton} onPress={() => handleInfoPress(item.id)}>
-                          <Text style={styles.optionText}>Info</Text>
-                        </TouchableOpacity>
-                      </View>
+                          <View style={styles.aura}></View>
+                          <View style={styles.optionsContainer}>
+                            <TouchableOpacity style={styles.optionButton}>
+                              <Text style={styles.optionText}>Select</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.optionButton} onPress={() => handleInfoPress(item.id)}>
+                              <Text style={styles.optionText}>Info</Text>
+                            </TouchableOpacity>
+                          </View>
                         </>
 
                       )}
@@ -419,8 +420,7 @@ const Skin = () => {
           )}
         </ScrollView>
       </View>
-      <HUD />
-
+    <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );
 };
@@ -432,6 +432,22 @@ const styles = StyleSheet.create({
   image: {
     width: width,
     height: height,
+  },
+  separator: {
+    width: width,
+    height: '25%',
+  },
+  imageButtonContainer: {
+    position: 'absolute',
+    zIndex: 51,
+    width: '100%',
+    height: '100%', // Modifica l'altezza per schermi medi
+    alignItems: 'center',
+  },
+  sortButton: {
+    width: 160,
+    left: '10%',
+    height: 400,
   },
   aura: {
     zIndex: -1,
@@ -570,19 +586,14 @@ const styles = StyleSheet.create({
     borderRightWidth: 4,
     borderRightColor: '#fff',
   },
-  imageButtonContainer: {
-    position: 'relative',
-    width: '100%',
-    height: 165, // Modifica l'altezza per schermi medi
-    alignItems: 'center',
-  },
+
   topButtonsContainer: {
+    top: '8%',
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: '100%',
-    zIndex: 51,
+    zIndex: 52,
     position: 'absolute',
-    top: 20,
   },
   topButton: {
     borderRadius: 5,
@@ -594,7 +605,7 @@ const styles = StyleSheet.create({
   topButtonText: {
     top: 0,
     color: '#FFF',
-    fontSize: 25,
+    fontSize: 26,
     fontFamily: 'LuckiestGuy-8jyD',
     textShadowColor: 'black',
     textShadowOffset: { width: 2, height: 2 },
@@ -622,7 +633,7 @@ const styles = StyleSheet.create({
     height: getSize(0, 0, 170),
   },
   skinContent: {
-    marginTop: 20,
+    marginTop: 50,
     width: '100%',
     height: '100%',
     paddingHorizontal: 10,

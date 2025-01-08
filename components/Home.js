@@ -12,7 +12,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
+import { scale, ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 import HUD from './HUD';
 import User from './User'
@@ -97,21 +97,6 @@ class ImageCache {
   }
 }
 
-const images = [
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
-  "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21'
-];
-
 
 
 
@@ -145,7 +130,6 @@ const Home = ({ isPlaying, setIsPlaying }) => {
     setIsPlaying(false);
     setActiveComponent('Gameplay');
   };
-
 
 
 
@@ -232,49 +216,66 @@ const Home = ({ isPlaying, setIsPlaying }) => {
     ]).start();
   };
 
-
+  const images = [
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
+    "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21',
+    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4',
+  ];
+  
+  
   const [cachedImagePaths, setCachedImagePaths] = useState({});
 
-  // Initialize caches when component mounts
   useEffect(() => {
     const initializeCaches = async () => {
-      await Promise.all([
-        ImageCache.initialize(),
-      ]);
+        await Promise.all([
+            ImageCache.initialize(),
+        ]);
 
-      // Pre-cache all images
-      const imagePaths = {};
-      const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache.getCachedImagePath(uri);
-        if (cachedPath) {
-          imagePaths[uri] = cachedPath;
-        }
-      };
+        // Pre-cache all images
+        const imagePaths = {};
+        const cacheImage = async (uri) => {
+            const cachedPath = await ImageCache.getCachedImagePath(uri);
+            if (cachedPath) {
+                imagePaths[uri] = cachedPath;
+            }
+        };
 
-      // Cache all image assets
-      const imagesToCache = [
-        ...images,
-      ];
+        // Cache all image assets
+        const imagesToCache = [
+            ...images,
+        ];
 
-      await Promise.all(imagesToCache.map(cacheImage));
-      setCachedImagePaths(imagePaths);
+        await Promise.all(imagesToCache.map(cacheImage));
+        setCachedImagePaths(imagePaths);
+
     };
 
     initializeCaches();
 
     return () => {
-      // Optionally clear caches on unmount
-      // ImageCache.clearCache();
+        // Optionally clear caches on unmount
+        // ImageCache.clearCache();
+        // VideoCache.clearCache();
     };
-  }, []);
+}, []);
 
-  // Helper function to get cached image path
-  const getCachedImage = (uri) => {
+// Helper function to get cached image path
+const getCachedImage = (uri) => {
     return cachedImagePaths[uri] || uri;
-  };
+};
   // Render different components based on activeComponent
   if (activeComponent === 'User') {
-    return <User goBack={handleBackToHome} />;
+    return <User goBack={handleBackToHome} isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>;
   }
 
   if (activeComponent === 'Gameplay') {
@@ -306,7 +307,7 @@ const Home = ({ isPlaying, setIsPlaying }) => {
           resizeMode="repeat"
         />
       </SafeAreaView>
-      <HUD />
+      <HUD setIsPlaying={setIsPlaying}  />
       <View style={styles.mainContainer}>
         <Animated.Image
           source={{
@@ -329,7 +330,7 @@ const Home = ({ isPlaying, setIsPlaying }) => {
             >
               <Image
                 source={{
-                  uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4'
+                  uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4')
                 }}
                 style={styles.buttonImageUser}
               />
@@ -482,6 +483,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
+    transform: [{scale: 0.8}],
     resizeMode: 'cover',
     borderRadius: 360,
     zIndex: 1,
@@ -490,6 +492,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
+    transform: [{scale: 0.8}],
     borderRadius: 360,
     justifyContent: 'center',
     alignItems: 'center',

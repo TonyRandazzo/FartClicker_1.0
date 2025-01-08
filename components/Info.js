@@ -12,38 +12,106 @@ import {
     Text,
     ScrollView,
 } from 'react-native';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import Video from 'react-native-video';
-import VideoCache from './VideoCache';
 import RNFS from 'react-native-fs';
+
 import HUD from './HUD'
 
 const { width, height } = Dimensions.get('window');
 
-const Info = ({ goBack, itemId }) => {
+
+class ImageCache {
+    static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+    static cachedImages = new Map();
+
+    static async initialize() {
+        try {
+            // Create cache directory if it doesn't exist
+            const exists = await RNFS.exists(this.cacheDir);
+            if (!exists) {
+                await RNFS.mkdir(this.cacheDir);
+            }
+
+            // Load existing cached files
+            const files = await RNFS.readDir(this.cacheDir);
+            files.forEach(file => {
+                const uri = file.name.replace(/_/g, '/').replace('.img', '');
+                this.cachedImages.set(uri, file.path);
+            });
+        } catch (error) {
+            console.error('Failed to initialize image cache:', error);
+        }
+    }
+
+    static async getCachedImagePath(uri) {
+        if (!uri) return null;
+
+        if (this.cachedImages.has(uri)) {
+            console.log(`Image found in cache: ${uri}`);
+            return `file://${this.cachedImages.get(uri)}`;
+        }
+
+        try {
+            const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+            const filePath = `${this.cacheDir}/${filename}`;
+
+            console.log(`Downloading image from: ${uri}`);
+            await RNFS.downloadFile({
+                fromUrl: uri,
+                toFile: filePath,
+                background: true,
+                discretionary: true,
+            }).promise;
+
+            this.cachedImages.set(uri, filePath);
+            console.log(`Image cached successfully: ${uri}`);
+            return `file://${filePath}`;
+        } catch {
+
+            return uri;
+        }
+    }
+
+    static async clearCache() {
+        try {
+            await RNFS.unlink(this.cacheDir);
+            await RNFS.mkdir(this.cacheDir);
+            this.cachedImages.clear();
+        } catch (error) {
+            console.error('Failed to clear image cache:', error);
+        }
+    }
+}
+
+const Info = ({ goBack, itemId, isPlaying, setIsPlaying }) => {
+    const [cachedImagePaths, setCachedImagePaths] = useState({});
+    const images = [
+        'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2FReference%20schermata%20da%20rispettare%20al%20millimetro%20di%20x!.png?alt=media&token=8d891161-a8dd-491d-92a5-b689f908d3fd',
+        'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
+        'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
+    ];
     const skinItemImages = {
-        marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90',
-        maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11',
-        bob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20bob.png?alt=media&token=4a52b112-1e10-4e39-83b5-1c92f479ff2c',
-        cyclop: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20cyclop.png?alt=media&token=94e26047-aca9-47bb-907d-e92f1d2ac3e2',
-        babyAlien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20alien.png?alt=media&token=121dcfc6-3d7e-410a-8097-42c10af79784',
-        george: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20george.png?alt=media&token=10b6c8f3-39a9-4a99-99de-a88f42572375',
-        yokozuna: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20yokkozuna.png?alt=media&token=248beef7-ea0e-4b6a-a883-9afed5dcc449',
-        dracula: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FMezzob%20Draccula.png?alt=media&token=29392aff-cd3c-4ede-a5a0-87baaea85540',
-        robert: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20robert.png?alt=media&token=68cfc266-3d67-4d0c-a57f-0c769a129d73',
-        xao: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20xao.png?alt=media&token=3b85a8a1-2202-4b1a-b4b3-fa903ae568b9',
-        fartMan: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fartman.png?alt=media&token=961c0f05-55c6-4e11-97a9-99deaa230539',
-        alien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Falien%20adulto%20mezzob.png?alt=media&token=2fbc4279-ebc6-4ef0-b87f-3fb3475e66ed',
-        mrFarte: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20Mr.%20Fart%C3%A9.png?alt=media&token=2f1f1eb0-52d9-4ba2-8dbb-daa1ebf483e3',
-        fangpi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fangpi%C3%AC.png?alt=media&token=a0d97103-7d72-4648-8729-3b71449ec82c',
-        amaterasuTsukuyomi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20tuskuamateras.png?alt=media&token=e3be9494-04c8-4cad-ab23-ccbf7e835246',
-        stinkyBlob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20melma%20puzzonsa.png?alt=media&token=2add89e2-6c4f-4d5a-84d0-4cae2ca524e7',
-        bear: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20bear.png?alt=media&token=1bcfc630-9007-4fb8-81b9-446c292f3168',
-        soprano: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20soprano.png?alt=media&token=949f658a-2034-436e-b15e-e6baa473790a',
-        mrTakeshi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20mr.%20takeshi.png?alt=media&token=b4ee41e6-1a61-4cfc-9528-d51b331088b7',
-        stein: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20stein.png?alt=media&token=9f5854a3-7b60-4ca4-9ba8-b8cfcc8456e2',
-        gorilloz: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20gorilloz.png?alt=media&token=5d113d1f-7988-495f-8499-14f1251b76ef'
-      };
+        marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMarvick.png?alt=media&token=d5346127-30e1-4fc6-9ac4-e092f4d86175',
+        maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMaestro%20Sasuke.png?alt=media&token=01bae3e1-5066-46a1-8b77-4e5a4a4ec050',
+        bob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBoB.png?alt=media&token=b7b75588-7cfe-4a6e-ab85-eb42b51f29fd',
+        cyclop: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FCyclop.png?alt=media&token=85783d86-ca0e-4bb3-852e-47e8974e6dd9',
+        babyAlien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBaby%20Alien.png?alt=media&token=0cb16087-ca0d-41ac-99b1-9369bf1fdea4',
+        george: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FGeorge.png?alt=media&token=40093d6e-c869-47e3-960d-9b128a72b61c',
+        yokozuna: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FYokozuna.png?alt=media&token=2d742ba2-cffe-498f-af6c-386336e2bbdf',
+        dracula: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FDracula.png?alt=media&token=15584519-9e16-47b3-a793-5e35e789ace2',
+        robert: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FRobert.png?alt=media&token=21e94f96-ad20-40d6-9a59-985d370afb67',
+        xao: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FXao.png?alt=media&token=63032bc7-12f2-41bf-a549-36fb01461ef1',
+        fartMan: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
+        alien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FAlien.png?alt=media&token=774ec1bd-f4aa-483f-9b2c-d5b253fd678e',
+        mrFarte: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMr.%20Fart%C3%A9.png?alt=media&token=ba353fd8-19b6-4174-84f9-045329349a8b',
+        fangpi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFangp%C3%AC.png?alt=media&token=53996ef6-9be4-4692-b2f8-af4534da21df',
+        amaterasuTsukuyomi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FAmaterasu.png?alt=media&token=6badbaf1-c60d-452c-a4fb-ed28edd45a02',
+        stinkyBlob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMelma%20puzzona.png?alt=media&token=18655782-39f3-4e3d-8b29-4a5418b3e20e',
+        bear: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBear.png?alt=media&token=48f0ede4-a588-4bd6-b5ea-31b56e4fdaf0',
+        soprano: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FSoprano.png?alt=media&token=9c74562e-786b-4e60-a5cb-ceff41c411e2',
+        mrTakeshi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMr.%20Takeshi.png?alt=media&token=fc250bc2-052f-4e00-a069-6ec8e04cb91c',
+        stein: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FStein.png?alt=media&token=63cb53d1-c651-4ec0-ab19-af2140cd43db',
+        gorilloz: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FGorillos.png?alt=media&token=8c42e68f-97d3-479c-8e95-f6f821b07358'
+    };
     const itemsData = {
         1: {
             name: 'Marvick',
@@ -57,7 +125,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.marvick
         },
         2: {
-            name: 'Zorg',
+            name: 'Maestro Sasuke',
             rarity: 'Rare',
             class: 'Alien Fartens',
             description: 'Un alieno bizzarro con un gas tossico che tiene lontani gli invasori terrestri.',
@@ -68,7 +136,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.maestroSasuke
         },
         3: {
-            name: 'Bubblo',
+            name: 'Bob',
             rarity: 'Epic',
             class: 'Bubble Fartens',
             description: 'Un essere magico che crea bolle di gas che esplodono al minimo tocco.',
@@ -79,7 +147,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.bob
         },
         4: {
-            name: 'Whispy',
+            name: 'Cyclop',
             rarity: 'Common',
             class: 'Windy Fartens',
             description: 'Un esperto nell’arte del vento, capace di usare le sue flatulenze come raffiche offensive.',
@@ -90,7 +158,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.cyclop
         },
         5: {
-            name: 'Stinkster',
+            name: 'Baby Alien',
             rarity: 'Legendary',
             class: 'Foul Fartens',
             description: 'Il re del fetore, temuto da tutti per il suo odore insostenibile.',
@@ -101,7 +169,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.babyAlien
         },
         6: {
-            name: 'Gustav',
+            name: 'George',
             rarity: 'Common',
             class: 'Whirlwind Fartens',
             description: 'Con ogni suo movimento crea vortici di aria nauseante.',
@@ -112,7 +180,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.george
         },
         7: {
-            name: 'Puff',
+            name: 'Yokozuna',
             rarity: 'Rare',
             class: 'Cloud Fartens',
             description: 'Un essere leggero come una nuvola, ma dal gas devastante.',
@@ -123,7 +191,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.yokozuna
         },
         8: {
-            name: 'Blaster',
+            name: 'Dracula',
             rarity: 'Epic',
             class: 'Explosive Fartens',
             description: 'Specialista in esplosioni rapide e distruttive.',
@@ -134,7 +202,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.dracula
         },
         9: {
-            name: 'Silentus',
+            name: 'Robert',
             rarity: 'Legendary',
             class: 'Stealth Fartens',
             description: 'Un ninja silenzioso, il cui gas agisce di sorpresa.',
@@ -146,7 +214,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         10: {
-            name: 'Skid',
+            name: 'Xao',
             rarity: 'Common',
             class: 'Sliding Fartens',
             description: 'Un maestro dello scivolamento, che usa il gas per guadagnare velocità.',
@@ -158,7 +226,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         11: {
-            name: 'Flamer',
+            name: 'Fart Man',
             rarity: 'Rare',
             class: 'Fire Fartens',
             description: 'Con il suo gas infuocato, non lascia niente al suo passaggio.',
@@ -170,7 +238,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         12: {
-            name: 'Frosty',
+            name: 'Alien',
             rarity: 'Epic',
             class: 'Ice Fartens',
             description: 'Un maestro del gelo che congela i nemici con il suo gas ghiacciato.',
@@ -182,7 +250,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         13: {
-            name: 'Thunder',
+            name: 'Mr Fartè',
             rarity: 'Legendary',
             class: 'Storm Fartens',
             description: 'Portatore di tempeste, con un gas che emette scariche elettriche.',
@@ -194,7 +262,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         14: {
-            name: 'Shadow',
+            name: 'Fangpì',
             rarity: 'Rare',
             class: 'Dark Fartens',
             description: 'Un essere misterioso che attacca dall’ombra.',
@@ -206,7 +274,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         15: {
-            name: 'Spark',
+            name: 'Amaterasu&Tsukuyomi',
             rarity: 'Epic',
             class: 'Electric Fartens',
             description: 'Un esperto di scariche elettriche che usa il gas per amplificarle.',
@@ -218,7 +286,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         16: {
-            name: 'Tornado',
+            name: 'StinkyBlob',
             rarity: 'Legendary',
             class: 'Cyclone Fartens',
             description: 'Maestro delle tempeste, il cui gas crea tornado devastanti.',
@@ -230,7 +298,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         17: {
-            name: 'Blaze',
+            name: 'Bear',
             rarity: 'Common',
             class: 'Inferno Fartens',
             description: 'Un appassionato del fuoco che incenerisce tutto sul suo cammino.',
@@ -242,7 +310,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         18: {
-            name: 'Chilly',
+            name: 'Soprano',
             rarity: 'Rare',
             class: 'Frozen Fartens',
             description: 'Un essere gelido che usa il suo gas per bloccare i nemici.',
@@ -253,7 +321,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.soprano
         },
         19: {
-            name: 'Sonic',
+            name: 'Mr Takeshi',
             rarity: 'Epic',
             class: 'Speed Fartens',
             description: 'Un velocista che usa il suo gas per superare ogni limite.',
@@ -264,7 +332,7 @@ const Info = ({ goBack, itemId }) => {
             skin: skinItemImages.mrTakeshi
         },
         20: {
-            name: 'Crusher',
+            name: 'Stein',
             rarity: 'Legendary',
             class: 'Heavy Fartens',
             description: 'Un colosso dal gas così potente da schiacciare i nemici.',
@@ -276,7 +344,7 @@ const Info = ({ goBack, itemId }) => {
 
         },
         21: {
-            name: 'FartZilla',
+            name: 'Gorilloz',
             rarity: 'Legendary',
             class: 'Heavy Fartens',
             description: 'Godzilla è impazzito. Ha mangiato troppo e causerà danni che faranno sffrire tutto il mondo',
@@ -285,27 +353,69 @@ const Info = ({ goBack, itemId }) => {
             speed: 'Slow',
             effect: 'Crea un pattaccone di merda dio can',
             skin: skinItemImages.gorilloz
-        },
+        }
     };
+    useEffect(() => {
+        const initializeCaches = async () => {
+            await Promise.all([
+                ImageCache.initialize(),
+            ]);
+
+            // Pre-cache all images
+            const imagePaths = {};
+            const cacheImage = async (uri) => {
+                const cachedPath = await ImageCache.getCachedImagePath(uri);
+                if (cachedPath) {
+                    imagePaths[uri] = cachedPath;
+                }
+            };
+
+            // Cache all image assets
+            const imagesToCache = [
+                ...Object.values(skinItemImages),
+                ...Object.values(itemsData),
+                ...images,
+            ];
+
+            await Promise.all(imagesToCache.map(cacheImage));
+            setCachedImagePaths(imagePaths);
+
+        };
+
+        initializeCaches();
+
+        return () => {
+            // Optionally clear caches on unmount
+            // ImageCache.clearCache();
+            // VideoCache.clearCache();
+        };
+    }, []);
+
+    // Helper function to get cached image path
+    const getCachedImage = (uri) => {
+        return cachedImagePaths[uri] || uri;
+    };
+
     const item = itemsData[itemId];
 
     if (!item) {
-      return null; // O un messaggio di errore
+        return null;
     }
+
     return (
         <ImageBackground
-            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2FWhatsApp%20Image%202024-12-29%20at%2014.03.52.jpeg?alt=media&token=3f294538-72da-413a-a9f5-ed54f6c37c29' }}
+            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2FReference%20schermata%20da%20rispettare%20al%20millimetro%20di%20x!.png?alt=media&token=8d891161-a8dd-491d-92a5-b689f908d3fd') }}
             style={styles.page1}
             resizeMode="cover"
         >
-            <HUD />
+            <HUD setIsPlaying={setIsPlaying} />
             <TouchableOpacity
                 activeOpacity={1}
                 style={styles.backButton}
                 onPress={goBack}
             >
                 <Image
-                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e' }}
+                    source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
                     style={styles.backButtonImage}
                 />
                 <Text style={styles.backButtonText}>Back</Text>
@@ -317,7 +427,7 @@ const Info = ({ goBack, itemId }) => {
                     resizeMode="contain"
                 />
                 <Image
-                    source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7' }}
+                    source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7') }}
                     style={styles.ombra}
                     resizeMode="contain"
                 />
@@ -341,7 +451,6 @@ const Info = ({ goBack, itemId }) => {
     )
 }
 
-export default Info
 const styles = StyleSheet.create({
     rightText: {
         position: 'absolute',
@@ -455,3 +564,5 @@ const styles = StyleSheet.create({
     },
 }
 )
+
+export default Info

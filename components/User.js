@@ -13,6 +13,8 @@ import {
   ScrollView,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
+import RNFS from 'react-native-fs';
+
 import HUD from './HUD'
 // Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
@@ -30,15 +32,126 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
+class ImageCache {
+    static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+    static cachedImages = new Map();
+
+    static async initialize() {
+        try {
+            // Create cache directory if it doesn't exist
+            const exists = await RNFS.exists(this.cacheDir);
+            if (!exists) {
+                await RNFS.mkdir(this.cacheDir);
+            }
+
+            // Load existing cached files
+            const files = await RNFS.readDir(this.cacheDir);
+            files.forEach(file => {
+                const uri = file.name.replace(/_/g, '/').replace('.img', '');
+                this.cachedImages.set(uri, file.path);
+            });
+        } catch (error) {
+            console.error('Failed to initialize image cache:', error);
+        }
+    }
+
+    static async getCachedImagePath(uri) {
+        if (!uri) return null;
+
+        if (this.cachedImages.has(uri)) {
+            console.log(`Image found in cache: ${uri}`);
+            return `file://${this.cachedImages.get(uri)}`;
+        }
+
+        try {
+            const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+            const filePath = `${this.cacheDir}/${filename}`;
+
+            console.log(`Downloading image from: ${uri}`);
+            await RNFS.downloadFile({
+                fromUrl: uri,
+                toFile: filePath,
+                background: true,
+                discretionary: true,
+            }).promise;
+
+            this.cachedImages.set(uri, filePath);
+            console.log(`Image cached successfully: ${uri}`);
+            return `file://${filePath}`;
+        } catch {
+
+            return uri;
+        }
+    }
+
+    static async clearCache() {
+        try {
+            await RNFS.unlink(this.cacheDir);
+            await RNFS.mkdir(this.cacheDir);
+            this.cachedImages.clear();
+        } catch (error) {
+            console.error('Failed to clear image cache:', error);
+        }
+    }
+}
+
 const imageBehindSwitchUser = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
 const imageBehindSwitchrecord = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fskin%20targa%20missioni.png?alt=media&token=140de971-bc35-4dde-a2f9-e21b927f7f77';
 
-const User = ({ goBack }) => {
+
+
+const User = ({ goBack, isPlaying, setIsPlaying }) => {
   const [activeButton, setActiveButton] = useState('records');
 
   const handleSwitchAccount = () => setActiveButton('Account');
   const handleSwitchrecords = () => setActiveButton('records');
-
+    const [cachedImagePaths, setCachedImagePaths] = useState({});
+    const images = [
+'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
+'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
+'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
+'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',  
+];
+        useEffect(() => {
+            const initializeCaches = async () => {
+                await Promise.all([
+                    ImageCache.initialize(),
+                ]);
+    
+                // Pre-cache all images
+                const imagePaths = {};
+                const cacheImage = async (uri) => {
+                    const cachedPath = await ImageCache.getCachedImagePath(uri);
+                    if (cachedPath) {
+                        imagePaths[uri] = cachedPath;
+                    }
+                };
+    
+                // Cache all image assets
+                const imagesToCache = [
+                    ...Object.values(skinItemImages),
+                    ...Object.values(itemsData),
+                    ...images,
+                ];
+    
+                await Promise.all(imagesToCache.map(cacheImage));
+                setCachedImagePaths(imagePaths);
+    
+            };
+    
+            initializeCaches();
+    
+            return () => {
+                // Optionally clear caches on unmount
+                // ImageCache.clearCache();
+                // VideoCache.clearCache();
+            };
+        }, []);
+    
+        // Helper function to get cached image path
+        const getCachedImage = (uri) => {
+            return cachedImagePaths[uri] || uri;
+        };
   return (
     <ImageBackground
       source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e' }}
@@ -130,7 +243,7 @@ const User = ({ goBack }) => {
           </View>
         )}
       </View>
-      <HUD />
+      <HUD setIsPlaying={setIsPlaying}  />
     </ImageBackground>
   );
 };
