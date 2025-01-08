@@ -14,8 +14,8 @@ import {
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import HUD from './HUD'
-import RNFS from 'react-native-fs';
-
+// Ottieni la larghezza e l'altezza del dispositivo
+const { width, height } = Dimensions.get('window');
 // Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
@@ -30,82 +30,7 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-const { width, height } = Dimensions.get('window');
-
-
-class ImageCache {
-    static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-    static cachedImages = new Map();
-
-    static async initialize() {
-        try {
-            // Create cache directory if it doesn't exist
-            const exists = await RNFS.exists(this.cacheDir);
-            if (!exists) {
-                await RNFS.mkdir(this.cacheDir);
-            }
-
-            // Load existing cached files
-            const files = await RNFS.readDir(this.cacheDir);
-            files.forEach(file => {
-                const uri = file.name.replace(/_/g, '/').replace('.img', '');
-                this.cachedImages.set(uri, file.path);
-            });
-        } catch (error) {
-            console.error('Failed to initialize image cache:', error);
-        }
-    }
-
-    static async getCachedImagePath(uri) {
-        if (!uri) return null;
-
-        if (this.cachedImages.has(uri)) {
-            console.log(`Image found in cache: ${uri}`);
-            return `file://${this.cachedImages.get(uri)}`;
-        }
-
-        try {
-            const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-            const filePath = `${this.cacheDir}/${filename}`;
-
-            console.log(`Downloading image from: ${uri}`);
-            await RNFS.downloadFile({
-                fromUrl: uri,
-                toFile: filePath,
-                background: true,
-                discretionary: true,
-            }).promise;
-
-            this.cachedImages.set(uri, filePath);
-            console.log(`Image cached successfully: ${uri}`);
-            return `file://${filePath}`;
-        } catch {
-
-            return uri;
-        }
-    }
-
-    static async clearCache() {
-        try {
-            await RNFS.unlink(this.cacheDir);
-            await RNFS.mkdir(this.cacheDir);
-            this.cachedImages.clear();
-        } catch (error) {
-            console.error('Failed to clear image cache:', error);
-        }
-    }
-}
-
-
-const MapScreen = ({ isPlaying, setIsPlaying }) => {
-  const images = [
-'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf',
-'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8',
-'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
-'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
-];
-      const [cachedImagePaths, setCachedImagePaths] = useState({});
-  
+const MapScreen = ({ toggleMapScreen }) => {
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
   const mapScaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -136,53 +61,15 @@ const MapScreen = ({ isPlaying, setIsPlaying }) => {
     return getSize(0, 0, '13%'); // Default per altri casi, se necessario
   };
 
-      useEffect(() => {
-          const initializeCaches = async () => {
-              await Promise.all([
-                  ImageCache.initialize(),
-              ]);
-  
-              // Pre-cache all images
-              const imagePaths = {};
-              const cacheImage = async (uri) => {
-                  const cachedPath = await ImageCache.getCachedImagePath(uri);
-                  if (cachedPath) {
-                      imagePaths[uri] = cachedPath;
-                  }
-              };
-  
-              // Cache all image assets
-              const imagesToCache = [
-                  ...images,
-              ];
-  
-              await Promise.all(imagesToCache.map(cacheImage));
-              setCachedImagePaths(imagePaths);
-  
-          };
-  
-          initializeCaches();
-  
-          return () => {
-              // Optionally clear caches on unmount
-              // ImageCache.clearCache();
-              // VideoCache.clearCache();
-          };
-      }, []);
-  
-      // Helper function to get cached image path
-      const getCachedImage = (uri) => {
-          return cachedImagePaths[uri] || uri;
-      };
   return (
     <ImageBackground
       source={{
-        uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf'),
+        uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf',
       }}
       style={styles.background}
       resizeMode="cover"
     >
-      <HUD setIsPlaying={setIsPlaying}  />
+      <HUD />
       <View style={styles.containerContent}>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -199,7 +86,7 @@ const MapScreen = ({ isPlaying, setIsPlaying }) => {
 
               <Image
                 source={{
-                  uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8'),
+                  uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8',
                 }}
                 style={styles.itemImage}
               />
@@ -214,7 +101,7 @@ const MapScreen = ({ isPlaying, setIsPlaying }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45'),
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
                     }}
                     style={styles.ricompensaImage}
                   />
@@ -223,7 +110,7 @@ const MapScreen = ({ isPlaying, setIsPlaying }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45'),
+                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
                     }}
                     style={styles.ricompensaImage}
                   />
@@ -467,8 +354,8 @@ const styles = StyleSheet.create({
   },
   itemImage: {
     resizeMode: 'contain',
-    width: '30%',
-    height: '15%',
+    width: '33%',
+    height: '33%',
   },
   itemText: {
     fontFamily: 'LuckiestGuy-8jyD',
