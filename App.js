@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
+  TextInput,
   Image,
   ImageBackground,
   Text,
@@ -23,8 +24,13 @@ import Immersive from 'react-native-immersive';
 const { width, height } = Dimensions.get('window');
 
 
-const pages = [<Shop />, <Skin />,   <Home/>, <Mission />, <MapScreen />];
 // isPlaying={isPlaying} setIsPlaying={setIsPlaying} 
+
+Text.defaultProps = Text.defaultProps || {};
+Text.defaultProps.allowFontScaling = false;
+
+TextInput.defaultProps = TextInput.defaultProps || {};
+TextInput.defaultProps.allowFontScaling = false;
 
 
 const localImages = [
@@ -64,6 +70,7 @@ const ItemComponent = React.memo(({ item }) => {
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(true);
+  const [selectedCharacterId, setSelectedCharacterId] = useState(1);
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(2);
   const [activeIndex, setActiveIndex] = useState(2);
@@ -71,6 +78,7 @@ const App = () => {
   const block2Animation = useRef(new Animated.Value(0)).current;
   const block3Animation = useRef(new Animated.Value(0)).current;
   const [transitionVisible, setTransitionVisible] = useState(false);
+  const pages = [<Shop isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <Skin isPlaying={isPlaying} setIsPlaying={setIsPlaying} setSelectedCharacterId={setSelectedCharacterId}/>,   <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} selectedCharacterId={selectedCharacterId}/>, <Mission isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <MapScreen isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>];
 
   const scrollX = useRef(new Animated.Value(0)).current;
   const scaleValues = useRef(imageUrls.map(() => new Animated.Value(0.8))).current;

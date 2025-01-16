@@ -97,7 +97,7 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-const Skin = ({ isPlaying, setIsPlaying }) => {
+const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
   const [switchComponent, setSwitchComponent] = useState('Select')
   const [activeButton, setActiveButton] = useState('skin');
   const [visibleOptionsId, setVisibleOptionsId] = useState(false);
@@ -213,6 +213,10 @@ const Skin = ({ isPlaying, setIsPlaying }) => {
     setSelectedItemId(id);
     setSwitchComponent('Info'); // Cambia lo stato per mostrare il componente User
   };
+
+  const selectSkin = (id) => {
+    setSelectedCharacterId(id);
+  }
 
   const handleSelectPress = () => {
     setSwitchComponent('Select'); // Cambia lo stato per tornare al componente Home
@@ -391,7 +395,7 @@ const Skin = ({ isPlaying, setIsPlaying }) => {
                         <>
                           <View style={styles.aura}></View>
                           <View style={styles.optionsContainer}>
-                            <TouchableOpacity style={styles.optionButton}>
+                            <TouchableOpacity style={styles.optionButton} onPress={() => selectSkin(item.id)}>
                               <Text style={styles.optionText}>Select</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.optionButton} onPress={() => handleInfoPress(item.id)}>
@@ -447,7 +451,7 @@ const styles = StyleSheet.create({
   sortButton: {
     width: 160,
     left: '10%',
-    height: 400,
+    height: '45%',
   },
   aura: {
     zIndex: -1,
@@ -485,7 +489,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   mainContainer: {
-    top: 80,
+    top: 50,
     height: height,
     zIndex: 50,
   },
@@ -603,7 +607,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   topButtonText: {
-    top: 0,
+    top: -5,
     color: '#FFF',
     fontSize: 26,
     fontFamily: 'LuckiestGuy-8jyD',

@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     height: height,
-    top: 30,
+    top: 50,
   },
   missionContent: {
     position: 'absolute',
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   topButtonText: {
-    top: 0,
+    top: -5,
     color: '#FFF',
     fontSize: 20,
     fontFamily: 'LuckiestGuy-8jyD',
