@@ -17,8 +17,11 @@ import HUD from './HUD'
 const { width, height } = Dimensions.get('window');
 
 function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
-  const [progress, setProgress] = useState(0);
+
   if (isPlaying) return null;
+
+  const [visibleFart, setVisibleFart] = useState(null);
+  const [progress, setProgress] = useState(0);
   const fartPositions = {
     1: {
       top: 110,
@@ -172,24 +175,12 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     stein: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FStein.png?alt=media&token=63cb53d1-c651-4ec0-ab19-af2140cd43db',
     gorilloz: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FGorillos.png?alt=media&token=8c42e68f-97d3-479c-8e95-f6f821b07358'
   };
-  const [enemySkin, setEnemySkin] = useState(1);
-
-  const [enemyId, setEnemyId] = useState(1);
-  const [visibleFart, setVisibleFart] = useState(null);
 
   const fartImages = [
     require('../assets/images/fart1.png'),
     require('../assets/images/fart2.png'),
     require('../assets/images/fart3.png'),
   ];
-  useEffect(() => {
-    const itemKeys = Object.keys(itemsData);
-    const randomKey = itemKeys[Math.floor(Math.random() * itemKeys.length)];
-    const selectedEnemyData = itemsData[randomKey];
-
-    setEnemySkin(selectedEnemyData.skin);
-    setEnemyId(parseInt(randomKey));
-  }, []);
 
   const itemsData = {
     1: {
@@ -435,17 +426,29 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     }
   };
 
+  const [enemySkin, setEnemySkin] = useState(skinItemImages.marvick);
+  const [enemyId, setEnemyId] = useState(1);
+  useEffect(() => {
+    const itemKeys = Object.keys(itemsData);
+    const randomKey = itemKeys[Math.floor(Math.random() * itemKeys.length)];
+    const selectedEnemyData = itemsData[randomKey];
+    setEnemySkin(selectedEnemyData.skin);
+    setEnemyId(parseInt(randomKey));
+  }, []);
   const handlePress = () => {
-    // Seleziona un'immagine casuale
     const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
     setVisibleFart(randomFart);
+    console.log("VISIBLE FART: " + visibleFart)
 
-    // Rimuovi l'immagine dopo 500ms
     setTimeout(() => {
       setVisibleFart(null);
     }, 500);
   };
   const item = itemsData[selectedCharacterId] || itemsData[1];
+  console.log("Enemy Skin: ", enemySkin);
+  console.log("Visible Fart: ", visibleFart);
+  console.log("Item Skin: ", item.skin);
+  console.log("Fart Position: ", fartPositions[selectedCharacterId]);
 
   return (
     <View style={styles.container}>
@@ -469,9 +472,12 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
             style={styles.ombra}
             resizeMode="contain"
           />
-          <Image
-            source={visibleFart}
-            style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
+          {visibleFart && (
+            <Image
+              source={visibleFart}
+              style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
+          )}
+          <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
         </View>
         <View style={styles.imageWrapper}>
           <Image
@@ -481,17 +487,17 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
           />
           {visibleFart && (
             <Image
-              source={visibleFart} 
+              source={visibleFart}
               style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
-            )}
-          <Image
-            source={{ uri: enemySkin }}
-            style={styles.enemy}
-            accessible={true}
-            accessibilityLabel="Enemy character"
-          />
-        <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
-
+          )}
+          {enemySkin && (
+            <Image
+              source={{ uri: enemySkin }}
+              style={styles.enemy}
+              accessible={true}
+              accessibilityLabel="Enemy character"
+            />
+          )}
         </View>
       </View>
 
@@ -525,6 +531,12 @@ const styles = ScaledSheet.create({
     width: width,
     height: height,
     backgroundColor: 'orange',
+  },
+  fartButton: {
+    backgroundColor: 'black',
+    width: width,
+    height: height,
+    zIndex: 2,
   },
   ombra: {
     position: 'relative', // Sovrappone l'immagine sotto

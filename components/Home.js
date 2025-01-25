@@ -705,6 +705,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
 
   const item = itemsData[selectedCharacterId] || itemsData[1];
 
+  console.log(visibleFart)
   return (
     <ImageBackground
       source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e') }}
@@ -818,10 +819,8 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
         </View>
         <TouchableOpacity style={styles.playButton}
           activeOpacity={1}
-          onPressIn={() => {
-            bounceAnimation(playScaleAnim);
-            handlePlayPress();
-          }} >
+          onPress={handlePlayPress}
+          onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
             source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}

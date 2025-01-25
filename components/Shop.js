@@ -202,10 +202,6 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
         controls={false}
         muted={true}
         playInBackground={true}
-        onError={(error) => {
-          console.error('Video playback error:', error);
-          setCachedVideoPath('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330');
-        }}
       />
     );
   };
