@@ -43,11 +43,11 @@ const localImages = [
 
 
 const imageUrls = [
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Ftoilettatura.png?alt=media&token=ba9f3b7e-01ef-4c35-9874-c5f2f1061ecd',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Fpersonaggi%20icona%20men%C3%B9.png?alt=media&token=b45e969a-7a86-4b71-a0f4-399a001587f6',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Fhome%20simbolo.png?alt=media&token=25ccbe53-120e-4ca1-be13-45f2deee520b',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Navigation%20Bar%20Icons%2Frotolo%20missione.png?alt=media&token=1badebd8-2727-4840-a03f-2e7aa3c1105a',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fmap%20icon.png?alt=media&token=99bc80b2-1369-4a8f-bfb0-53a3e56717a6',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/toilettatura.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/personaggi+icona+men%C3%B9.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/home+simbolo.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/rotolo+missione.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/map+icon.png',
 ];
 
 const preloadImages = async () => {
@@ -419,7 +419,7 @@ const App = () => {
         <>
           <SafeAreaView style={styles.bottomContainer}>
             <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustra%20inferiore.png?alt=media&token=5222eb2e-a57a-487e-99d1-6eb0a3f59644' }}
+              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustra+inferiore.png' }}
               style={styles.bottomImage}
             />
           </SafeAreaView>

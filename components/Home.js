@@ -350,19 +350,18 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
 
 
   const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
-    "https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac",
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png',
+    "https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png",
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png',
   ];
 
 
@@ -437,27 +436,27 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
     ]).start();
   };
   const skinItemImages = {
-    marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMarvick.png?alt=media&token=d5346127-30e1-4fc6-9ac4-e092f4d86175',
-    maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMaestro%20Sasuke.png?alt=media&token=01bae3e1-5066-46a1-8b77-4e5a4a4ec050',
-    bob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBoB.png?alt=media&token=b7b75588-7cfe-4a6e-ab85-eb42b51f29fd',
-    cyclop: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FCyclop.png?alt=media&token=85783d86-ca0e-4bb3-852e-47e8974e6dd9',
-    babyAlien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBaby%20Alien.png?alt=media&token=0cb16087-ca0d-41ac-99b1-9369bf1fdea4',
-    george: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FGeorge.png?alt=media&token=40093d6e-c869-47e3-960d-9b128a72b61c',
-    yokozuna: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FYokozuna.png?alt=media&token=2d742ba2-cffe-498f-af6c-386336e2bbdf',
-    dracula: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FDracula.png?alt=media&token=15584519-9e16-47b3-a793-5e35e789ace2',
-    robert: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FRobert.png?alt=media&token=21e94f96-ad20-40d6-9a59-985d370afb67',
-    xao: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FXao.png?alt=media&token=63032bc7-12f2-41bf-a549-36fb01461ef1',
-    fartMan: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFartman.png?alt=media&token=0b63be39-b735-4a90-90f4-219e149767c0',
-    alien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FAlien.png?alt=media&token=774ec1bd-f4aa-483f-9b2c-d5b253fd678e',
-    mrFarte: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMr.%20Fart%C3%A9.png?alt=media&token=ba353fd8-19b6-4174-84f9-045329349a8b',
-    fangpi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FFangp%C3%AC.png?alt=media&token=53996ef6-9be4-4692-b2f8-af4534da21df',
-    amaterasuTsukuyomi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FAmaterasu.png?alt=media&token=6badbaf1-c60d-452c-a4fb-ed28edd45a02',
-    stinkyBlob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMelma%20puzzona.png?alt=media&token=18655782-39f3-4e3d-8b29-4a5418b3e20e',
-    bear: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FBear.png?alt=media&token=48f0ede4-a588-4bd6-b5ea-31b56e4fdaf0',
-    soprano: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FSoprano.png?alt=media&token=9c74562e-786b-4e60-a5cb-ceff41c411e2',
-    mrTakeshi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FMr.%20Takeshi.png?alt=media&token=fc250bc2-052f-4e00-a069-6ec8e04cb91c',
-    stein: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FStein.png?alt=media&token=63cb53d1-c651-4ec0-ab19-af2140cd43db',
-    gorilloz: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Characters%2FGorillos.png?alt=media&token=8c42e68f-97d3-479c-8e95-f6f821b07358'
+    marvick: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Marvick.png',
+    maestroSasuke: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Maestro+Sasuke.png',
+    bob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/BoB.png',
+    cyclop: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Cyclop.png',
+    babyAlien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Baby+Alien.png',
+    george: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/George.png',
+    yokozuna: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Yokozuna.png',
+    dracula: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Dracula.png',
+    robert: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Robert.png',
+    xao: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Xao.png',
+    fartMan: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',
+    alien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Alien.png',
+    mrFarte: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Fart%C3%A9.png',
+    fangpi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fangp%C3%AC.png',
+    amaterasuTsukuyomi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Amaterasu.png',
+    stinkyBlob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Melma+puzzona.png',
+    bear: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Bear.png',
+    soprano: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Soprano.png',
+    mrTakeshi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Takeshi.png',
+    stein: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png',
+    gorilloz: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png'
   };
   const itemsData = {
     1: {
@@ -708,14 +707,14 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   console.log(visibleFart)
   return (
     <ImageBackground
-      source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e') }}
+      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
       style={styles.page1}
       resizeMode="cover"
     >
       <SafeAreaView style={styles.tema}>
         <Animated.Image
           source={{
-            uri: getCachedImage("https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsilouette%20scoreggia%20da%20mettere%20su%20sfondo%2C%20dietro%20il%20livello%20dell'impulso%20di%20luce.png?alt=media&token=64de07b5-438d-42ed-b80c-a9c2cce4b7ac"),
+            uri: getCachedImage("https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png"),
           }}
           style={[
             styles.checkerboard,
@@ -731,7 +730,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
       <View style={styles.mainContainer}>
         <Animated.Image
           source={{
-            uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fimpulso%20di%20luce.png?alt=media&token=029852f4-eb5b-424d-8958-9cc2e43b7b86'),
+            uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png'),
           }}
           style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
@@ -740,7 +739,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             <Image
               style={styles.user}
               source={{
-                uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FWhatsApp%20Image%202024-11-18%20at%2017.23.56.jpeg?alt=media&token=a42e4d8d-900e-4444-9dbf-62b379b55a21'),
+                uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg'),
               }}
             />
             <TouchableOpacity
@@ -750,7 +749,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             >
               <Image
                 source={{
-                  uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fcerchio%20contentente%20personaggio%20in%20home%20casupola.png?alt=media&token=b656a8cc-6cb4-4d16-8495-c26505e70cc4')
+                  uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png')
                 }}
                 style={styles.buttonImageUser}
               />
@@ -761,17 +760,17 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopLeft}>
             <ImageBackground
               style={styles.buttonsRowTopLeftBackground}
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915') }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png') }}
             />
             <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Frewards%20icon.png?alt=media&token=c91aaa7c-2ad9-4461-9b6f-abbfe784aaf7') }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png') }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fitems%20icon%20V.2%202.png?alt=media&token=3e7ebce0-7fc1-45e6-ba3f-a89d0eb332f0') }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png') }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
@@ -780,18 +779,18 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopRight}>
             <ImageBackground
               style={styles.buttonsRowTopRightBackground}
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fbalaustrino%20home.png?alt=media&token=fa4b4297-4fe3-4055-bffd-0bf901266915') }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png') }}
             />
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpassives%20icon.png?alt=media&token=cd878bca-2667-4165-a7e0-b1796948e073') }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png') }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fnewspaper.png?alt=media&token=b12866ee-2794-4d62-9d4f-a59673182398') }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png') }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
@@ -806,7 +805,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             resizeMode="contain"
           />
           <Image
-            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fpiattaforma%20skin%20home.png?alt=media&token=cab9591d-8762-4a8f-901b-3eed084b15d7') }}
+            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -822,7 +821,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           onPress={handlePlayPress}
           onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
-            source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20semi%20ellittico.png?alt=media&token=f8d37105-4194-447e-8889-3513aedc6a1e') }}
+            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
           />
           <Text style={styles.playButtonText}>
