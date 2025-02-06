@@ -124,45 +124,45 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
   }, [opacity]);
 
   const skinItemImages = {
-    marvick: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20marvik.png?alt=media&token=92ff07c9-ae89-49a0-a698-aa3677443a90',
-    maestroSasuke: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20sasuke.png?alt=media&token=fae519f9-ba44-46cf-b9ef-680629843f11',
-    bob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20bob.png?alt=media&token=4a52b112-1e10-4e39-83b5-1c92f479ff2c',
-    cyclop: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20cyclop.png?alt=media&token=94e26047-aca9-47bb-907d-e92f1d2ac3e2',
-    babyAlien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20alien.png?alt=media&token=121dcfc6-3d7e-410a-8097-42c10af79784',
-    george: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20george.png?alt=media&token=10b6c8f3-39a9-4a99-99de-a88f42572375',
-    yokozuna: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20yokkozuna.png?alt=media&token=248beef7-ea0e-4b6a-a883-9afed5dcc449',
-    dracula: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2FMezzob%20Draccula.png?alt=media&token=29392aff-cd3c-4ede-a5a0-87baaea85540',
-    robert: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20robert.png?alt=media&token=68cfc266-3d67-4d0c-a57f-0c769a129d73',
-    xao: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20xao.png?alt=media&token=3b85a8a1-2202-4b1a-b4b3-fa903ae568b9',
-    fartMan: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fartman.png?alt=media&token=961c0f05-55c6-4e11-97a9-99deaa230539',
-    alien: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Falien%20adulto%20mezzob.png?alt=media&token=2fbc4279-ebc6-4ef0-b87f-3fb3475e66ed',
-    mrFarte: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20Mr.%20Fart%C3%A9.png?alt=media&token=2f1f1eb0-52d9-4ba2-8dbb-daa1ebf483e3',
-    fangpi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20fangpi%C3%AC.png?alt=media&token=a0d97103-7d72-4648-8729-3b71449ec82c',
-    amaterasuTsukuyomi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20tuskuamateras.png?alt=media&token=e3be9494-04c8-4cad-ab23-ccbf7e835246',
-    stinkyBlob: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20melma%20puzzonsa.png?alt=media&token=2add89e2-6c4f-4d5a-84d0-4cae2ca524e7',
-    bear: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzobusto%20bear.png?alt=media&token=1bcfc630-9007-4fb8-81b9-446c292f3168',
-    soprano: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20soprano.png?alt=media&token=949f658a-2034-436e-b15e-e6baa473790a',
-    mrTakeshi: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20mr.%20takeshi.png?alt=media&token=b4ee41e6-1a61-4cfc-9528-d51b331088b7',
-    stein: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20stein.png?alt=media&token=9f5854a3-7b60-4ca4-9ba8-b8cfcc8456e2',
-    gorilloz: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Facce%2Fmezzob%20gorilloz.png?alt=media&token=5d113d1f-7988-495f-8499-14f1251b76ef'
+    marvick: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+marvik.png',
+    maestroSasuke: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+sasuke.png',
+    bob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+bob.png',
+    cyclop: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+cyclop.png',
+    babyAlien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzobusto+alien.png',
+    george: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+george.png',
+    yokozuna: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+yokkozuna.png',
+    dracula: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/Mezzob+Draccula.png',
+    robert: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+robert.png',
+    xao: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+xao.png',
+    fartMan: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+fartman.png',
+    alien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/alien+adulto+mezzob.png',
+    mrFarte: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+Mr.+Fart%C3%A9.png',
+    fangpi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+fangpi%C3%AC.png',
+    amaterasuTsukuyomi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+tuskuamateras.png',
+    stinkyBlob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+melma+puzzonsa.png',
+    bear: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzobusto+bear.png',
+    soprano: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+soprano.png',
+    mrTakeshi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+mr.+takeshi.png',
+    stein: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+stein.png',
+    gorilloz: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Facce/mezzob+gorilloz.png'
   };
   const skinItemRarities = {
-    comune: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20comune.png?alt=media&token=1c18b981-7086-4063-8d23-845760bac25f',
-    non_comune: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20non%20comune.png?alt=media&token=bfd04c06-98fd-4b57-b186-67309816d94f',
-    raro: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice_intera_raro-transformed.png?alt=media&token=b544f1db-1305-4d89-8bcc-2e132e5ec20f',
-    epico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20epico.png?alt=media&token=a34a1c61-855d-454f-9652-112d11596d45',
-    leggendario: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20leggendaria.png?alt=media&token=03b064a1-b1a6-42ed-92ab-8e8423069644',
-    mitico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20mitico.png?alt=media&token=f1b3f8b0-236f-4735-8676-0068340e65f0',
-    divinità: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Rarity%2Fcornice%20intera%20divinit%C3%A0.png?alt=media&token=8ef1d64f-dfeb-44f4-81c8-cd6dfb98e8f7',
+    comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+comune.png',
+    non_comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+non+comune.png',
+    raro: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice_intera_raro-transformed.png',
+    epico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+epico.png',
+    leggendario: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+leggendaria.png',
+    mitico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+mitico.png',
+    divinità: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+divinit%C3%A0.png',
   }
   const skinItemBackgrounds = {
-    comune: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20blu%20con%20sfumatura%20biancastra%20della%20schermata%20home.png?alt=media&token=b83d60da-2118-4eed-b3ec-e2dce661aed4',
-    raro: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20raro.png?alt=media&token=51b32ffd-043a-4bcb-b38f-0ce28d2b1615',
-    non_comune: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20non%20comune.png?alt=media&token=9de28b8a-4d76-4d7e-8d63-b796756e73cf',
-    epico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20epico.png?alt=media&token=3fb40852-9040-4352-93f8-d0841723978c',
-    leggendario: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20leggendaria.png?alt=media&token=0fd106da-5e3f-41ec-b148-194922a843a5',
-    mitico: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fmitico.mp4?alt=media&token=eee7b7f6-d3d9-4eff-acf3-87a33abeee09',
-    divinità: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fdivinita.mp4?alt=media&token=aa041503-69aa-4ee7-9de5-135b005ff792',
+    comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+blu+con+sfumatura+biancastra+della+schermata+home.png',
+    raro: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+raro.png',
+    non_comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+non+comune.png',
+    epico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+epico.png',
+    leggendario: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+leggendaria.png',
+    mitico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/mitico.mp4',
+    divinità: 'https://fartclicker.s3.eu-north-1.amazonaws.com/divinita.mp4',
   };
 
   const skinItems = [
@@ -194,14 +194,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
     title: `Comic ${index + 1}`,
     cover: 'https://via.placeholder.com/150x200'
   }));
-  const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fsfondo%20blu.png?alt=media&token=3ef35cc6-d6d3-4b90-9309-a175a769614e',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%202.png?alt=media&token=c009f439-b44e-4781-9c1c-1b1b7ecc0cbe',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%203.png?alt=media&token=a9e7fe0b-af4b-4241-a779-88dcf801fb71',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%204.png?alt=media&token=6b01c40b-538d-4422-b62d-b065f3e4c170',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Skin%20Icons%2Fsepar%C3%A9%20schermata%20skin%20(1).png?alt=media&token=a217bcd9-ea08-48b5-88af-204cc6caebf9',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20schermata%20personaggio%205.png?alt=media&token=efb61365-c3b8-4cd5-8e29-fa7869ca6433',
-  ];
+
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -244,7 +237,6 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
         ...Object.values(skinItemImages),
         ...Object.values(skinItemRarities),
         ...Object.values(skinItemBackgrounds).filter(uri => !uri.endsWith('.mp4')),
-        ...images,
       ];
 
       await Promise.all(imagesToCache.map(cacheImage));
@@ -321,14 +313,14 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20skin%20fermo%201.png?alt=media&token=f2490f4f-5e0a-414e-8374-5d691de55ada' }}
+      source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png' }}
       style={styles.page1}
       resizeMode="cover"
     >
       <Animated.View style={[styles.page2, { opacity }]}>
         <Image
           source={{
-            uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo%20skin%20fermo%202.png?alt=media&token=2a12b12f-e15b-4761-9978-6fb714118008',
+            uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png',
           }}
           style={styles.image}
           resizeMode="cover"
@@ -354,15 +346,15 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
           <Image
             source={{
               uri: activeButton === 'skin'
-                ? 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20skin%20Schlein%20(1).png?alt=media&token=4b0b50ab-9e8a-447a-9722-7a44b6212f88'
-                : 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20skin%20Meloni%20(1).png?alt=media&token=6d682e7c-9951-45cf-a0a2-6123c6d241cb'
+                ? 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png'
+                : 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png'
             }}
             style={styles.topImage}
           />
 
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
             <Image
-              source={{ uri: getCachedImage('https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Frettangolo%20longilineo.png?alt=media&token=cbb49ff8-bc7b-4e3a-9003-b8b5c29e1147') }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png') }}
               style={styles.buttonImage}
               resizeMode="contain"
             />
