@@ -34,12 +34,12 @@ const getSize = (small, medium, large) => {
 };
 
 const shopItemImages = [
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%201.png?alt=media&token=1d60b34d-df85-4a42-88c5-a707df97f7a6',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%202.png?alt=media&token=c1e9e543-3811-4092-8ea4-564c4fd75a3b',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%203.png?alt=media&token=e00fca13-ceeb-43ef-981a-1c1d72c7afd5',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%20sgravior%204.png?alt=media&token=f2debd95-462d-4b34-bbd1-2dcb6fce0e2c',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%20sgravior%205.png?alt=media&token=3f25093d-d83d-440e-b188-049568a65c75',
-  'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Ficona%20soldi%20sgravior%206.png?alt=media&token=34823b48-1f64-4976-82ad-f70d6815cb0d',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+1.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+2.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+3.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+4.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+5.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+6.png',
 ];
 
 const buttonTexts = [
@@ -127,20 +127,20 @@ class ImageCache {
 const Shop = ({ isPlaying, setIsPlaying }) => {
   const [cachedImagePaths, setCachedImagePaths] = useState({});
   const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20bluina.png?alt=media&token=b92e883e-ec4f-4f3d-bbb1-b25d78f58aeb',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20magentine.png?alt=media&token=bd8eb3f4-31ea-4faf-adfa-a52dcbaafbbf',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fchronometer-timer-counter-free-png.webp?alt=media&token=df07c4c0-eab9-4de9-85c9-487b65cac239',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp',
 
   ];
   const [cachedVideoPath, setCachedVideoPath] = useState(
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330'
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo_shop.mp4'
   );
 
   useEffect(() => {
     const initializeVideoCache = async () => {
       await VideoCache.initialize();
 
-      const videoUrl = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Sfondi%20Skin%2Fsfondo_shop.mp4?alt=media&token=5d6e101a-5250-4967-8a14-a79170d6b330';
+      const videoUrl = 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo_shop.mp4';
 
       try {
         const cachedPath = await VideoCache.getCachedVideoPath(videoUrl);
@@ -235,19 +235,19 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20bluina.png?alt=media&token=b92e883e-ec4f-4f3d-bbb1-b25d78f58aeb' }}
+              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png' }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Shop%20Icons%2Fchronometer-timer-counter-free-png.webp?alt=media&token=df07c4c0-eab9-4de9-85c9-487b65cac239' }}
+              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp' }}
               style={styles.Timer}
             />
           </View>
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fbarra%20magentine.png?alt=media&token=bd8eb3f4-31ea-4faf-adfa-a52dcbaafbbf' }}
+              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png' }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>Testo Rotato</Text>

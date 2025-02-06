@@ -57,7 +57,7 @@ function PauseButton({ setIsPlaying }) {
     <>
       <View style={styles.topContainer}>
         <Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Menu%20Icons%2Fraccoglitore%20monete%20ink%20e%20impostaz%20finale.png?alt=media&token=2cdf5e80-e928-4589-b75f-c590b180fa50' }}
+          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png' }}
           style={styles.topImage}
           resizeMode="cover"
         />
@@ -68,7 +68,7 @@ function PauseButton({ setIsPlaying }) {
           setIsPaused(true);
         }}>
         <Animated.Image
-          source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FGreenButton.png?alt=media&token=859bade4-78bf-47ec-b3fd-88d486c37e97' }}
+          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png' }}
           style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
           resizeMode="contain"
         />

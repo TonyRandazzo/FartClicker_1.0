@@ -108,9 +108,9 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
 
   const [activeButton, setActiveButton] = useState('missions');
   const images = [
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fnuova%20schermata%20mission.png?alt=media&token=484d1a77-5d98-42ec-b053-2b680f013852',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Schlein.png?alt=media&token=a77600ef-295e-408f-afa7-e765edd1afe7',
-    'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Meloni.png?alt=media&token=286b1d32-110a-46a1-97be-b2a2d3b1f733',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/nuova+schermata+mission.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png',
   ];
 
 
@@ -194,7 +194,7 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/MissionIcons%2Fnuova%20schermata%20mission.png?alt=media&token=484d1a77-5d98-42ec-b053-2b680f013852' }}
+      source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/nuova+schermata+mission.png' }}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -219,8 +219,8 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
           <Image
             source={{
               uri: activeButton === 'missions'
-                ? 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Schlein.png?alt=media&token=a77600ef-295e-408f-afa7-e765edd1afe7'
-                : 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Separ%C3%A8%2Fsepar%C3%A9%20schermata%20missioni%20Meloni.png?alt=media&token=286b1d32-110a-46a1-97be-b2a2d3b1f733'
+                ? 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png'
+                : 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png'
             }}
             style={styles.topImage}
           />

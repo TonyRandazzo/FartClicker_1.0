@@ -64,7 +64,7 @@ const MapScreen = ({ toggleMapScreen }) => {
   return (
     <ImageBackground
       source={{
-        uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Fsfondo%20shop.png?alt=media&token=384318d8-0527-411d-a67c-0344b23fdedf',
+        uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
       }}
       style={styles.background}
       resizeMode="cover"
@@ -86,7 +86,7 @@ const MapScreen = ({ toggleMapScreen }) => {
 
               <Image
                 source={{
-                  uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2Ftasto%20arancione%20tondo.png?alt=media&token=a5c750b9-54f0-46ac-8c84-b947c93c9ea8',
+                  uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png',
                 }}
                 style={styles.itemImage}
               />
@@ -101,7 +101,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
+                      uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
                     }}
                     style={styles.ricompensaImage}
                   />
@@ -110,7 +110,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FCOIN%20MARVIK.png?alt=media&token=67f52d59-d944-4120-a58f-185ac7a76b45',
+                      uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
                     }}
                     style={styles.ricompensaImage}
                   />
