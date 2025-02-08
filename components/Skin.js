@@ -313,15 +313,14 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png' }}
+      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png') }}
       style={styles.page1}
       resizeMode="cover"
     >
       <Animated.View style={[styles.page2, { opacity }]}>
         <Image
           source={{
-            uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png',
-          }}
+            uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png')}}
           style={styles.image}
           resizeMode="cover"
         />
@@ -346,8 +345,8 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
           <Image
             source={{
               uri: activeButton === 'skin'
-                ? 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png'
-                : 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png'
+                ? getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png')
+                : getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png')
             }}
             style={styles.topImage}
           />

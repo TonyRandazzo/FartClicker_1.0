@@ -33,6 +33,7 @@ const getSize = (small, medium, large) => {
 const MapScreen = ({ toggleMapScreen }) => {
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
   const mapScaleAnim = useRef(new Animated.Value(1)).current;
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
 
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
@@ -49,6 +50,51 @@ const MapScreen = ({ toggleMapScreen }) => {
     ]).start();
   };
 
+
+  const images = [
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
+    '',
+    '',
+  ]
+  
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+      ]);
+  
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+  
+      // Cache all image assets
+      const imagesToCache = [
+        ...images,
+      ];
+  
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+  
+    };
+  
+    initializeCaches();
+  
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+      // VideoCache.clearCache();
+    };
+  }, []);
+  
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
   // Funzione per determinare la posizione left in base al numero
   const getLeftPosition = (item) => {
     const itemTextLength = item.toString().length; // Calcola la lunghezza del numero (2 o 3 cifre)
@@ -64,7 +110,7 @@ const MapScreen = ({ toggleMapScreen }) => {
   return (
     <ImageBackground
       source={{
-        uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
+        uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png'),
       }}
       style={styles.background}
       resizeMode="cover"
@@ -86,7 +132,7 @@ const MapScreen = ({ toggleMapScreen }) => {
 
               <Image
                 source={{
-                  uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png',
+                  uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png'),
                 }}
                 style={styles.itemImage}
               />
@@ -101,7 +147,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
+                      uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png'),
                     }}
                     style={styles.ricompensaImage}
                   />
@@ -110,7 +156,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
+                      uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png'),
                     }}
                     style={styles.ricompensaImage}
                   />

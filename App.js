@@ -457,7 +457,7 @@ const App = () => {
           ]}
         />
       )}
-      {transitionVisible && (
+      {/* {transitionVisible && (
         <View style={[styles.cascade]}>
           <Animated.View
             style={[
@@ -508,7 +508,7 @@ const App = () => {
             ]}
           />
         </View>
-      )}
+      )} */}
     </SafeAreaView>
   );
 };

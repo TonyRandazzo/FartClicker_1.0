@@ -35,10 +35,10 @@ const getSize = (small, medium, large) => {
 
 
 
-
 function PauseButton({ setIsPlaying }) {
   const [isPaused, setIsPaused] = useState(false);
   const pauseScaleAnim = useRef(new Animated.Value(1)).current;
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
@@ -53,11 +53,54 @@ function PauseButton({ setIsPlaying }) {
       }),
     ]).start();
   };
+  const images = [
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png',
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png',
+  ]
+
+  useEffect(() => {
+    const initializeCaches = async () => {
+      await Promise.all([
+        ImageCache.initialize(),
+      ]);
+
+      // Pre-cache all images
+      const imagePaths = {};
+      const cacheImage = async (uri) => {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      };
+
+      // Cache all image assets
+      const imagesToCache = [
+        ...images,
+      ];
+
+      await Promise.all(imagesToCache.map(cacheImage));
+      setCachedImagePaths(imagePaths);
+
+    };
+
+    initializeCaches();
+
+    return () => {
+      // Optionally clear caches on unmount
+      // ImageCache.clearCache();
+      // VideoCache.clearCache();
+    };
+  }, []);
+
+  // Helper function to get cached image path
+  const getCachedImage = (uri) => {
+    return cachedImagePaths[uri] || uri;
+  };
   return (
     <>
       <View style={styles.topContainer}>
         <Image
-          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png' }}
+          source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png') }}
           style={styles.topImage}
           resizeMode="cover"
         />
@@ -68,7 +111,7 @@ function PauseButton({ setIsPlaying }) {
           setIsPaused(true);
         }}>
         <Animated.Image
-          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png' }}
+          source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png') }}
           style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
           resizeMode="contain"
         />

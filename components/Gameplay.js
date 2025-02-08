@@ -425,6 +425,11 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       skin: skinItemImages.gorilloz
     }
   };
+const images = [
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
+  'https://fartclicker.s3.eu-north-1.amazonaws.com/sbarra+combattimento.png',
+]
+  const [cachedImagePaths, setCachedImagePaths] = useState({});
 
   const [enemySkin, setEnemySkin] = useState(skinItemImages.marvick);
   const [enemyId, setEnemyId] = useState(1);
@@ -445,10 +450,46 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     }, 500);
   };
   const item = itemsData[selectedCharacterId] || itemsData[1];
-  console.log("Enemy Skin: ", enemySkin);
-  console.log("Visible Fart: ", visibleFart);
-  console.log("Item Skin: ", item.skin);
-  console.log("Fart Position: ", fartPositions[selectedCharacterId]);
+
+    useEffect(() => {
+      const initializeCaches = async () => {
+        await Promise.all([
+          ImageCache.initialize(),
+        ]);
+  
+        // Pre-cache all images
+        const imagePaths = {};
+        const cacheImage = async (uri) => {
+          const cachedPath = await ImageCache.getCachedImagePath(uri);
+          if (cachedPath) {
+            imagePaths[uri] = cachedPath;
+          }
+        };
+  
+        // Cache all image assets
+        const imagesToCache = [
+          ...Object.values(skinItemImages),
+          ...images,
+        ];
+  
+        await Promise.all(imagesToCache.map(cacheImage));
+        setCachedImagePaths(imagePaths);
+  
+      };
+  
+      initializeCaches();
+  
+      return () => {
+        // Optionally clear caches on unmount
+        // ImageCache.clearCache();
+        // VideoCache.clearCache();
+      };
+    }, []);
+  
+    // Helper function to get cached image path
+    const getCachedImage = (uri) => {
+      return cachedImagePaths[uri] || uri;
+    };
 
   return (
     <View style={styles.container}>
@@ -468,7 +509,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
             accessibilityLabel="Palyer character"
           />
           <Image
-            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -481,7 +522,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
         </View>
         <View style={styles.imageWrapper}>
           <Image
-            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -501,10 +542,9 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
         </View>
       </View>
 
-      {/* Bottom Buttons Container */}
       <View style={styles.bottomContainer}>
         <ImageBackground
-          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sbarra+combattimento.png' }}
+          source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sbarra+combattimento.png') }}
           style={styles.bottomBackground}
           accessible={true}
           accessibilityLabel="Sbarra di combattimento"

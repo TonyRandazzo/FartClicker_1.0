@@ -60,7 +60,7 @@ const topRightTexts = [
   '10%',
 ];
 
-const buttonImage = 'https://firebasestorage.googleapis.com/v0/b/fartclciker.appspot.com/o/Icons%2FButtonText_Small_Orange_Round.png?alt=media&token=072178ce-843d-4a0d-b8e8-63787564dab3';
+const buttonImage = 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png';
 
 class ImageCache {
   static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
@@ -235,33 +235,33 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png' }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png') }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp' }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp') }}
               style={styles.Timer}
             />
           </View>
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png' }}
+              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png') }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
               <Image
-                source={{ uri: 'https://via.placeholder.com/100' }}
+                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri: 'https://via.placeholder.com/100' }}
+                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri: 'https://via.placeholder.com/100' }}
+                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
             </View>
@@ -378,9 +378,9 @@ const styles = StyleSheet.create({
   },
   shopButton: {
     position: 'relative',
-    bottom: 30,
-    height: '80%',
-    width: '70%',
+    bottom: 10,
+    height: '60%',
+    width: '60%',
   },
   shopButtonImage: {
     width: '100%',

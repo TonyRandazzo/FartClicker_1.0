@@ -154,7 +154,7 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
         };
   return (
     <ImageBackground
-      source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
+      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -181,7 +181,7 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
           onPress={goBack}
         >
           <Image
-            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png' }}
+            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
             style={styles.backButtonImage}
           />
           <Text style={styles.backButtonText}>Back</Text>
@@ -190,12 +190,12 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
           <View style={styles.content}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
                 style={styles.characterImage}
                 resizeMode="contain"
               />
               <Image
-                source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
                 style={styles.ombra}
                 resizeMode="contain"
               />
@@ -218,12 +218,12 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
             <View style={styles.Accountcreen}>
               <View style={styles.avatar}>
                 <Image
-                  source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
+                  source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
                 <Image
-                  source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+                  source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
                   style={styles.ombra}
                   resizeMode="contain"
                 />
