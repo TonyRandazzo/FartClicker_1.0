@@ -34,6 +34,68 @@ const getSize = (small, medium, large) => {
 };
 
 
+class ImageCache {
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
+
+  static async initialize() {
+    try {
+      // Create cache directory if it doesn't exist
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
+
+      // Load existing cached files
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
+    }
+
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
+
+      console.log(`Downloading image from: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: uri,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
+
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch {
+
+      return uri;
+    }
+  }
+
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
+    }
+  }
+}
 
 function PauseButton({ setIsPlaying }) {
   const [isPaused, setIsPaused] = useState(false);
