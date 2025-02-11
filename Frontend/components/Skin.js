@@ -21,18 +21,18 @@ import Info from './Info';
 
 
 class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cacheDir = `${RNFS.DocumentDirectoryPath}/imageCache`; // Usa DocumentDirectoryPath per salvare in modo permanente
   static cachedImages = new Map();
 
   static async initialize() {
     try {
-      // Create cache directory if it doesn't exist
+      // Crea la directory della cache se non esiste
       const exists = await RNFS.exists(this.cacheDir);
       if (!exists) {
         await RNFS.mkdir(this.cacheDir);
       }
 
-      // Load existing cached files
+      // Carica i file esistenti nella cache
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
         const uri = file.name.replace(/_/g, '/').replace('.img', '');
@@ -46,12 +46,14 @@ class ImageCache {
   static async getCachedImagePath(uri) {
     if (!uri) return null;
 
+    // Se l'immagine è già nella cache, restituisci il percorso
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
 
     try {
+      // Scarica l'immagine e salvala nella cache
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
 
@@ -63,12 +65,13 @@ class ImageCache {
         discretionary: true,
       }).promise;
 
+      // Aggiungi l'immagine alla cache
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
-    } catch {
-
-      return uri;
+    } catch (error) {
+      console.error(`Failed to cache image: ${uri}`, error);
+      return uri; // Restituisci l'URI originale in caso di errore
     }
   }
 
