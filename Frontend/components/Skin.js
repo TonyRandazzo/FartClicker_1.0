@@ -21,18 +21,16 @@ import Info from './Info';
 
 
 class ImageCache {
-  static cacheDir = `${RNFS.DocumentDirectoryPath}/imageCache`; // Usa DocumentDirectoryPath per salvare in modo permanente
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
   static cachedImages = new Map();
 
   static async initialize() {
     try {
-      // Crea la directory della cache se non esiste
       const exists = await RNFS.exists(this.cacheDir);
       if (!exists) {
         await RNFS.mkdir(this.cacheDir);
       }
 
-      // Carica i file esistenti nella cache
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
         const uri = file.name.replace(/_/g, '/').replace('.img', '');
@@ -46,32 +44,29 @@ class ImageCache {
   static async getCachedImagePath(uri) {
     if (!uri) return null;
 
-    // Se l'immagine è già nella cache, restituisci il percorso
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
 
     try {
-      // Scarica l'immagine e salvala nella cache
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
 
-      console.log(`Downloading image from: ${uri}`);
+      console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: uri,
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
       }).promise;
 
-      // Aggiungi l'immagine alla cache
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch (error) {
-      console.error(`Failed to cache image: ${uri}`, error);
-      return uri; // Restituisci l'URI originale in caso di errore
+      console.error('Failed to download image:', error);
+      return uri; // Fallback all'URL originale
     }
   }
 
@@ -85,6 +80,7 @@ class ImageCache {
     }
   }
 }
+
 
 const { width, height } = Dimensions.get('window');
 

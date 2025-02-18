@@ -33,67 +33,66 @@ const getSize = (small, medium, large) => {
 };
 
 class ImageCache {
-    static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-    static cachedImages = new Map();
+  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
+  static cachedImages = new Map();
 
-    static async initialize() {
-        try {
-            // Create cache directory if it doesn't exist
-            const exists = await RNFS.exists(this.cacheDir);
-            if (!exists) {
-                await RNFS.mkdir(this.cacheDir);
-            }
+  static async initialize() {
+    try {
+      const exists = await RNFS.exists(this.cacheDir);
+      if (!exists) {
+        await RNFS.mkdir(this.cacheDir);
+      }
 
-            // Load existing cached files
-            const files = await RNFS.readDir(this.cacheDir);
-            files.forEach(file => {
-                const uri = file.name.replace(/_/g, '/').replace('.img', '');
-                this.cachedImages.set(uri, file.path);
-            });
-        } catch (error) {
-            console.error('Failed to initialize image cache:', error);
-        }
+      const files = await RNFS.readDir(this.cacheDir);
+      files.forEach(file => {
+        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        this.cachedImages.set(uri, file.path);
+      });
+    } catch (error) {
+      console.error('Failed to initialize image cache:', error);
+    }
+  }
+
+  static async getCachedImagePath(uri) {
+    if (!uri) return null;
+
+    if (this.cachedImages.has(uri)) {
+      console.log(`Image found in cache: ${uri}`);
+      return `file://${this.cachedImages.get(uri)}`;
     }
 
-    static async getCachedImagePath(uri) {
-        if (!uri) return null;
+    try {
+      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+      const filePath = `${this.cacheDir}/${filename}`;
 
-        if (this.cachedImages.has(uri)) {
-            console.log(`Image found in cache: ${uri}`);
-            return `file://${this.cachedImages.get(uri)}`;
-        }
+      console.log(`Downloading image from server: ${uri}`);
+      await RNFS.downloadFile({
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
+        toFile: filePath,
+        background: true,
+        discretionary: true,
+      }).promise;
 
-        try {
-            const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-            const filePath = `${this.cacheDir}/${filename}`;
-
-            console.log(`Downloading image from: ${uri}`);
-            await RNFS.downloadFile({
-                fromUrl: uri,
-                toFile: filePath,
-                background: true,
-                discretionary: true,
-            }).promise;
-
-            this.cachedImages.set(uri, filePath);
-            console.log(`Image cached successfully: ${uri}`);
-            return `file://${filePath}`;
-        } catch {
-
-            return uri;
-        }
+      this.cachedImages.set(uri, filePath);
+      console.log(`Image cached successfully: ${uri}`);
+      return `file://${filePath}`;
+    } catch (error) {
+      console.error('Failed to download image:', error);
+      return uri; // Fallback all'URL originale
     }
+  }
 
-    static async clearCache() {
-        try {
-            await RNFS.unlink(this.cacheDir);
-            await RNFS.mkdir(this.cacheDir);
-            this.cachedImages.clear();
-        } catch (error) {
-            console.error('Failed to clear image cache:', error);
-        }
+  static async clearCache() {
+    try {
+      await RNFS.unlink(this.cacheDir);
+      await RNFS.mkdir(this.cacheDir);
+      this.cachedImages.clear();
+    } catch (error) {
+      console.error('Failed to clear image cache:', error);
     }
+  }
 }
+
 
 const imageBehindSwitchUser = 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png';
 const imageBehindSwitchrecord = 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png';
@@ -112,46 +111,44 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',  
 ];
-        useEffect(() => {
-            const initializeCaches = async () => {
-                await Promise.all([
-                    ImageCache.initialize(),
-                ]);
-    
-                // Pre-cache all images
-                const imagePaths = {};
-                const cacheImage = async (uri) => {
-                    const cachedPath = await ImageCache.getCachedImagePath(uri);
-                    if (cachedPath) {
-                        imagePaths[uri] = cachedPath;
-                    }
-                };
-    
-                // Cache all image assets
-                const imagesToCache = [
-                    ...Object.values(skinItemImages),
-                    ...Object.values(itemsData),
-                    ...images,
-                ];
-    
-                await Promise.all(imagesToCache.map(cacheImage));
-                setCachedImagePaths(imagePaths);
-    
-            };
-    
-            initializeCaches();
-    
-            return () => {
-                // Optionally clear caches on unmount
-                // ImageCache.clearCache();
-                // VideoCache.clearCache();
-            };
-        }, []);
-    
-        // Helper function to get cached image path
-        const getCachedImage = (uri) => {
-            return cachedImagePaths[uri] || uri;
-        };
+useEffect(() => {
+  const initializeCaches = async () => {
+    await ImageCache.initialize();
+
+    const imagePaths = {};
+    const cacheImage = async (uri) => {
+      try {
+        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        if (cachedPath) {
+          imagePaths[uri] = cachedPath;
+        }
+      } catch (error) {
+        console.error(`Failed to cache image: ${uri}`, error);
+        imagePaths[uri] = uri; // Fallback all'URL originale
+      }
+    };
+
+    const imagesToCache = [
+      ...imageBehindSwitchUser,
+      ...imageBehindSwitchrecord,
+      ...images,
+  ];
+
+    await Promise.all(imagesToCache.map(cacheImage));
+    setCachedImagePaths(imagePaths);
+  };
+
+  initializeCaches();
+
+  return () => {
+    // Optionally clear caches on unmount
+    // ImageCache.clearCache();
+  };
+}, []);
+
+const getCachedImage = (uri) => {
+  return cachedImagePaths[uri] || uri;
+};
   return (
     <ImageBackground
       source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
