@@ -16,13 +16,9 @@ import {
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 
-
-// Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
-// Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
-// Definisci i range per piccoli, medi e grandi schermi
 const isSmallScreen = diagonal >= 5 && diagonal < 6;
 const isMediumScreen = diagonal >= 6 && diagonal <= 7;
 const isLargeScreen = diagonal > 7;
@@ -33,20 +29,17 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-
 class ImageCache {
   static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
   static cachedImages = new Map();
 
   static async initialize() {
     try {
-      // Create cache directory if it doesn't exist
       const exists = await RNFS.exists(this.cacheDir);
       if (!exists) {
         await RNFS.mkdir(this.cacheDir);
       }
 
-      // Load existing cached files
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
         const uri = file.name.replace(/_/g, '/').replace('.img', '');
@@ -71,7 +64,7 @@ class ImageCache {
 
       console.log(`Downloading image from: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: uri,
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
@@ -80,8 +73,8 @@ class ImageCache {
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
-    } catch {
-
+    } catch (error) {
+      console.error('Failed to download image:', error);
       return uri;
     }
   }
@@ -101,6 +94,7 @@ function PauseButton({ setIsPlaying }) {
   const [isPaused, setIsPaused] = useState(false);
   const pauseScaleAnim = useRef(new Animated.Value(1)).current;
   const [cachedImagePaths, setCachedImagePaths] = useState({});
+
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
       Animated.timing(scaleAnim, {
@@ -115,18 +109,16 @@ function PauseButton({ setIsPlaying }) {
       }),
     ]).start();
   };
+
   const images = [
     'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png',
     'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png',
-  ]
+  ];
 
   useEffect(() => {
     const initializeCaches = async () => {
-      await Promise.all([
-        ImageCache.initialize(),
-      ]);
+      await ImageCache.initialize();
 
-      // Pre-cache all images
       const imagePaths = {};
       const cacheImage = async (uri) => {
         const cachedPath = await ImageCache.getCachedImagePath(uri);
@@ -135,14 +127,8 @@ function PauseButton({ setIsPlaying }) {
         }
       };
 
-      // Cache all image assets
-      const imagesToCache = [
-        ...images,
-      ];
-
-      await Promise.all(imagesToCache.map(cacheImage));
+      await Promise.all(images.map(cacheImage));
       setCachedImagePaths(imagePaths);
-
     };
 
     initializeCaches();
@@ -150,14 +136,14 @@ function PauseButton({ setIsPlaying }) {
     return () => {
       // Optionally clear caches on unmount
       // ImageCache.clearCache();
-      // VideoCache.clearCache();
     };
   }, []);
 
-  // Helper function to get cached image path
   const getCachedImage = (uri) => {
     return cachedImagePaths[uri] || uri;
   };
+
+
   return (
     <>
       <View style={styles.topContainer}>
@@ -202,8 +188,7 @@ function PauseButton({ setIsPlaying }) {
         </View>
       )}
     </>
-
-  )
+  );
 }
 
 const styles = StyleSheet.create({

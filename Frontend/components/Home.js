@@ -40,13 +40,11 @@ class ImageCache {
 
   static async initialize() {
     try {
-      // Create cache directory if it doesn't exist
       const exists = await RNFS.exists(this.cacheDir);
       if (!exists) {
         await RNFS.mkdir(this.cacheDir);
       }
 
-      // Load existing cached files
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
         const uri = file.name.replace(/_/g, '/').replace('.img', '');
@@ -69,9 +67,9 @@ class ImageCache {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
 
-      console.log(`Downloading image from: ${uri}`);
+      console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: uri,
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
@@ -80,9 +78,9 @@ class ImageCache {
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
-    } catch {
-
-      return uri;
+    } catch (error) {
+      console.error('Failed to download image:', error);
+      return uri; // Fallback all'URL originale
     }
   }
 
@@ -96,7 +94,6 @@ class ImageCache {
     }
   }
 }
-
 
 
 
@@ -369,20 +366,21 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
 
   useEffect(() => {
     const initializeCaches = async () => {
-      await Promise.all([
-        ImageCache.initialize(),
-      ]);
+      await ImageCache.initialize();
 
-      // Pre-cache all images
       const imagePaths = {};
       const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache.getCachedImagePath(uri);
-        if (cachedPath) {
-          imagePaths[uri] = cachedPath;
+        try {
+          const cachedPath = await ImageCache.getCachedImagePath(uri);
+          if (cachedPath) {
+            imagePaths[uri] = cachedPath;
+          }
+        } catch (error) {
+          console.error(`Failed to cache image: ${uri}`, error);
+          imagePaths[uri] = uri; // Fallback all'URL originale
         }
       };
 
-      // Cache all image assets
       const imagesToCache = [
         ...Object.values(skinItemImages),
         ...Object.values(itemsData),
@@ -391,7 +389,6 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
 
       await Promise.all(imagesToCache.map(cacheImage));
       setCachedImagePaths(imagePaths);
-
     };
 
     initializeCaches();
@@ -399,11 +396,9 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
     return () => {
       // Optionally clear caches on unmount
       // ImageCache.clearCache();
-      // VideoCache.clearCache();
     };
   }, []);
 
-  // Helper function to get cached image path
   const getCachedImage = (uri) => {
     return cachedImagePaths[uri] || uri;
   };

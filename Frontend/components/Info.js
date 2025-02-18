@@ -22,65 +22,64 @@ const { width, height } = Dimensions.get('window');
 class ImageCache {
     static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
     static cachedImages = new Map();
-
+  
     static async initialize() {
-        try {
-            // Create cache directory if it doesn't exist
-            const exists = await RNFS.exists(this.cacheDir);
-            if (!exists) {
-                await RNFS.mkdir(this.cacheDir);
-            }
-
-            // Load existing cached files
-            const files = await RNFS.readDir(this.cacheDir);
-            files.forEach(file => {
-                const uri = file.name.replace(/_/g, '/').replace('.img', '');
-                this.cachedImages.set(uri, file.path);
-            });
-        } catch (error) {
-            console.error('Failed to initialize image cache:', error);
+      try {
+        const exists = await RNFS.exists(this.cacheDir);
+        if (!exists) {
+          await RNFS.mkdir(this.cacheDir);
         }
+  
+        const files = await RNFS.readDir(this.cacheDir);
+        files.forEach(file => {
+          const uri = file.name.replace(/_/g, '/').replace('.img', '');
+          this.cachedImages.set(uri, file.path);
+        });
+      } catch (error) {
+        console.error('Failed to initialize image cache:', error);
+      }
     }
-
+  
     static async getCachedImagePath(uri) {
-        if (!uri) return null;
-
-        if (this.cachedImages.has(uri)) {
-            console.log(`Image found in cache: ${uri}`);
-            return `file://${this.cachedImages.get(uri)}`;
-        }
-
-        try {
-            const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-            const filePath = `${this.cacheDir}/${filename}`;
-
-            console.log(`Downloading image from: ${uri}`);
-            await RNFS.downloadFile({
-                fromUrl: uri,
-                toFile: filePath,
-                background: true,
-                discretionary: true,
-            }).promise;
-
-            this.cachedImages.set(uri, filePath);
-            console.log(`Image cached successfully: ${uri}`);
-            return `file://${filePath}`;
-        } catch {
-
-            return uri;
-        }
+      if (!uri) return null;
+  
+      if (this.cachedImages.has(uri)) {
+        console.log(`Image found in cache: ${uri}`);
+        return `file://${this.cachedImages.get(uri)}`;
+      }
+  
+      try {
+        const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
+        const filePath = `${this.cacheDir}/${filename}`;
+  
+        console.log(`Downloading image from server: ${uri}`);
+        await RNFS.downloadFile({
+          fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
+          toFile: filePath,
+          background: true,
+          discretionary: true,
+        }).promise;
+  
+        this.cachedImages.set(uri, filePath);
+        console.log(`Image cached successfully: ${uri}`);
+        return `file://${filePath}`;
+      } catch (error) {
+        console.error('Failed to download image:', error);
+        return uri; // Fallback all'URL originale
+      }
     }
-
+  
     static async clearCache() {
-        try {
-            await RNFS.unlink(this.cacheDir);
-            await RNFS.mkdir(this.cacheDir);
-            this.cachedImages.clear();
-        } catch (error) {
-            console.error('Failed to clear image cache:', error);
-        }
+      try {
+        await RNFS.unlink(this.cacheDir);
+        await RNFS.mkdir(this.cacheDir);
+        this.cachedImages.clear();
+      } catch (error) {
+        console.error('Failed to clear image cache:', error);
+      }
     }
-}
+  }
+  
 
 const Info = ({ goBack, itemId, isPlaying, setIsPlaying }) => {
     const [cachedImagePaths, setCachedImagePaths] = useState({});
@@ -357,45 +356,42 @@ const Info = ({ goBack, itemId, isPlaying, setIsPlaying }) => {
     };
     useEffect(() => {
         const initializeCaches = async () => {
-            await Promise.all([
-                ImageCache.initialize(),
-            ]);
-
-            // Pre-cache all images
-            const imagePaths = {};
-            const cacheImage = async (uri) => {
-                const cachedPath = await ImageCache.getCachedImagePath(uri);
-                if (cachedPath) {
-                    imagePaths[uri] = cachedPath;
-                }
-            };
-
-            // Cache all image assets
-            const imagesToCache = [
-                ...Object.values(skinItemImages),
-                ...Object.values(itemsData),
-                ...images,
-            ];
-
-            await Promise.all(imagesToCache.map(cacheImage));
-            setCachedImagePaths(imagePaths);
-
+          await ImageCache.initialize();
+    
+          const imagePaths = {};
+          const cacheImage = async (uri) => {
+            try {
+              const cachedPath = await ImageCache.getCachedImagePath(uri);
+              if (cachedPath) {
+                imagePaths[uri] = cachedPath;
+              }
+            } catch (error) {
+              console.error(`Failed to cache image: ${uri}`, error);
+              imagePaths[uri] = uri; // Fallback all'URL originale
+            }
+          };
+    
+          const imagesToCache = [
+            ...Object.values(skinItemImages),
+            ...Object.values(itemsData),
+            ...images,
+          ];
+    
+          await Promise.all(imagesToCache.map(cacheImage));
+          setCachedImagePaths(imagePaths);
         };
-
+    
         initializeCaches();
-
+    
         return () => {
-            // Optionally clear caches on unmount
-            // ImageCache.clearCache();
-            // VideoCache.clearCache();
+          // Optionally clear caches on unmount
+          // ImageCache.clearCache();
         };
-    }, []);
-
-    // Helper function to get cached image path
-    const getCachedImage = (uri) => {
+      }, []);
+    
+      const getCachedImage = (uri) => {
         return cachedImagePaths[uri] || uri;
-    };
-
+      };
     const item = itemsData[itemId];
 
     if (!item) {

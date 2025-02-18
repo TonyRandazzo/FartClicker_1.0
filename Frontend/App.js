@@ -213,7 +213,7 @@ const App = () => {
     // Avvia l'animazione della barra di caricamento
     const animation = Animated.timing(progressValue, {
       toValue: 100, // Fine dell'animazione (100%)
-      duration: 15000, // 20 secondi per completare
+      duration: 20000, 
       useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
     });
 
@@ -323,77 +323,65 @@ const App = () => {
     setSelectedText(randomText);
   }, []);
 
-  if (isVisible) {
-    return (
-      <Animated.View
-        style={[
-          styles.fullScreenButtonContainer,
-          { opacity: fadeOutOpacity },
-        ]}
-      >
-        <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]}>
-
-        </Animated.View>
-        <Image
-          source={require('./assets/images/Sfondo.png')}
-          style={styles.fullScreenImage}
-          resizeMode="cover"
-        />
-        <SafeAreaView style={styles.tema}>
-          <Animated.Image
-            source={require('./assets/images/Scoreggia.png')}
-            style={[
-              styles.checkerboard,
-              {
-                opacity: checkerboardOpacity,
-                transform: [{ scale: checkerboardScale }],
-              },
-            ]}
-            resizeMode="repeat"
-          />
-        </SafeAreaView>
-        <Image
-          source={require('./assets/images/PersonaggiTitolo.png')}
-          style={styles.fullScreenImage}
-          resizeMode="cover"
-        />
-        <Text style={styles.gameText}>
-          {selectedText}
-        </Text>
-        <View style={styles.progressBarContainer}>
-          <Image
-            source={require('./assets/images/barra.png')}
-            style={styles.progressBarBackground}
-            resizeMode="stretch"
-          />
-
-          <Animated.View
-            style={[
-              styles.progressFill,
-              { width: progressInterpolation },
-            ]}
-          >
-            <Image
-              source={require('./assets/images/barra1.png')}
-              style={styles.progressFillImage}
-              resizeMode="stretch"
-            />
-          </Animated.View>
-        </View>
-      </Animated.View>
-    )
-  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" hidden={true} />
-      {currentIndex === 2}
+  
+      {/* Schermata di caricamento sovrapposta */}
+      {isVisible && (
+        <Animated.View
+          style={[
+            styles.fullScreenButtonContainer,
+            { opacity: fadeOutOpacity, position: 'absolute', width: '100%', height: '100%', zIndex: 10 }
+          ]}
+        >
+          <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]} />
+          <Image
+            source={require('./assets/images/Sfondo.png')}
+            style={styles.fullScreenImage}
+            resizeMode="cover"
+          />
+          <SafeAreaView style={styles.tema}>
+            <Animated.Image
+              source={require('./assets/images/Scoreggia.png')}
+              style={[
+                styles.checkerboard,
+                {
+                  opacity: checkerboardOpacity,
+                  transform: [{ scale: checkerboardScale }],
+                },
+              ]}
+              resizeMode="repeat"
+            />
+          </SafeAreaView>
+          <Image
+            source={require('./assets/images/PersonaggiTitolo.png')}
+            style={styles.fullScreenImage}
+            resizeMode="cover"
+          />
+          <Text style={styles.gameText}>{selectedText}</Text>
+          <View style={styles.progressBarContainer}>
+            <Image
+              source={require('./assets/images/barra.png')}
+              style={styles.progressBarBackground}
+              resizeMode="stretch"
+            />
+            <Animated.View
+              style={[styles.progressFill, { width: progressInterpolation }]}
+            >
+              <Image
+                source={require('./assets/images/barra1.png')}
+                style={styles.progressFillImage}
+                resizeMode="stretch"
+              />
+            </Animated.View>
+          </View>
+        </Animated.View>
+      )}
+  
       <Animated.FlatList
         data={pages}
-        renderItem={({ item, index }) => (
-          <SafeAreaView style={styles.pageContainer}>
-            {item}
-          </SafeAreaView>
-        )}
+        renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
         horizontal
         pagingEnabled
         ref={flatListRef}
@@ -401,11 +389,7 @@ const App = () => {
         initialNumToRender={5}
         maxToRenderPerBatch={10}
         keyExtractor={(item, index) => `page_${index}`}
-        getItemLayout={(data, index) => ({
-          length: width,
-          offset: width * index,
-          index,
-        })}
+        getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
         onViewableItemsChanged={onViewRef}
         viewabilityConfig={viewConfigRef.current}
         onScroll={Animated.event(
@@ -415,6 +399,7 @@ const App = () => {
         scrollEventThrottle={16}
         scrollEnabled={false}
       />
+  
       {isPlaying && (
         <>
           <SafeAreaView style={styles.bottomContainer}>
@@ -424,38 +409,20 @@ const App = () => {
             />
           </SafeAreaView>
           <SafeAreaView style={styles.indicatorContainer}>
-            {imageUrls.map((url, index) => {
-              const scale = scaleValues[index];
-              const translateY = translateYValues[index];
-              return (
-                <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
-                  <Animated.View
-                    style={{
-                      transform: [
-                        { scale: scale },
-                        { translateY: translateY },
-                      ],
-                    }}
-                  >
-                    <Image
-                      source={{ uri: url }}
-                      style={styles.indicator}
-                      resizeMode="contain"
-                    />
-                  </Animated.View>
-                </TouchableOpacity>
-              );
-            })}
+            {imageUrls.map((url, index) => (
+              <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
+                <Animated.View
+                  style={{ transform: [{ scale: scaleValues[index] }, { translateY: translateYValues[index] }] }}
+                >
+                  <Image source={{ uri: url }} style={styles.indicator} resizeMode="contain" />
+                </Animated.View>
+              </TouchableOpacity>
+            ))}
           </SafeAreaView>
         </>
       )}
       {fadeScreenVisible && (
-        <Animated.View
-          style={[
-            styles.fadeScreen,
-            { opacity: fadeInOpacity },
-          ]}
-        />
+        <Animated.View style={[styles.fadeScreen, { opacity: fadeInOpacity }]} />
       )}
       {/* {transitionVisible && (
         <View style={[styles.cascade]}>
