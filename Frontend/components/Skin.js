@@ -19,7 +19,6 @@ import RNFS from 'react-native-fs';
 import HUD from './HUD'
 import Info from './Info';
 
-
 class ImageCache {
   static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
   static cachedImages = new Map();
@@ -33,7 +32,7 @@ class ImageCache {
 
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
-        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        const uri = decodeURIComponent(file.name.replace(/_/g, '/').replace('.img', ''));
         this.cachedImages.set(uri, file.path);
       });
     } catch (error) {
@@ -41,38 +40,49 @@ class ImageCache {
     }
   }
 
-  static async getCachedImagePath(uri) {
+  static async getCachedImagePath(uri, retries = 3, delay = 1000) {
     if (!uri || typeof uri !== 'string') {
       console.error('Invalid URI:', uri);
       return null;
     }
-  
+
+    // Controlla se l'immagine è già in cache
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-  
-    try {
-      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-      const filePath = `${this.cacheDir}/${filename}`;
-  
-      console.log(`Downloading image from server: ${uri}`);
-      await RNFS.downloadFile({
-        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
-        toFile: filePath,
-        background: true,
-        discretionary: true,
-      }).promise;
-  
-      this.cachedImages.set(uri, filePath);
-      console.log(`Image cached successfully: ${uri}`);
-      return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to download image Skin: ${uri}`, error);
-      return uri; // Fallback all'URL originale
+
+    // Codifica l'URI per creare un nome file valido
+    const encodedUri = encodeURIComponent(uri);
+    const filename = `${encodedUri}.img`;
+    const filePath = `${this.cacheDir}/${filename}`;
+
+    // Tentativo di download con ritentativi
+    for (let i = 0; i < retries; i++) {
+      try {
+        console.log(`Downloading image from server (attempt ${i + 1}): ${uri}`);
+        await RNFS.downloadFile({
+          fromUrl: `http://51.21.14.55:3000/image/${encodedUri}`,
+          toFile: filePath,
+          background: true,
+          discretionary: true,
+        }).promise;
+
+        // Aggiungi l'immagine alla cache
+        this.cachedImages.set(uri, filePath);
+        console.log(`Image cached successfully: ${uri}`);
+        return `file://${filePath}`;
+      } catch (error) {
+        console.error(`Failed to download image Skin (attempt ${i + 1}): ${uri}`, error);
+        if (i < retries - 1) {
+          await new Promise(resolve => setTimeout(resolve, delay)); // Ritenta dopo un delay
+        } else {
+          console.error(`All attempts failed for image: ${uri}`);
+          return uri; // Fallback all'URL originale
+        }
+      }
     }
   }
-
 
   static async clearCache() {
     try {

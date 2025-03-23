@@ -16,6 +16,7 @@ import {
   PermissionsAndroid,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Mission from './components/Mission';
@@ -24,6 +25,32 @@ import Shop from './components/Shop';
 import Home from './components/Home';
 import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
+import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler';
+
+// Gestione degli errori JavaScript
+setJSExceptionHandler((error, isFatal) => {
+  // Puoi inviare l'errore a un servizio di logging qui
+  console.error('Errore JavaScript non gestito:', error);
+
+  if (isFatal) {
+    Alert.alert(
+      'Errore non gestito',
+      `Si è verificato un errore fatale: ${error.name} ${error.message}\nL'applicazione potrebbe essere instabile.`,
+      [{
+        text: 'Chiudi',
+        onPress: () => {
+          // Puoi decidere di chiudere l'app o fare altro
+        }
+      }]
+    );
+  }
+}, true);
+
+// Gestione degli errori nativi (crash)
+setNativeExceptionHandler((exceptionString) => {
+  // Puoi inviare l'errore a un servizio di logging qui
+  console.error('Errore nativo non gestito:', exceptionString);
+});
 const { width, height } = Dimensions.get('window');
 
 
@@ -154,11 +181,13 @@ const App = () => {
     if (!granted) {
       Alert.alert(
         "Permessi necessari",
-        "Per un corretto funzionamento dell'app sono necessari i permessi di accesso allo storage per salvare i dati di gioco.",
+        "Per un corretto funzionamento dell'app sono necessari i permessi di accesso allo storage. Si prega di abilitarli nelle impostazioni.",
         [
           {
-            text: "Richiedi ancora",
-            onPress: checkAndRequestPermissions
+            text: "Vai alle impostazioni",
+            onPress: () => {
+              Linking.openSettings();
+            }
           },
           {
             text: "Continua comunque",
