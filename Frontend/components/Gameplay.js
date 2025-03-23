@@ -15,6 +15,9 @@ import {
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 import HUD from './HUD'
+
+const sbarraCombattimento = require('../assets/images/sbarra combattimento.png');
+
 const { width, height } = Dimensions.get('window');
 
 
@@ -31,7 +34,7 @@ class ImageCache {
 
       const files = await RNFS.readDir(this.cacheDir);
       files.forEach(file => {
-        const uri = file.name.replace(/_/g, '/').replace('.img', '');
+        const uri = decodeURIComponent(file.name.replace(/_/g, '/').replace('.img', ''));
         this.cachedImages.set(uri, file.path);
       });
     } catch (error) {
@@ -39,32 +42,47 @@ class ImageCache {
     }
   }
 
-  static async getCachedImagePath(uri) {
-    if (!uri) return null;
+  static async getCachedImagePath(uri, retries = 3, delay = 1000) {
+    if (!uri || typeof uri !== 'string') {
+      console.error('Invalid URI:', uri);
+      return null;
+    }
 
+    // Controlla se l'immagine è già in cache
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
 
-    try {
-      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-      const filePath = `${this.cacheDir}/${filename}`;
+    // Codifica l'URI per creare un nome file valido
+    const encodedUri = encodeURIComponent(uri);
+    const filename = `${encodedUri}.img`;
+    const filePath = `${this.cacheDir}/${filename}`;
 
-      console.log(`Downloading image from server: ${uri}`);
-      await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
-        toFile: filePath,
-        background: true,
-        discretionary: true,
-      }).promise;
+    // Tentativo di download con ritentativi
+    for (let i = 0; i < retries; i++) {
+      try {
+        console.log(`Downloading image from server (attempt ${i + 1}): ${uri}`);
+        await RNFS.downloadFile({
+          fromUrl: `http://51.21.14.55:3000/image/${encodedUri}`,
+          toFile: filePath,
+          background: true,
+          discretionary: true,
+        }).promise;
 
-      this.cachedImages.set(uri, filePath);
-      console.log(`Image cached successfully: ${uri}`);
-      return `file://${filePath}`;
-    } catch (error) {
-      console.error('Failed to download image:', error);
-      return uri; // Fallback all'URL originale
+        // Aggiungi l'immagine alla cache
+        this.cachedImages.set(uri, filePath);
+        console.log(`Image cached successfully: ${uri}`);
+        return `file://${filePath}`;
+      } catch (error) {
+        console.error(`Failed to download image Gameplay (attempt ${i + 1}): ${uri}`, error);
+        if (i < retries - 1) {
+          await new Promise(resolve => setTimeout(resolve, delay)); // Ritenta dopo un delay
+        } else {
+          console.error(`All attempts failed for image: ${uri}`);
+          return uri; // Fallback all'URL originale
+        }
+      }
     }
   }
 
@@ -491,7 +509,6 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   };
 const images = [
   'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/sbarra+combattimento.png',
 ]
   const [cachedImagePaths, setCachedImagePaths] = useState({});
 
@@ -562,7 +579,6 @@ const images = [
           <View style={[styles.progressFill, { width: `${progress}%` }]} />
         </View>
       </View>
-
       <View style={styles.imagesContainer}>
         <View style={styles.imageWrapper}>
           <Image
@@ -581,7 +597,6 @@ const images = [
               source={visibleFart}
               style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
           )}
-          <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
         </View>
         <View style={styles.imageWrapper}>
           <Image
@@ -604,10 +619,11 @@ const images = [
           )}
         </View>
       </View>
+      <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
 
       <View style={styles.bottomContainer}>
         <ImageBackground
-          source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sbarra+combattimento.png') }}
+          source={sbarraCombattimento}
           style={styles.bottomBackground}
           accessible={true}
           accessibilityLabel="Sbarra di combattimento"
@@ -636,7 +652,8 @@ const styles = ScaledSheet.create({
     backgroundColor: 'orange',
   },
   fartButton: {
-    backgroundColor: 'black',
+    backgroundColor: 'transparent',
+    position: 'absolute',
     width: width,
     height: height,
     zIndex: 2,
@@ -665,7 +682,6 @@ const styles = ScaledSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
-    paddingHorizontal: '20@s',
   },
   imageWrapper: {
     width: '150@s',

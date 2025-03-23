@@ -13,6 +13,9 @@ import {
   Text,
   ScrollView,
   StatusBar,
+  PermissionsAndroid,
+  Platform,
+  Alert,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Mission from './components/Mission';
@@ -50,6 +53,53 @@ const imageUrls = [
   'https://fartclicker.s3.eu-north-1.amazonaws.com/map+icon.png',
 ];
 
+const requestStoragePermissions = async () => {
+  if (Platform.OS !== 'android') return true;
+  
+  try {
+    // Per device con Android 10 (API 29) e superiori
+    if (parseInt(Platform.Version) >= 29) {
+      const readGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: "Permesso di lettura storage",
+          message: "L'app ha bisogno di accedere ai tuoi file per salvare e caricare i dati di gioco",
+          buttonNeutral: "Chiedimi più tardi",
+          buttonNegative: "Annulla",
+          buttonPositive: "OK"
+        }
+      );
+      
+      const writeGranted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: "Permesso di scrittura storage",
+          message: "L'app ha bisogno di scrivere file per salvare i dati di gioco",
+          buttonNeutral: "Chiedimi più tardi",
+          buttonNegative: "Annulla",
+          buttonPositive: "OK"
+        }
+      );
+      
+      return readGranted === PermissionsAndroid.RESULTS.GRANTED && 
+             writeGranted === PermissionsAndroid.RESULTS.GRANTED;
+    } 
+    // Per versioni più vecchie di Android
+    else {
+      const granted = await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
+      ]);
+      
+      return granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED &&
+             granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED;
+    }
+  } catch (err) {
+    console.error('Errore durante la richiesta dei permessi:', err);
+    return false;
+  }
+};
+
 const preloadImages = async () => {
   // Pre-caricamento immagini locali
   const localPromises = localImages.map((image) =>
@@ -78,7 +128,12 @@ const App = () => {
   const block2Animation = useRef(new Animated.Value(0)).current;
   const block3Animation = useRef(new Animated.Value(0)).current;
   const [transitionVisible, setTransitionVisible] = useState(false);
-  const pages = [<Shop isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <Skin isPlaying={isPlaying} setIsPlaying={setIsPlaying} setSelectedCharacterId={setSelectedCharacterId}/>,   <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} selectedCharacterId={selectedCharacterId}/>, <Mission isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>, <MapScreen isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>];
+  const [storagePermissionsGranted, setStoragePermissionsGranted] = useState(false);
+  const pages = [<Shop isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
+  <Skin isPlaying={isPlaying} setIsPlaying={setIsPlaying} setSelectedCharacterId={setSelectedCharacterId} />,
+  <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} selectedCharacterId={selectedCharacterId} />,
+  <Mission isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
+  <MapScreen isPlaying={isPlaying} setIsPlaying={setIsPlaying} />];
 
   const scrollX = useRef(new Animated.Value(0)).current;
   const scaleValues = useRef(imageUrls.map(() => new Animated.Value(0.8))).current;
@@ -91,6 +146,28 @@ const App = () => {
   const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
   const [isReady, setIsReady] = useState(false);
   const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
+
+  const checkAndRequestPermissions = async () => {
+    const granted = await requestStoragePermissions();
+    setStoragePermissionsGranted(granted);
+    
+    if (!granted) {
+      Alert.alert(
+        "Permessi necessari",
+        "Per un corretto funzionamento dell'app sono necessari i permessi di accesso allo storage per salvare i dati di gioco.",
+        [
+          {
+            text: "Richiedi ancora",
+            onPress: checkAndRequestPermissions
+          },
+          {
+            text: "Continua comunque",
+            style: "cancel"
+          }
+        ]
+      );
+    }
+  };
 
   const goToPage = (index) => {
     // Mostra la schermata di dissolvenza bianca prima di fare lo scroll
@@ -173,6 +250,12 @@ const App = () => {
     // Pre-carica tutte le immagini prima di mostrare l'app
     const loadAssets = async () => {
       await preloadImages();
+      
+      // Controlla e richiedi i permessi durante il caricamento
+      if (Platform.OS === 'android') {
+        await checkAndRequestPermissions();
+      }
+      
       setIsReady(true); // Una volta pre-caricate, mostra l'app
     };
     loadAssets();
@@ -213,7 +296,7 @@ const App = () => {
     // Avvia l'animazione della barra di caricamento
     const animation = Animated.timing(progressValue, {
       toValue: 100, // Fine dell'animazione (100%)
-      duration: 20000, 
+      duration: 20000,
       useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
     });
 
@@ -326,7 +409,7 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" hidden={true} />
-  
+
       {/* Schermata di caricamento sovrapposta */}
       {isVisible && (
         <Animated.View
@@ -378,7 +461,7 @@ const App = () => {
           </View>
         </Animated.View>
       )}
-  
+
       <Animated.FlatList
         data={pages}
         renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
@@ -399,7 +482,7 @@ const App = () => {
         scrollEventThrottle={16}
         scrollEnabled={false}
       />
-  
+
       {isPlaying && (
         <>
           <SafeAreaView style={styles.bottomContainer}>

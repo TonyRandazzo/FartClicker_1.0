@@ -29,6 +29,11 @@ const getSize = (small, medium, large) => {
   if (isMediumScreen) return medium;
   if (isLargeScreen) return large;
 };
+const missionItems = [
+  { id: 1, name: 'Mission 1', description: 'Completa 5 livelli', progress: 20, total: 50, image: 'https://via.placeholder.com/150' },
+  { id: 2, name: 'Mission 2', description: 'Raccogli 10 oggetti', progress: 10, total: 50, image: 'https://via.placeholder.com/150' },
+  { id: 3, name: 'Mission 3', description: 'Vinci 3 battaglie', progress: 35, total: 50, image: 'https://via.placeholder.com/150' },
+];
 class ImageCache {
   static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
   static cachedImages = new Map();
@@ -51,33 +56,37 @@ class ImageCache {
   }
 
   static async getCachedImagePath(uri) {
-    if (!uri) return null;
-
+    if (!uri || typeof uri !== 'string') {
+      console.error('Invalid URI:', uri);
+      return null;
+    }
+  
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-
+  
     try {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
-
+  
       console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
+        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
       }).promise;
-
+  
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch (error) {
-      console.error('Failed to download image:', error);
+      console.error(`Failed to download image Mission: ${uri}`, error);
       return uri; // Fallback all'URL originale
     }
   }
+
 
   static async clearCache() {
     try {
@@ -116,11 +125,7 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
   const handleSwitchMissions = () => setActiveButton('missions');
   const handleSwitchAchievements = () => setActiveButton('achievements');
 
-  const missionItems = [
-    { id: 1, name: 'Mission 1', description: 'Completa 5 livelli', progress: 20, total: 50, image: 'https://via.placeholder.com/150' },
-    { id: 2, name: 'Mission 2', description: 'Raccogli 10 oggetti', progress: 10, total: 50, image: 'https://via.placeholder.com/150' },
-    { id: 3, name: 'Mission 3', description: 'Vinci 3 battaglie', progress: 35, total: 50, image: 'https://via.placeholder.com/150' },
-  ];
+
 
   const achievementItems = [
     {
@@ -168,8 +173,6 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
       };
 
       const imagesToCache = [
-        ...Object.values(missionItems),
-        ...Object.values(achievementItems),
         ...images,
       ];
 

@@ -18,9 +18,7 @@ import HUD from './HUD';
 import User from './User'
 import Gameplay from './Gameplay';
 
-// Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
-// Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
 // Definisci i range per piccoli, medi e grandi schermi
@@ -56,33 +54,37 @@ class ImageCache {
   }
 
   static async getCachedImagePath(uri) {
-    if (!uri) return null;
-
+    if (!uri || typeof uri !== 'string') {
+      console.error('Invalid URI:', uri);
+      return null;
+    }
+  
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-
+  
     try {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
-
+  
       console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
+        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
       }).promise;
-
+  
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch (error) {
-      console.error('Failed to download image:', error);
+      console.error(`Failed to download image Home: ${uri}`, error);
       return uri; // Fallback all'URL originale
     }
   }
+
 
   static async clearCache() {
     try {
@@ -367,9 +369,14 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   useEffect(() => {
     const initializeCaches = async () => {
       await ImageCache.initialize();
-
+  
       const imagePaths = {};
       const cacheImage = async (uri) => {
+        if (!uri) {
+          console.error('URI is undefined or null:', uri);
+          return;
+        }
+  
         try {
           const cachedPath = await ImageCache.getCachedImagePath(uri);
           if (cachedPath) {
@@ -380,19 +387,18 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           imagePaths[uri] = uri; // Fallback all'URL originale
         }
       };
-
+  
       const imagesToCache = [
         ...Object.values(skinItemImages),
-        ...Object.values(itemsData),
         ...images,
       ];
-
+  
       await Promise.all(imagesToCache.map(cacheImage));
       setCachedImagePaths(imagePaths);
     };
-
+  
     initializeCaches();
-
+  
     return () => {
       // Optionally clear caches on unmount
       // ImageCache.clearCache();

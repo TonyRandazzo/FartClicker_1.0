@@ -84,33 +84,37 @@ class ImageCache {
   }
 
   static async getCachedImagePath(uri) {
-    if (!uri) return null;
-
+    if (!uri || typeof uri !== 'string') {
+      console.error('Invalid URI:', uri);
+      return null;
+    }
+  
     if (this.cachedImages.has(uri)) {
       console.log(`Image found in cache: ${uri}`);
       return `file://${this.cachedImages.get(uri)}`;
     }
-
+  
     try {
       const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
       const filePath = `${this.cacheDir}/${filename}`;
-
+  
       console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
+        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
       }).promise;
-
+  
       this.cachedImages.set(uri, filePath);
       console.log(`Image cached successfully: ${uri}`);
       return `file://${filePath}`;
     } catch (error) {
-      console.error('Failed to download image:', error);
+      console.error(`Failed to download image Shop: ${uri}`, error);
       return uri; // Fallback all'URL originale
     }
   }
+
 
   static async clearCache() {
     try {
@@ -169,7 +173,7 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
       // Cache all image assets
       const imagesToCache = [
         ...Object.values(shopItemImages),
-        ...buttonImage,
+        buttonImage,
         ...images,
       ];
 

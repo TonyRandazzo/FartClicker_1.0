@@ -45,7 +45,6 @@ class VideoCache {
         discretionary: true,
         progress: (res) => {
           const progress = (res.bytesWritten / res.contentLength) * 100;
-          console.log(`Caching progress: ${progress.toFixed(2)}%`);
         },
       }).promise;
 
