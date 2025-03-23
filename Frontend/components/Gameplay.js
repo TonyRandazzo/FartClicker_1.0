@@ -103,11 +103,13 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   if (isPlaying) return null;
 
   const [visibleFart, setVisibleFart] = useState(null);
+  const [fartEnemy, setFartEnemy] = useState(null);
+
   const [progress, setProgress] = useState(0);
   const fartPositions = {
     1: {
-      top: 110,
-      right: 50,
+      top: -20,
+      right: 100,
       bottom: null,
       left: null,
     },
@@ -273,7 +275,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'MegaFart',
       type: 'Burst',
       speed: 'Medium',
-      effect: 'All’attivazione le scoregge fanno 110% del danno. Per 4 secondi appaiono le banane che se consumate provocano scoregge che fanno 250% del danno.',
+      effect: "All'attivazione le scoregge fanno 110% del danno. Per 4 secondi appaiono le banane che se consumate provocano scoregge che fanno 250% del danno.",
       skin: skinItemImages.marvick
     },
     2: {
@@ -302,7 +304,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       name: 'Cyclop',
       rarity: 'Common',
       class: 'Windy Fartens',
-      description: 'Un esperto nell’arte del vento, capace di usare le sue flatulenze come raffiche offensive.',
+      description: "Un esperto nell'arte del vento, capace di usare le sue flatulenze come raffiche offensive.",
       specialName: 'Wind Blast',
       type: 'Directional',
       speed: 'Fast',
@@ -317,7 +319,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Stench Wave',
       type: 'Burst',
       speed: 'Slow',
-      effect: 'Un’ondata di fetore che causa danni enormi e debilita i nemici.',
+      effect: "Un'ondata di fetore che causa danni enormi e debilita i nemici.",
       skin: skinItemImages.babyAlien
     },
     6: {
@@ -350,7 +352,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Gas Explosion',
       type: 'Burst',
       speed: 'Fast',
-      effect: 'Causa un’esplosione che infligge danni critici a un gruppo di nemici.',
+      effect: "Causa un'esplosione che infligge danni critici a un gruppo di nemici.",
       skin: skinItemImages.dracula
     },
     9: {
@@ -409,7 +411,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Thunder Clap',
       type: 'Burst',
       speed: 'Medium',
-      effect: 'Un’esplosione elettrica che paralizza i nemici e infligge danni.',
+      effect: "Un'esplosione elettrica che paralizza i nemici e infligge danni.",
       skin: skinItemImages.mrFarte
 
     },
@@ -417,11 +419,11 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       name: 'Fangpì',
       rarity: 'Rare',
       class: 'Dark Fartens',
-      description: 'Un essere misterioso che attacca dall’ombra.',
+      description: "Un essere misterioso che attacca dall'ombra.",
       specialName: 'Dark Wave',
       type: 'Stealth',
       speed: 'Fast',
-      effect: 'Un’onda oscura che infligge danni critici ai nemici più vicini.',
+      effect: "Un'onda oscura che infligge danni critici ai nemici più vicini.",
       skin: skinItemImages.fangpi
 
     },
@@ -433,7 +435,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Spark Storm',
       type: 'Area',
       speed: 'Fast',
-      effect: 'Una tempesta elettrica che colpisce tutti i nemici nell’area.',
+      effect: "Una tempesta elettrica che colpisce tutti i nemici nell'area.",
       skin: skinItemImages.amaterasuTsukuyomi
 
     },
@@ -457,7 +459,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Blazing Trail',
       type: 'Burst',
       speed: 'Medium',
-      effect: 'Un’esplosione di fuoco che infligge danni ad area.',
+      effect: "Un'esplosione di fuoco che infligge danni ad area.",
       skin: skinItemImages.bear
 
     },
@@ -480,7 +482,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       specialName: 'Sonic Boom',
       type: 'Directional',
       speed: 'Very Fast',
-      effect: 'Un’onda sonora che infligge danni e disorienta i nemici.',
+      effect: "Un'onda sonora che infligge danni e disorienta i nemici.",
       skin: skinItemImages.mrTakeshi
     },
     20: {
@@ -507,13 +509,14 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       skin: skinItemImages.gorilloz
     }
   };
-const images = [
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
-]
+  const images = [
+    'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
+  ]
   const [cachedImagePaths, setCachedImagePaths] = useState({});
 
   const [enemySkin, setEnemySkin] = useState(skinItemImages.marvick);
   const [enemyId, setEnemyId] = useState(1);
+
   useEffect(() => {
     const itemKeys = Object.keys(itemsData);
     const randomKey = itemKeys[Math.floor(Math.random() * itemKeys.length)];
@@ -521,15 +524,16 @@ const images = [
     setEnemySkin(selectedEnemyData.skin);
     setEnemyId(parseInt(randomKey));
   }, []);
+
   const handlePress = () => {
     const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
     setVisibleFart(randomFart);
-    console.log("VISIBLE FART: " + visibleFart)
 
     setTimeout(() => {
       setVisibleFart(null);
     }, 500);
   };
+
   const item = itemsData[selectedCharacterId] || itemsData[1];
 
   useEffect(() => {
@@ -580,17 +584,18 @@ const images = [
         </View>
       </View>
       <View style={styles.imagesContainer}>
-        <View style={styles.imageWrapper}>
+        {/* Player side */}
+        <View style={styles.characterContainer}>
+          <Image
+            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png'}}
+            style={styles.ombra}
+            resizeMode="contain"
+          />
           <Image
             source={{ uri: item.skin }}
             style={styles.player}
             accessible={true}
-            accessibilityLabel="Palyer character"
-          />
-          <Image
-            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
-            style={styles.ombra}
-            resizeMode="contain"
+            accessibilityLabel="Player character"
           />
           {visibleFart && (
             <Image
@@ -598,27 +603,28 @@ const images = [
               style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
           )}
         </View>
-        <View style={styles.imageWrapper}>
+
+        {/* Enemy side */}
+        <View style={[styles.characterContainer, { bottom: 5 }]}>
           <Image
-            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
             style={styles.ombra}
             resizeMode="contain"
           />
-          {visibleFart && (
+          <Image
+            source={{ uri: enemySkin }}
+            style={styles.enemy}
+            accessible={true}
+            accessibilityLabel="Enemy character"
+          />
+          {fartEnemy && (
             <Image
-              source={visibleFart}
-              style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
-          )}
-          {enemySkin && (
-            <Image
-              source={{ uri: enemySkin }}
-              style={styles.enemy}
-              accessible={true}
-              accessibilityLabel="Enemy character"
-            />
+              source={fartEnemy}
+              style={[styles.farts_enemy, fartPositions[enemyId] || fartPositions[1]]} />
           )}
         </View>
       </View>
+
       <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
 
       <View style={styles.bottomContainer}>
@@ -659,9 +665,12 @@ const styles = ScaledSheet.create({
     zIndex: 2,
   },
   ombra: {
-    position: 'relative', // Sovrappone l'immagine sotto
-    width: 550,
-    height: 720,
+    position: 'absolute',
+    width: '350@s',
+    height: '350@s',
+    bottom: '-95@s',
+    alignSelf: 'center',
+    zIndex: 1,
   },
   progressContainer: {
     paddingHorizontal: '20@s',
@@ -680,12 +689,14 @@ const styles = ScaledSheet.create({
   imagesContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between', // Changed from space-evenly to space-between
     alignItems: 'center',
+    paddingHorizontal: '50@s',
   },
-  imageWrapper: {
-    width: '150@s',
-    height: '150@s',
+  characterContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
   farts: {
     width: '60%',
@@ -694,24 +705,24 @@ const styles = ScaledSheet.create({
     position: 'absolute',
   },
   farts_enemy: {
-    transform: [{ scaleX: -1 }],
-    width: '50%',
-    height: '50%',
+    width: '60@s',
+    height: '60@s',
     position: 'absolute',
     resizeMode: 'contain',
+    transform: [{ scaleX: -1 }],
   },
   player: {
-    width: '130%',
-    height: '130%',
-    left: 30,
+    width: '150@s',
+    height: '150@s',
     resizeMode: 'contain',
-    zIndex: 1,
+    zIndex: 2,
   },
   enemy: {
-    transform: [{ scaleX: -1 }],
-    width: '90%',
-    height: '90%',
+    width: '120@s',
+    height: '120@s',
     resizeMode: 'contain',
+    transform: [{ scaleX: -1 }], // Mirror the enemy horizontally
+    zIndex: 2,
   },
   bottomContainer: {
     height: '200@vs',
