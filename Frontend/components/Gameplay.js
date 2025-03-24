@@ -16,7 +16,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
 import HUD from './HUD'
 
-const sbarraCombattimento = require('../assets/images/sbarra combattimento.png');
+const sbarraCombattimento = require('../assets/images/sbarra_combattimento.png');
 
 const { width, height } = Dimensions.get('window');
 
@@ -104,6 +104,70 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
 
   const [visibleFart, setVisibleFart] = useState(null);
   const [fartEnemy, setFartEnemy] = useState(null);
+  const [HPbarMidPoint, setHPbarMidPoint] = useState(10);
+  const [HPbar, setHPbar] = useState(HPbarMidPoint * 2)
+  const [lambdaRound, setLambdaRound] = useState(3);
+  const [DPC_player, setDPC_player] = useState(0.3);
+  const [DPC_bot, setDPC_bot] = useState(1);
+
+  const randf = () => Math.random();
+
+  // Implementazione dell'algoritmo di Poisson
+  const poisson = () => {
+    const L = Math.exp(-lambdaRound);
+    let k = 0;
+    let p = 1.0;
+    while (p > L) {
+      k += 1;
+      const u = randf();
+      p *= u;
+    }
+    return k - 1;
+  };
+
+  // Calcola il tempo di attesa tra gli attacchi
+  const waitingTime = () => {
+    const attackCount = poisson();
+    const totalAttacks = attackCount;
+    let inverseSum = 1.0 / totalAttacks;
+    if (totalAttacks === 0) {
+      inverseSum = 1 / lambdaRound;
+    }
+    return inverseSum * 1000; // Convertiamo in millisecondi
+  };
+
+  useEffect(() => {
+    if (isPlaying) return;
+
+    let timeoutId;
+
+    const scheduleNextAttack = () => {
+      const delay = waitingTime();
+      timeoutId = setTimeout(() => {
+        // Riduci la vita del giocatore
+        setHPbarMidPoint(prev => Math.max(0, prev - DPC_bot)); // Non scende sotto 0
+        
+        // Mostra l'animazione della scoreggia
+        const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
+        setFartEnemy(randomFart);
+        
+        setTimeout(() => {
+          setFartEnemy(null);
+          // Verifica se la vita è a 0
+          if (HPbarMidPoint - DPC_bot <= 0) {
+            // Aggiungi qui la logica di game over se necessario
+            console.log("Game Over!");
+          }
+        }, 500);
+
+        scheduleNextAttack();
+      }, delay);
+    };
+
+    scheduleNextAttack();
+
+    return () => clearTimeout(timeoutId);
+  }, [isPlaying, lambdaRound, HPbarMidPoint]);
 
   const [progress, setProgress] = useState(0);
   const fartPositions = {
@@ -526,12 +590,17 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   }, []);
 
   const handlePress = () => {
+    // Aumenta la barra di progresso
+    setHPbarMidPoint(prev => {
+      const newValue = prev + DPC_player;
+      // Non superare il massimo
+      return Math.min(newValue, HPbar);
+    });
+
+    // Animazione della scoreggia (esistente)
     const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
     setVisibleFart(randomFart);
-
-    setTimeout(() => {
-      setVisibleFart(null);
-    }, 500);
+    setTimeout(() => setVisibleFart(null), 500);
   };
 
   const item = itemsData[selectedCharacterId] || itemsData[1];
@@ -580,7 +649,19 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       <HUD setIsPlaying={setIsPlaying} />
       <View style={styles.progressContainer}>
         <View style={styles.progressBackground}>
-          <View style={[styles.progressFill, { width: `${progress}%` }]} />
+          <View style={[
+            styles.progressFill, 
+            { 
+              width: `${(HPbarMidPoint / HPbar) * 100}%`,
+              backgroundColor: '#4CAF50' // Rosso se sotto il 
+            }
+          ]} >
+              <Image 
+              source={require('../assets/images/separatore.png')} 
+              style={styles.progressEndImage}
+              resizeMode="contain"
+            />
+          </View>
         </View>
       </View>
       <View style={styles.imagesContainer}>
@@ -673,6 +754,8 @@ const styles = ScaledSheet.create({
     zIndex: 1,
   },
   progressContainer: {
+    elevation: 90,
+    zIndex: 50,
     paddingHorizontal: '20@s',
     paddingTop: '90@vs',
   },
@@ -683,8 +766,17 @@ const styles = ScaledSheet.create({
   },
   progressFill: {
     height: '100%',
+    width: '100%',
     backgroundColor: '#4CAF50',
     borderRadius: '5@s',
+    position: 'relative', // Necessario per posizionamento assoluto dell'immagine
+  },
+  progressEndImage: {
+    width: 40,  // Regola in base alle tue esigenze
+    height: 40, // Regola in base alle tue esigenze
+    position: 'absolute',
+    right: -20, // Metà della larghezza per farla sporgere
+    top: -20,
   },
   imagesContainer: {
     flex: 1,
@@ -701,10 +793,12 @@ const styles = ScaledSheet.create({
   farts: {
     width: '60%',
     height: '60%',
+    zIndex: 1,
     resizeMode: 'contain',
     position: 'absolute',
   },
   farts_enemy: {
+    zIndex: 1,
     width: '60@s',
     height: '60@s',
     position: 'absolute',
