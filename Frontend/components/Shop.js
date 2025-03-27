@@ -83,7 +83,7 @@ class ImageCache {
     }
   }
 
-  static async getCachedImagePath(uri) {
+  static async  Path(uri) {
     if (!uri || typeof uri !== 'string') {
       console.error('Invalid URI:', uri);
       return null;
@@ -100,7 +100,7 @@ class ImageCache {
   
       console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
@@ -164,7 +164,7 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
       // Pre-cache all images
       const imagePaths = {};
       const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        const cachedPath = await ImageCache. Path(uri);
         if (cachedPath) {
           imagePaths[uri] = cachedPath;
         }
@@ -192,7 +192,7 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
   }, []);
 
   // Helper function to get cached image path
-  const getCachedImage = (uri) => {
+  const   = (uri) => {
     return cachedImagePaths[uri] || uri;
   };
   const renderBackground = () => {
@@ -238,33 +238,33 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png') }}
+              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png') }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp') }}
+              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp') }}
               style={styles.Timer}
             />
           </View>
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png') }}
+              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png') }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
               <Image
-                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
+                source={{ uri:  ('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
+                source={{ uri:  ('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri: getCachedImage('https://via.placeholder.com/100') }}
+                source={{ uri:  ('https://via.placeholder.com/100') }}
                 style={styles.smallImage}
               />
             </View>

@@ -40,7 +40,7 @@ class ImageCache {
     }
   }
 
-  static async getCachedImagePath(uri, retries = 3, delay = 1000) {
+  static async  Path(uri, retries = 3, delay = 1000) {
     if (!uri || typeof uri !== 'string') {
       console.error('Invalid URI:', uri);
       return null;
@@ -62,7 +62,7 @@ class ImageCache {
       try {
         console.log(`Downloading image from server (attempt ${i + 1}): ${uri}`);
         await RNFS.downloadFile({
-          fromUrl: `http://51.21.14.55:3000/image/${encodedUri}`,
+          fromUrl: `http://10.0.2.2:3000/image/${encodedUri}`,
           toFile: filePath,
           background: true,
           discretionary: true,
@@ -239,7 +239,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
       // Pre-cache all images
       const imagePaths = {};
       const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        const cachedPath = await ImageCache. Path(uri);
         if (cachedPath) {
           imagePaths[uri] = cachedPath;
         }
@@ -277,7 +277,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
   }, []);
 
   // Helper function to get cached image path
-  const getCachedImage = (uri) => {
+  const   = (uri) => {
     return cachedImagePaths[uri] || uri;
   };
 
@@ -308,7 +308,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
     }
     return (
       <ImageBackground
-        source={{ uri: getCachedImage(item.background) }}
+        source={{ uri:  (item.background) }}
         style={styles.sfondi}
       />
     );
@@ -326,14 +326,14 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
 
   return (
     <ImageBackground
-      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png') }}
+      source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png') }}
       style={styles.page1}
       resizeMode="cover"
     >
       <Animated.View style={[styles.page2, { opacity }]}>
         <Image
           source={{
-            uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png')}}
+            uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png')}}
           style={styles.image}
           resizeMode="cover"
         />
@@ -358,15 +358,15 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
           <Image
             source={{
               uri: activeButton === 'skin'
-                ? getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png')
-                : getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png')
+                ?  ('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png')
+                :  ('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png')
             }}
             style={styles.topImage}
           />
 
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
             <Image
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png') }}
+              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png') }}
               style={styles.buttonImage}
               resizeMode="contain"
             />

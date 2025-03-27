@@ -32,70 +32,7 @@ const getSize = (small, medium, large) => {
 };
 
 
-class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-  static cachedImages = new Map();
 
-  static async initialize() {
-    try {
-      const exists = await RNFS.exists(this.cacheDir);
-      if (!exists) {
-        await RNFS.mkdir(this.cacheDir);
-      }
-
-      const files = await RNFS.readDir(this.cacheDir);
-      files.forEach(file => {
-        const uri = file.name.replace(/_/g, '/').replace('.img', '');
-        this.cachedImages.set(uri, file.path);
-      });
-    } catch (error) {
-      console.error('Failed to initialize image cache:', error);
-    }
-  }
-
-  static async getCachedImagePath(uri) {
-    if (!uri || typeof uri !== 'string') {
-      console.error('Invalid URI:', uri);
-      return null;
-    }
-  
-    if (this.cachedImages.has(uri)) {
-      console.log(`Image found in cache: ${uri}`);
-      return `file://${this.cachedImages.get(uri)}`;
-    }
-  
-    try {
-      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-      const filePath = `${this.cacheDir}/${filename}`;
-  
-      console.log(`Downloading image from server: ${uri}`);
-      await RNFS.downloadFile({
-        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
-        toFile: filePath,
-        background: true,
-        discretionary: true,
-      }).promise;
-  
-      this.cachedImages.set(uri, filePath);
-      console.log(`Image cached successfully: ${uri}`);
-      return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to download image Map: ${uri}`, error);
-      return uri; // Fallback all'URL originale
-    }
-  }
-
-
-  static async clearCache() {
-    try {
-      await RNFS.unlink(this.cacheDir);
-      await RNFS.mkdir(this.cacheDir);
-      this.cachedImages.clear();
-    } catch (error) {
-      console.error('Failed to clear image cache:', error);
-    }
-  }
-}
 
 const MapScreen = ({ toggleMapScreen }) => {
   const data = Array.from({ length: 100 }, (_, index) => index + 1);
@@ -122,42 +59,7 @@ const MapScreen = ({ toggleMapScreen }) => {
     'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
   ]
   
-  useEffect(() => {
-    const initializeCaches = async () => {
-      await ImageCache.initialize();
 
-      const imagePaths = {};
-      const cacheImage = async (uri) => {
-        try {
-          const cachedPath = await ImageCache.getCachedImagePath(uri);
-          if (cachedPath) {
-            imagePaths[uri] = cachedPath;
-          }
-        } catch (error) {
-          console.error(`Failed to cache image: ${uri}`, error);
-          imagePaths[uri] = uri; // Fallback all'URL originale
-        }
-      };
-
-      const imagesToCache = [
-        ...images,
-      ];
-
-      await Promise.all(imagesToCache.map(cacheImage));
-      setCachedImagePaths(imagePaths);
-    };
-
-    initializeCaches();
-
-    return () => {
-      // Optionally clear caches on unmount
-      // ImageCache.clearCache();
-    };
-  }, []);
-
-  const getCachedImage = (uri) => {
-    return cachedImagePaths[uri] || uri;
-  };
   // Funzione per determinare la posizione left in base al numero
   const getLeftPosition = (item) => {
     const itemTextLength = item.toString().length; // Calcola la lunghezza del numero (2 o 3 cifre)
@@ -173,7 +75,7 @@ const MapScreen = ({ toggleMapScreen }) => {
   return (
     <ImageBackground
       source={{
-        uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png'),
+        uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
       }}
       style={styles.background}
       resizeMode="cover"
@@ -195,7 +97,7 @@ const MapScreen = ({ toggleMapScreen }) => {
 
               <Image
                 source={{
-                  uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png'),
+                  uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png',
                 }}
                 style={styles.itemImage}
               />
@@ -210,7 +112,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png'),
+                      uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
                     }}
                     style={styles.ricompensaImage}
                   />
@@ -219,7 +121,7 @@ const MapScreen = ({ toggleMapScreen }) => {
                 <View style={styles.ricompensa}>
                   <Image
                     source={{
-                      uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png'),
+                      uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
                     }}
                     style={styles.ricompensaImage}
                   />

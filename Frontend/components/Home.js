@@ -32,81 +32,7 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-  static cachedImages = new Map();
 
-  static async initialize() {
-    try {
-      const exists = await RNFS.exists(this.cacheDir);
-      if (!exists) {
-        await RNFS.mkdir(this.cacheDir);
-      }
-
-      const files = await RNFS.readDir(this.cacheDir);
-      files.forEach(file => {
-        const uri = decodeURIComponent(file.name.replace(/_/g, '/').replace('.img', ''));
-        this.cachedImages.set(uri, file.path);
-      });
-    } catch (error) {
-      console.error('Failed to initialize image cache:', error);
-    }
-  }
-
-  static async getCachedImagePath(uri, retries = 3, delay = 1000) {
-    if (!uri || typeof uri !== 'string') {
-      console.error('Invalid URI:', uri);
-      return null;
-    }
-
-    // Controlla se l'immagine è già in cache
-    if (this.cachedImages.has(uri)) {
-      console.log(`Image found in cache: ${uri}`);
-      return `file://${this.cachedImages.get(uri)}`;
-    }
-
-    // Codifica l'URI per creare un nome file valido
-    const encodedUri = encodeURIComponent(uri);
-    const filename = `${encodedUri}.img`;
-    const filePath = `${this.cacheDir}/${filename}`;
-
-    // Tentativo di download con ritentativi
-    for (let i = 0; i < retries; i++) {
-      try {
-        console.log(`Downloading image from server (attempt ${i + 1}): ${uri}`);
-        await RNFS.downloadFile({
-          fromUrl: `http://51.21.14.55:3000/image/${encodedUri}`,
-          toFile: filePath,
-          background: true,
-          discretionary: true,
-        }).promise;
-
-        // Aggiungi l'immagine alla cache
-        this.cachedImages.set(uri, filePath);
-        console.log(`Image cached successfully: ${uri}`);
-        return `file://${filePath}`;
-      } catch (error) {
-        console.error(`Failed to download image Home (attempt ${i + 1}): ${uri}`, error);
-        if (i < retries - 1) {
-          await new Promise(resolve => setTimeout(resolve, delay)); // Ritenta dopo un delay
-        } else {
-          console.error(`All attempts failed for image: ${uri}`);
-          return uri; // Fallback all'URL originale
-        }
-      }
-    }
-  }
-
-  static async clearCache() {
-    try {
-      await RNFS.unlink(this.cacheDir);
-      await RNFS.mkdir(this.cacheDir);
-      this.cachedImages.clear();
-    } catch (error) {
-      console.error('Failed to clear image cache:', error);
-    }
-  }
-}
 
 
 
@@ -375,61 +301,13 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   ];
 
 
-  const [cachedImagePaths, setCachedImagePaths] = useState({});
 
-  useEffect(() => {
-    const initializeCaches = async () => {
-      await ImageCache.initialize();
-  
-      const imagePaths = {};
-      const cacheImage = async (uri) => {
-        if (!uri) {
-          console.error('URI is undefined or null:', uri);
-          return;
-        }
-  
-        try {
-          const cachedPath = await ImageCache.getCachedImagePath(uri);
-          if (cachedPath) {
-            imagePaths[uri] = cachedPath;
-          }
-        } catch (error) {
-          console.error(`Failed to cache image: ${uri}`, error);
-          imagePaths[uri] = uri; // Fallback all'URL originale
-        }
-      };
-  
-      const imagesToCache = [
-        ...Object.values(skinItemImages),
-        ...images,
-      ];
-  
-      await Promise.all(imagesToCache.map(cacheImage));
-      setCachedImagePaths(imagePaths);
-    };
-  
-    initializeCaches();
-  
-    return () => {
-      // Optionally clear caches on unmount
-      // ImageCache.clearCache();
-    };
-  }, []);
-
-  const getCachedImage = (uri) => {
-    return cachedImagePaths[uri] || uri;
-  };
   // Render different components based on activeComponent
   if (activeComponent === 'User') {
     return <User goBack={handleBackToHome} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />;
   }
 
   if (activeComponent === 'Gameplay') {
-    // Se isPlaying è false, torna alla home
-    if (isPlaying) {
-      setActiveComponent('Home');
-      return <Home setIsPlaying={setIsPlaying} />;
-    }
     return <Gameplay setIsPlaying={setIsPlaying} selectedCharacterId={selectedCharacterId} />;
   }
 
@@ -719,14 +597,14 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   console.log(visibleFart)
   return (
     <ImageBackground
-      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
+      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
       style={styles.page1}
       resizeMode="cover"
     >
       <SafeAreaView style={styles.tema}>
         <Animated.Image
           source={{
-            uri: getCachedImage("https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png"),
+            uri:  "https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png",
           }}
           style={[
             styles.checkerboard,
@@ -742,7 +620,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
       <View style={styles.mainContainer}>
         <Animated.Image
           source={{
-            uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png'),
+            uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png',
           }}
           style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
@@ -751,7 +629,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             <Image
               style={styles.user}
               source={{
-                uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg'),
+                uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg',
               }}
             />
             <TouchableOpacity
@@ -761,7 +639,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             >
               <Image
                 source={{
-                  uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png')
+                  uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png'
                 }}
                 style={styles.buttonImageUser}
               />
@@ -772,17 +650,17 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopLeft}>
             <ImageBackground
               style={styles.buttonsRowTopLeftBackground}
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png' }}
             />
             <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png' }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png' }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
@@ -791,18 +669,18 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopRight}>
             <ImageBackground
               style={styles.buttonsRowTopRightBackground}
-              source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png' }}
             />
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png' }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
               <Animated.Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png' }}
                 style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
@@ -817,7 +695,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             resizeMode="contain"
           />
           <Image
-            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -833,7 +711,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           onPress={handlePlayPress}
           onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
-            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
+            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png' }}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
           />
           <Text style={styles.playButtonText}>

@@ -53,7 +53,7 @@ class ImageCache {
     }
   }
 
-  static async getCachedImagePath(uri) {
+  static async  Path(uri) {
     if (!uri || typeof uri !== 'string') {
       console.error('Invalid URI:', uri);
       return null;
@@ -70,7 +70,7 @@ class ImageCache {
   
       console.log(`Downloading image from server: ${uri}`);
       await RNFS.downloadFile({
-        fromUrl: `http://51.21.14.55:3000/image/${encodeURIComponent(uri)}`,
+        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
         toFile: filePath,
         background: true,
         discretionary: true,
@@ -122,7 +122,7 @@ useEffect(() => {
     const imagePaths = {};
     const cacheImage = async (uri) => {
       try {
-        const cachedPath = await ImageCache.getCachedImagePath(uri);
+        const cachedPath = await ImageCache. Path(uri);
         if (cachedPath) {
           imagePaths[uri] = cachedPath;
         }
@@ -150,12 +150,12 @@ useEffect(() => {
   };
 }, []);
 
-const getCachedImage = (uri) => {
+const   = (uri) => {
   return cachedImagePaths[uri] || uri;
 };
   return (
     <ImageBackground
-      source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
+      source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -182,7 +182,7 @@ const getCachedImage = (uri) => {
           onPress={goBack}
         >
           <Image
-            source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
+            source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
             style={styles.backButtonImage}
           />
           <Text style={styles.backButtonText}>Back</Text>
@@ -191,12 +191,12 @@ const getCachedImage = (uri) => {
           <View style={styles.content}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
+                source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
                 style={styles.characterImage}
                 resizeMode="contain"
               />
               <Image
-                source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+                source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
                 style={styles.ombra}
                 resizeMode="contain"
               />
@@ -219,12 +219,12 @@ const getCachedImage = (uri) => {
             <View style={styles.Accountcreen}>
               <View style={styles.avatar}>
                 <Image
-                  source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
+                  source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
                 <Image
-                  source={{ uri: getCachedImage('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+                  source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
                   style={styles.ombra}
                   resizeMode="contain"
                 />
