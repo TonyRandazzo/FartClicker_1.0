@@ -19,81 +19,7 @@ import RNFS from 'react-native-fs';
 import HUD from './HUD'
 import Info from './Info';
 
-class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-  static cachedImages = new Map();
 
-  static async initialize() {
-    try {
-      const exists = await RNFS.exists(this.cacheDir);
-      if (!exists) {
-        await RNFS.mkdir(this.cacheDir);
-      }
-
-      const files = await RNFS.readDir(this.cacheDir);
-      files.forEach(file => {
-        const uri = decodeURIComponent(file.name.replace(/_/g, '/').replace('.img', ''));
-        this.cachedImages.set(uri, file.path);
-      });
-    } catch (error) {
-      console.error('Failed to initialize image cache:', error);
-    }
-  }
-
-  static async  Path(uri, retries = 3, delay = 1000) {
-    if (!uri || typeof uri !== 'string') {
-      console.error('Invalid URI:', uri);
-      return null;
-    }
-
-    // Controlla se l'immagine è già in cache
-    if (this.cachedImages.has(uri)) {
-      console.log(`Image found in cache: ${uri}`);
-      return `file://${this.cachedImages.get(uri)}`;
-    }
-
-    // Codifica l'URI per creare un nome file valido
-    const encodedUri = encodeURIComponent(uri);
-    const filename = `${encodedUri}.img`;
-    const filePath = `${this.cacheDir}/${filename}`;
-
-    // Tentativo di download con ritentativi
-    for (let i = 0; i < retries; i++) {
-      try {
-        console.log(`Downloading image from server (attempt ${i + 1}): ${uri}`);
-        await RNFS.downloadFile({
-          fromUrl: `http://10.0.2.2:3000/image/${encodedUri}`,
-          toFile: filePath,
-          background: true,
-          discretionary: true,
-        }).promise;
-
-        // Aggiungi l'immagine alla cache
-        this.cachedImages.set(uri, filePath);
-        console.log(`Image cached successfully: ${uri}`);
-        return `file://${filePath}`;
-      } catch (error) {
-        console.error(`Failed to download image Skin (attempt ${i + 1}): ${uri}`, error);
-        if (i < retries - 1) {
-          await new Promise(resolve => setTimeout(resolve, delay)); // Ritenta dopo un delay
-        } else {
-          console.error(`All attempts failed for image: ${uri}`);
-          return uri; // Fallback all'URL originale
-        }
-      }
-    }
-  }
-
-  static async clearCache() {
-    try {
-      await RNFS.unlink(this.cacheDir);
-      await RNFS.mkdir(this.cacheDir);
-      this.cachedImages.clear();
-    } catch (error) {
-      console.error('Failed to clear image cache:', error);
-    }
-  }
-}
 
 
 const { width, height } = Dimensions.get('window');
@@ -229,57 +155,6 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
   };
 
   // Initialize caches when component mounts
-  useEffect(() => {
-    const initializeCaches = async () => {
-      await Promise.all([
-        ImageCache.initialize(),
-        VideoCache.initialize()
-      ]);
-
-      // Pre-cache all images
-      const imagePaths = {};
-      const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache. Path(uri);
-        if (cachedPath) {
-          imagePaths[uri] = cachedPath;
-        }
-      };
-
-      // Cache all image assets
-      const imagesToCache = [
-        ...Object.values(skinItemImages),
-        ...Object.values(skinItemRarities),
-        ...Object.values(skinItemBackgrounds).filter(uri => !uri.endsWith('.mp4')),
-      ];
-
-      await Promise.all(imagesToCache.map(cacheImage));
-      setCachedImagePaths(imagePaths);
-
-      // Pre-cache videos (existing code)
-      const videoPaths = {};
-      for (const key in skinItemBackgrounds) {
-        const background = skinItemBackgrounds[key];
-        if (background.endsWith('.mp4')) {
-          const cachedPath = await VideoCache.getCachedVideoPath(background);
-          videoPaths[background] = cachedPath;
-        }
-      }
-      setCachedVideoPaths(videoPaths);
-    };
-
-    initializeCaches();
-
-    return () => {
-      // Optionally clear caches on unmount
-      // ImageCache.clearCache();
-      // VideoCache.clearCache();
-    };
-  }, []);
-
-  // Helper function to get cached image path
-  const   = (uri) => {
-    return cachedImagePaths[uri] || uri;
-  };
 
   // Modified render functions to use cached images
   const renderBackground = (item) => {
@@ -326,14 +201,14 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
 
   return (
     <ImageBackground
-      source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png') }}
+      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png' }}
       style={styles.page1}
       resizeMode="cover"
     >
       <Animated.View style={[styles.page2, { opacity }]}>
         <Image
           source={{
-            uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png')}}
+            uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png'}}
           style={styles.image}
           resizeMode="cover"
         />
@@ -358,15 +233,15 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
           <Image
             source={{
               uri: activeButton === 'skin'
-                ?  ('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png')
-                :  ('https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png')
+                ?  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png'
+                :  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png'
             }}
             style={styles.topImage}
           />
 
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
             <Image
-              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png' }}
               style={styles.buttonImage}
               resizeMode="contain"
             />

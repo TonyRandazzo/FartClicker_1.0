@@ -62,70 +62,7 @@ const topRightTexts = [
 
 const buttonImage = 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png';
 
-class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-  static cachedImages = new Map();
 
-  static async initialize() {
-    try {
-      const exists = await RNFS.exists(this.cacheDir);
-      if (!exists) {
-        await RNFS.mkdir(this.cacheDir);
-      }
-
-      const files = await RNFS.readDir(this.cacheDir);
-      files.forEach(file => {
-        const uri = file.name.replace(/_/g, '/').replace('.img', '');
-        this.cachedImages.set(uri, file.path);
-      });
-    } catch (error) {
-      console.error('Failed to initialize image cache:', error);
-    }
-  }
-
-  static async  Path(uri) {
-    if (!uri || typeof uri !== 'string') {
-      console.error('Invalid URI:', uri);
-      return null;
-    }
-  
-    if (this.cachedImages.has(uri)) {
-      console.log(`Image found in cache: ${uri}`);
-      return `file://${this.cachedImages.get(uri)}`;
-    }
-  
-    try {
-      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-      const filePath = `${this.cacheDir}/${filename}`;
-  
-      console.log(`Downloading image from server: ${uri}`);
-      await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
-        toFile: filePath,
-        background: true,
-        discretionary: true,
-      }).promise;
-  
-      this.cachedImages.set(uri, filePath);
-      console.log(`Image cached successfully: ${uri}`);
-      return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to download image Shop: ${uri}`, error);
-      return uri; // Fallback all'URL originale
-    }
-  }
-
-
-  static async clearCache() {
-    try {
-      await RNFS.unlink(this.cacheDir);
-      await RNFS.mkdir(this.cacheDir);
-      this.cachedImages.clear();
-    } catch (error) {
-      console.error('Failed to clear image cache:', error);
-    }
-  }
-}
 
 const Shop = ({ isPlaying, setIsPlaying }) => {
   const [cachedImagePaths, setCachedImagePaths] = useState({});
@@ -139,62 +76,6 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
     'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo_shop.mp4'
   );
 
-  useEffect(() => {
-    const initializeVideoCache = async () => {
-      await VideoCache.initialize();
-
-      const videoUrl = 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo_shop.mp4';
-
-      try {
-        const cachedPath = await VideoCache.getCachedVideoPath(videoUrl);
-        setCachedVideoPath(cachedPath);
-      } catch (error) {
-        console.error('Error caching video:', error);
-      }
-    };
-
-    initializeVideoCache();
-  }, []);
-  useEffect(() => {
-    const initializeCaches = async () => {
-      await Promise.all([
-        ImageCache.initialize(),
-      ]);
-
-      // Pre-cache all images
-      const imagePaths = {};
-      const cacheImage = async (uri) => {
-        const cachedPath = await ImageCache. Path(uri);
-        if (cachedPath) {
-          imagePaths[uri] = cachedPath;
-        }
-      };
-
-      // Cache all image assets
-      const imagesToCache = [
-        ...Object.values(shopItemImages),
-        buttonImage,
-        ...images,
-      ];
-
-      await Promise.all(imagesToCache.map(cacheImage));
-      setCachedImagePaths(imagePaths);
-
-    };
-
-    initializeCaches();
-
-    return () => {
-      // Optionally clear caches on unmount
-      // ImageCache.clearCache();
-      // VideoCache.clearCache();
-    };
-  }, []);
-
-  // Helper function to get cached image path
-  const   = (uri) => {
-    return cachedImagePaths[uri] || uri;
-  };
   const renderBackground = () => {
     return (
       <Video
@@ -238,33 +119,33 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png' }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp' }}
               style={styles.Timer}
             />
           </View>
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png') }}
+              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png' }}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
               <Image
-                source={{ uri:  ('https://via.placeholder.com/100') }}
+                source={{ uri:  'https://via.placeholder.com/100'}}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri:  ('https://via.placeholder.com/100') }}
+                source={{ uri:  'https://via.placeholder.com/100' }}
                 style={styles.smallImage}
               />
               <Image
-                source={{ uri:  ('https://via.placeholder.com/100') }}
+                source={{ uri:  'https://via.placeholder.com/100' }}
                 style={styles.smallImage}
               />
             </View>

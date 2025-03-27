@@ -32,70 +32,7 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-class ImageCache {
-  static cacheDir = `${RNFS.CachesDirectoryPath}/imageCache`;
-  static cachedImages = new Map();
 
-  static async initialize() {
-    try {
-      const exists = await RNFS.exists(this.cacheDir);
-      if (!exists) {
-        await RNFS.mkdir(this.cacheDir);
-      }
-
-      const files = await RNFS.readDir(this.cacheDir);
-      files.forEach(file => {
-        const uri = file.name.replace(/_/g, '/').replace('.img', '');
-        this.cachedImages.set(uri, file.path);
-      });
-    } catch (error) {
-      console.error('Failed to initialize image cache:', error);
-    }
-  }
-
-  static async  Path(uri) {
-    if (!uri || typeof uri !== 'string') {
-      console.error('Invalid URI:', uri);
-      return null;
-    }
-  
-    if (this.cachedImages.has(uri)) {
-      console.log(`Image found in cache: ${uri}`);
-      return `file://${this.cachedImages.get(uri)}`;
-    }
-  
-    try {
-      const filename = uri.replace(/\//g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.img';
-      const filePath = `${this.cacheDir}/${filename}`;
-  
-      console.log(`Downloading image from server: ${uri}`);
-      await RNFS.downloadFile({
-        fromUrl: `http://10.0.2.2:3000/image/${encodeURIComponent(uri)}`,
-        toFile: filePath,
-        background: true,
-        discretionary: true,
-      }).promise;
-  
-      this.cachedImages.set(uri, filePath);
-      console.log(`Image cached successfully: ${uri}`);
-      return `file://${filePath}`;
-    } catch (error) {
-      console.error(`Failed to download image User: ${uri}`, error);
-      return uri; // Fallback all'URL originale
-    }
-  }
-
-
-  static async clearCache() {
-    try {
-      await RNFS.unlink(this.cacheDir);
-      await RNFS.mkdir(this.cacheDir);
-      this.cachedImages.clear();
-    } catch (error) {
-      console.error('Failed to clear image cache:', error);
-    }
-  }
-}
 
 
 const imageBehindSwitchUser = 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png';
@@ -115,47 +52,11 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',  
 ];
-useEffect(() => {
-  const initializeCaches = async () => {
-    await ImageCache.initialize();
 
-    const imagePaths = {};
-    const cacheImage = async (uri) => {
-      try {
-        const cachedPath = await ImageCache. Path(uri);
-        if (cachedPath) {
-          imagePaths[uri] = cachedPath;
-        }
-      } catch (error) {
-        console.error(`Failed to cache image: ${uri}`, error);
-        imagePaths[uri] = uri; // Fallback all'URL originale
-      }
-    };
-
-    const imagesToCache = [
-      imageBehindSwitchUser,
-      imageBehindSwitchrecord,
-      ...images,
-  ];
-
-    await Promise.all(imagesToCache.map(cacheImage));
-    setCachedImagePaths(imagePaths);
-  };
-
-  initializeCaches();
-
-  return () => {
-    // Optionally clear caches on unmount
-    // ImageCache.clearCache();
-  };
-}, []);
-
-const   = (uri) => {
-  return cachedImagePaths[uri] || uri;
 };
   return (
     <ImageBackground
-      source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png') }}
+      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -182,7 +83,7 @@ const   = (uri) => {
           onPress={goBack}
         >
           <Image
-            source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png') }}
+            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png' }}
             style={styles.backButtonImage}
           />
           <Text style={styles.backButtonText}>Back</Text>
@@ -191,12 +92,12 @@ const   = (uri) => {
           <View style={styles.content}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
                 style={styles.characterImage}
                 resizeMode="contain"
               />
               <Image
-                source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
                 style={styles.ombra}
                 resizeMode="contain"
               />
@@ -219,12 +120,12 @@ const   = (uri) => {
             <View style={styles.Accountcreen}>
               <View style={styles.avatar}>
                 <Image
-                  source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png') }}
+                  source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
                 <Image
-                  source={{ uri:  ('https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png') }}
+                  source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
                   style={styles.ombra}
                   resizeMode="contain"
                 />
@@ -247,7 +148,7 @@ const   = (uri) => {
       <HUD setIsPlaying={setIsPlaying}  />
     </ImageBackground>
   );
-};
+;
 
 const styles = StyleSheet.create({
   settingsText: {
