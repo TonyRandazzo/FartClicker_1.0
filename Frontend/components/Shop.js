@@ -34,12 +34,12 @@ const getSize = (small, medium, large) => {
 };
 
 const shopItemImages = [
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+1.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+2.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+3.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+4.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+5.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/icona+soldi+sgravior+6.png',
+  require('../assets/images/icona soldi 1.png'),
+  require('../assets/images/icona soldi 2.png'),
+  require('../assets/images/icona soldi 3.png'),
+  require('../assets/images/icona soldi sgravior 4.png'),
+  require('../assets/images/icona soldi sgravior 5.png'),
+  require('../assets/images/icona soldi sgravior 6.png'),
 ];
 
 const buttonTexts = [
@@ -60,26 +60,16 @@ const topRightTexts = [
   '10%',
 ];
 
-const buttonImage = 'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png';
 
 
 
 const Shop = ({ isPlaying, setIsPlaying }) => {
-  const [cachedImagePaths, setCachedImagePaths] = useState({});
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp',
 
-  ];
-  const [cachedVideoPath, setCachedVideoPath] = useState(
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo_shop.mp4'
-  );
 
   const renderBackground = () => {
     return (
       <Video
-        source={{ uri: cachedVideoPath }}
+        source={require('../assets/videos/sfondo shop.mp4')}
         style={styles.backgroundVideo}
         resizeMode="cover"
         repeat={true}
@@ -119,19 +109,19 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+bluina.png' }}
+              source={require('../assets/images/barra bluina.png')}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>La tua scritta</Text>
             <Image
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/chronometer-timer-counter-free-png.webp' }}
+              source={require('../assets/images/chronometer-timer-counter-free-png.webp')}
               style={styles.Timer}
             />
           </View>
 
           <View style={styles.LimitedOffer}>
             <Image
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/barra+magentine.png' }}
+              source={require('../assets/images/barra magentine.png')}
               style={styles.newImage}
             />
             <Text style={styles.rotatedText}>Testo Rotato</Text>

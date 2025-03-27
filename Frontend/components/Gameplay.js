@@ -226,27 +226,27 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   };
 
   const skinItemImages = {
-    marvick: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Marvick.png',
-    maestroSasuke: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Maestro+Sasuke.png',
-    bob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/BoB.png',
-    cyclop: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Cyclop.png',
-    babyAlien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Baby+Alien.png',
-    george: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/George.png',
-    yokozuna: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Yokozuna.png',
-    dracula: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Dracula.png',
-    robert: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Robert.png',
-    xao: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Xao.png',
-    fartMan: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',
-    alien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Alien.png',
-    mrFarte: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Fart%C3%A9.png',
-    fangpi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fangp%C3%AC.png',
-    amaterasuTsukuyomi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Amaterasu.png',
-    stinkyBlob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Melma+puzzona.png',
-    bear: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Bear.png',
-    soprano: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Soprano.png',
-    mrTakeshi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Takeshi.png',
-    stein: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png',
-    gorilloz: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png'
+    marvick: require('../assets/images/Characters/Marvick.png'),
+    maestroSasuke: require('../assets/images/Characters/Maestro Sasuke.png'),
+    bob: require('../assets/images/Characters/BoB.png'),
+    cyclop:  require('../assets/images/Characters/Cyclop.png'),
+    babyAlien: require('../assets/images/Characters/Baby Alien.png'),
+    george: require('../assets/images/Characters/George.png'),
+    yokozuna: require('../assets/images/Characters/Yokozuna.png'),
+    dracula: require('../assets/images/Characters/Dracula.png'),
+    robert: require('../assets/images/Characters/Robert.png'),
+    xao: require('../assets/images/Characters/Xao.png'),
+    fartMan: require('../assets/images/Characters/Fartman.png'),
+    alien: require('../assets/images/Characters/Alien.png'),
+    mrFarte: require('../assets/images/Characters/Mr. Fartè.png'),
+    fangpi: require('../assets/images/Characters/Fangpì.png'),
+    amaterasuTsukuyomi: require('../assets/images/Characters/Amaterasu.png'),
+    stinkyBlob: require('../assets/images/Characters/Melma puzzona.png'),
+    bear: require('../assets/images/Characters/Bear.png'),
+    soprano: require('../assets/images/Characters/Sopranp.png'),
+    mrTakeshi: require('../assets/images/Characters/Mr. Takeshi.png'),
+    stein: require('../assets/images/Characters/Stein.png'),
+    gorilloz: require('../assets/images/Characters/Stein.png')
   };
 
   const fartImages = [
@@ -498,9 +498,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
       skin: skinItemImages.gorilloz
     }
   };
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
-  ]
+
 
   const [enemySkin, setEnemySkin] = useState(skinItemImages.marvick);
   const [enemyId, setEnemyId] = useState(1);
@@ -554,7 +552,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
         {/* Player side */}
         <View style={styles.characterContainer}>
           <Image
-            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png'}}
+            source={ require('../assets/images/piattaforma skin home.png')}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -574,7 +572,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
         {/* Enemy side */}
         <View style={[styles.characterContainer, { bottom: 5 }]}>
           <Image
-            source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+            source={ require('../assets/images/piattaforma skin home.png')}
             style={styles.ombra}
             resizeMode="contain"
           />

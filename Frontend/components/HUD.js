@@ -51,10 +51,7 @@ function PauseButton({ setIsPlaying }) {
     ]).start();
   };
 
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png',
-  ];
+
 
 
 
@@ -63,7 +60,7 @@ function PauseButton({ setIsPlaying }) {
     <>
       <View style={styles.topContainer}>
         <Image
-          source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/raccoglitore+monete+ink+e+impostaz+finale.png' }}
+          source={require('../assets/images/raccoglitore monete ink e impostaz finale.png')}
           style={styles.topImage}
           resizeMode="cover"
         />
@@ -74,7 +71,7 @@ function PauseButton({ setIsPlaying }) {
           setIsPaused(true);
         }}>
         <Animated.Image
-          source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/GreenButton.png' }}
+          source={require('../assets/images/GreenButton')}
           style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
           resizeMode="contain"
         />

@@ -53,7 +53,6 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',  
 ];
 
-};
   return (
     <ImageBackground
       source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
@@ -148,7 +147,7 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
       <HUD setIsPlaying={setIsPlaying}  />
     </ImageBackground>
   );
-;
+}
 
 const styles = StyleSheet.create({
   settingsText: {

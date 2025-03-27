@@ -55,9 +55,7 @@ const MapScreen = ({ toggleMapScreen }) => {
   };
 
 
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
-  ]
+
   
 
   // Funzione per determinare la posizione left in base al numero
@@ -74,9 +72,7 @@ const MapScreen = ({ toggleMapScreen }) => {
 
   return (
     <ImageBackground
-      source={{
-        uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+shop.png',
-      }}
+      source={require('../assets/images/sfondo shop.png')}
       style={styles.background}
       resizeMode="cover"
     >
@@ -96,9 +92,7 @@ const MapScreen = ({ toggleMapScreen }) => {
               </View>
 
               <Image
-                source={{
-                  uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+tondo.png',
-                }}
+                source={require('../assets/images/tasto arancione tondo.png')}
                 style={styles.itemImage}
               />
 
@@ -111,18 +105,14 @@ const MapScreen = ({ toggleMapScreen }) => {
               <View style={styles.ricompensaContainer}>
                 <View style={styles.ricompensa}>
                   <Image
-                    source={{
-                      uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
-                    }}
+                    source={require('../assets/images/COIN MARVIK.png')}
                     style={styles.ricompensaImage}
                   />
                   <Text style={styles.ricompensaText}> 40 </Text>
                 </View>
                 <View style={styles.ricompensa}>
                   <Image
-                    source={{
-                      uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/COIN+MARVIK.png',
-                    }}
+                    source={require('../assets/images/COIN MARVIK.png')}
                     style={styles.ricompensaImage}
                   />
                   <Text style={styles.ricompensaText}> 20 </Text>

@@ -52,11 +52,7 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
     const [cachedImagePaths, setCachedImagePaths] = useState({});
 
   const [activeButton, setActiveButton] = useState('missions');
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/nuova+schermata+mission.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png',
-  ];
+
 
 
   const handleSwitchMissions = () => setActiveButton('missions');
@@ -96,7 +92,7 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
 
   return (
     <ImageBackground
-      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/nuova+schermata+mission.png' }}
+      source={require('../assets/images/nuova schermata mission.png')}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -119,11 +115,11 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
 
         <View style={styles.imageButtonContainer}>
           <Image
-            source={{
-              uri: activeButton === 'missions'
-                ?  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png'
-                :  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png'
-            }}
+            source={
+               activeButton === 'missions'
+                ?  require('../assets/images/separé schermata missioni Schlein.png')
+                :  require('../assets/images/separé schermata missioni Meloni.png')
+            }
             style={styles.topImage}
           />
 

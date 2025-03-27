@@ -285,22 +285,6 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
 
 
 
-  const images = [
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png',
-    "https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png",
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg',
-    'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png',
-  ];
-
-
 
   // Render different components based on activeComponent
   if (activeComponent === 'User') {
@@ -326,27 +310,27 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
     ]).start();
   };
   const skinItemImages = {
-    marvick: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Marvick.png',
-    maestroSasuke: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Maestro+Sasuke.png',
-    bob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/BoB.png',
-    cyclop: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Cyclop.png',
-    babyAlien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Baby+Alien.png',
-    george: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/George.png',
-    yokozuna: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Yokozuna.png',
-    dracula: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Dracula.png',
-    robert: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Robert.png',
-    xao: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Xao.png',
-    fartMan: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',
-    alien: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Alien.png',
-    mrFarte: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Fart%C3%A9.png',
-    fangpi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fangp%C3%AC.png',
-    amaterasuTsukuyomi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Amaterasu.png',
-    stinkyBlob: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Melma+puzzona.png',
-    bear: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Bear.png',
-    soprano: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Soprano.png',
-    mrTakeshi: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Mr.+Takeshi.png',
-    stein: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png',
-    gorilloz: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Stein.png'
+    marvick: require('../assets/images/Characters/Marvick.png'),
+    maestroSasuke: require('../assets/images/Characters/Maestro Sasuke.png'),
+    bob: require('../assets/images/Characters/BoB.png'),
+    cyclop:  require('../assets/images/Characters/Cyclop.png'),
+    babyAlien: require('../assets/images/Characters/Baby Alien.png'),
+    george: require('../assets/images/Characters/George.png'),
+    yokozuna: require('../assets/images/Characters/Yokozuna.png'),
+    dracula: require('../assets/images/Characters/Dracula.png'),
+    robert: require('../assets/images/Characters/Robert.png'),
+    xao: require('../assets/images/Characters/Xao.png'),
+    fartMan: require('../assets/images/Characters/Fartman.png'),
+    alien: require('../assets/images/Characters/Alien.png'),
+    mrFarte: require('../assets/images/Characters/Mr. Fartè.png'),
+    fangpi: require('../assets/images/Characters/Fangpì.png'),
+    amaterasuTsukuyomi: require('../assets/images/Characters/Amaterasu.png'),
+    stinkyBlob: require('../assets/images/Characters/Melma puzzona.png'),
+    bear: require('../assets/images/Characters/Bear.png'),
+    soprano: require('../assets/images/Characters/Sopranp.png'),
+    mrTakeshi: require('../assets/images/Characters/Mr. Takeshi.png'),
+    stein: require('../assets/images/Characters/Stein.png'),
+    gorilloz: require('../assets/images/Characters/Stein.png')
   };
   const itemsData = {
     1: {
@@ -597,15 +581,13 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   console.log(visibleFart)
   return (
     <ImageBackground
-      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
+      source={require('../assets/images/sfondo blu.png')}
       style={styles.page1}
       resizeMode="cover"
     >
       <SafeAreaView style={styles.tema}>
         <Animated.Image
-          source={{
-            uri:  "https://fartclicker.s3.eu-north-1.amazonaws.com/Home/silouette+scoreggia+da+mettere+su+sfondo%2C+dietro+il+livello+dell'impulso+di+luce.png",
-          }}
+          source={require("../assets/images/silouette scoreggia da mettere su sfondo, dietro il livello dell'impulso di luce.png")}
           style={[
             styles.checkerboard,
             {
@@ -619,18 +601,14 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
       <HUD setIsPlaying={setIsPlaying} />
       <View style={styles.mainContainer}>
         <Animated.Image
-          source={{
-            uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/impulso+di+luce.png',
-          }}
+          source={require('../assets/images/impulso di luce.png')}
           style={[styles.impulso, { opacity: impulsoOpacity }]}
         />
         <View style={styles.containerUser}>
           <View style={styles.imageContainer}>
             <Image
               style={styles.user}
-              source={{
-                uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Prova+utente.jpeg',
-              }}
+              source={require('../assets/images/Prova utente.png')}
             />
             <TouchableOpacity
               style={styles.buttonUser}
@@ -638,9 +616,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
               onPress={handleButtonUserPress}
             >
               <Image
-                source={{
-                  uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/cerchio+contentente+personaggio+in+home+casupola.png'
-                }}
+                source={require('../assets/images/cerchio contentente personaggio in home casupola.png')}
                 style={styles.buttonImageUser}
               />
             </TouchableOpacity>
@@ -650,17 +626,17 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopLeft}>
             <ImageBackground
               style={styles.buttonsRowTopLeftBackground}
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png' }}
+              source={require('../assets/images/balaustrino home.png')}
             />
             <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
               <Animated.Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/rewards+icon.png' }}
+                source={require('../assets/images/rewards icon.png')}
                 style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
               />
             </TouchableOpacity>
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
               <Animated.Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/items+icon+V.2+2.png' }}
+                source={require('../assets/images/items icon V.2 2.png')}
                 style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
@@ -669,19 +645,19 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.buttonsRowTopRight}>
             <ImageBackground
               style={styles.buttonsRowTopRightBackground}
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustrino+home.png' }}
+              source={require('../assets/images/balaustrino home.png')}
             />
             <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
               <Animated.Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/passives+icon.png' }}
-                style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
+              source={require('../assets/images/passives icon.png')}
+              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
               <Animated.Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/newspaper.png' }}
-                style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
+              source={require('../assets/images/newspaper.png')}
+              style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
               />
               <Text style={styles.buttonText}></Text>
             </TouchableOpacity>
@@ -695,7 +671,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
             resizeMode="contain"
           />
           <Image
-            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+            source={require('../assets/images/piattaforma skin home.png')}
             style={styles.ombra}
             resizeMode="contain"
           />
@@ -711,7 +687,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           onPress={handlePlayPress}
           onPressIn={() => bounceAnimation(playScaleAnim)} >
           <Animated.Image
-            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png' }}
+            source={require('../assets/images/tasto arancione semi ellittico.png')}
             style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
           />
           <Text style={styles.playButtonText}>
