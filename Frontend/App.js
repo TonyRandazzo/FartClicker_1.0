@@ -72,60 +72,7 @@ const localImages = [
 ];
 
 
-const imageUrls = [
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/toilettatura.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/personaggi+icona+men%C3%B9.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/home+simbolo.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/rotolo+missione.png',
-  'https://fartclicker.s3.eu-north-1.amazonaws.com/map+icon.png',
-];
 
-const requestStoragePermissions = async () => {
-  if (Platform.OS !== 'android') return true;
-  
-  try {
-    // Per device con Android 10 (API 29) e superiori
-    if (parseInt(Platform.Version) >= 29) {
-      const readGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: "Permesso di lettura storage",
-          message: "L'app ha bisogno di accedere ai tuoi file per salvare e caricare i dati di gioco",
-          buttonNeutral: "Chiedimi più tardi",
-          buttonNegative: "Annulla",
-          buttonPositive: "OK"
-        }
-      );
-      
-      const writeGranted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: "Permesso di scrittura storage",
-          message: "L'app ha bisogno di scrivere file per salvare i dati di gioco",
-          buttonNeutral: "Chiedimi più tardi",
-          buttonNegative: "Annulla",
-          buttonPositive: "OK"
-        }
-      );
-      
-      return readGranted === PermissionsAndroid.RESULTS.GRANTED && 
-             writeGranted === PermissionsAndroid.RESULTS.GRANTED;
-    } 
-    // Per versioni più vecchie di Android
-    else {
-      const granted = await PermissionsAndroid.requestMultiple([
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-      ]);
-      
-      return granted[PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED &&
-             granted[PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE] === PermissionsAndroid.RESULTS.GRANTED;
-    }
-  } catch (err) {
-    console.error('Errore durante la richiesta dei permessi:', err);
-    return false;
-  }
-};
 
 const preloadImages = async () => {
   // Pre-caricamento immagini locali
@@ -137,13 +84,7 @@ const preloadImages = async () => {
   await Promise.all([...localPromises]);
 };
 
-const ItemComponent = React.memo(({ item }) => {
-  return (
-    <View style={styles.pageContainer}>
-      {item}
-    </View>
-  );
-});
+
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -174,29 +115,7 @@ const App = () => {
   const [isReady, setIsReady] = useState(false);
   const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
 
-  const checkAndRequestPermissions = async () => {
-    const granted = await requestStoragePermissions();
-    setStoragePermissionsGranted(granted);
-    
-    if (!granted) {
-      Alert.alert(
-        "Permessi necessari",
-        "Per un corretto funzionamento dell'app sono necessari i permessi di accesso allo storage. Si prega di abilitarli nelle impostazioni.",
-        [
-          {
-            text: "Vai alle impostazioni",
-            onPress: () => {
-              Linking.openSettings();
-            }
-          },
-          {
-            text: "Continua comunque",
-            style: "cancel"
-          }
-        ]
-      );
-    }
-  };
+
 
   const goToPage = (index) => {
     // Mostra la schermata di dissolvenza bianca prima di fare lo scroll

@@ -1,27 +1,18 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   View,
-  FlatList,
-  StyleSheet,
-  Dimensions,
   TouchableOpacity,
-  Animated,
   Image,
   ImageBackground,
   Text,
   ScrollView,
+  Dimensions,
 } from 'react-native';
-import { ScaledSheet } from 'react-native-size-matters';
-import RNFS from 'react-native-fs';
+import HUD from './HUD';
 
-import HUD from './HUD'
-// Ottieni la larghezza e l'altezza del dispositivo
 const { width, height } = Dimensions.get('window');
-// Calcola la diagonale dello schermo (in pollici)
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
 
-// Definisci i range per piccoli, medi e grandi schermi
 const isSmallScreen = diagonal >= 5 && diagonal < 6;
 const isMediumScreen = diagonal > 6 && diagonal < 7;
 const isLargeScreen = diagonal > 7.5;
@@ -32,116 +23,72 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
+const images = {
+  background: require('../assets/images/sfondo blu.png'),
+  switchUser: require('../assets/images/separé schermata skin Meloni.png'),
+  switchRecord: require('../assets/images/separé schermata skin Schlein.png'),
+  backButton: require('../assets/images/tasto arancione semi ellittico.png'),
+  character: require('../assets/images/Characters/Fartman.png'),
+  platform: require('../assets/images/piattaforma skin home.png'),
+};
 
-
-
-const imageBehindSwitchUser = require('../assets/images/separé schermata skin Meloni.png')
-const imageBehindSwitchrecord = require('../assets/images/separé schermata skin Schlein.png');
-
-
-
-const User = ({ goBack, isPlaying, setIsPlaying }) => {
+const User = ({ goBack, setIsPlaying }) => {
   const [activeButton, setActiveButton] = useState('records');
 
-  const handleSwitchAccount = () => setActiveButton('Account');
-  const handleSwitchrecords = () => setActiveButton('records');
-
-
   return (
-    <ImageBackground
-      source={require('../assets/images/sfondo blu.png')}
-      style={styles.page1}
-      resizeMode="cover"
-    >
+    <ImageBackground source={images.background} style={styles.page1} resizeMode="cover">
       <View style={styles.container}>
         <View style={styles.topButtonsContainer}>
-
-          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchrecords}>
-            <Text style={styles.topButtonText}>record</Text>
-            {activeButton === 'records' && (
-              <Image source={ imageBehindSwitchrecord } style={styles.backgroundImagerecord} />
-            )}
+          <TouchableOpacity style={styles.topButton} onPress={() => setActiveButton('records')}>
+            <Text style={styles.topButtonText}>Record</Text>
+            {activeButton === 'records' && <Image source={images.switchRecord} style={styles.backgroundImage} />}
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAccount}>
+          <TouchableOpacity style={styles.topButton} onPress={() => setActiveButton('Account')}>
             <Text style={styles.topButtonText}>User</Text>
-            {activeButton === 'Account' && (
-              <Image source={ imageBehindSwitchUser } style={styles.backgroundImageUser} />
-            )}
+            {activeButton === 'Account' && <Image source={images.switchUser} style={styles.backgroundImage} />}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-        activeOpacity={1}
-          style={styles.backButton}
-          onPress={goBack}
-        >
-          <Image
-            source={require('../assets/images/tasto arancione semi ellittico.png')}
-            style={styles.backButtonImage}
-          />
+        
+        <TouchableOpacity style={styles.backButton} onPress={goBack}>
+          <Image source={images.backButton} style={styles.backButtonImage} />
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
-        {activeButton === 'records' && (
+        
+        {activeButton === 'records' ? (
           <View style={styles.content}>
             <View style={styles.imageContainer}>
-              <Image
-                  source={require('../assets/images/Characters/Fartman.png')}
-                  style={styles.characterImage}
-                resizeMode="contain"
-              />
-              <Image
-                  source={require('../assets/images/piattaforma skin home.png')}
-                  style={styles.ombra}
-                resizeMode="contain"
-              />
+              <Image source={images.character} style={styles.characterImage} resizeMode="contain" />
+              <Image source={images.platform} style={styles.ombra} resizeMode="contain" />
             </View>
-
-            <ScrollView
-              style={styles.scrollContainer}
-              showsVerticalScrollIndicator={false}
-            >
-              {Array(15).fill(0).map((_, index) => (
+            <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+              {Array.from({ length: 15 }).map((_, index) => (
                 <View key={index} style={styles.card}>
                   <Text style={styles.cardText}>Record {index + 1}</Text>
                 </View>
               ))}
             </ScrollView>
           </View>
-        )}
-        {activeButton === 'Account' && (
+        ) : (
           <View style={styles.container}>
-            <View style={styles.Accountcreen}>
-              <View style={styles.avatar}>
-                <Image
-                  source={require('../assets/images/Characters/Fartman.png')}
-                  style={styles.characterImage}
-                  resizeMode="contain"
-                />
-                <Image
-                  source={require('../assets/images/piattaforma skin home.png')}
-                  style={styles.ombra}
-                  resizeMode="contain"
-                />
-              </View>
+            <View style={styles.avatar}>
+              <Image source={images.character} style={styles.characterImage} resizeMode="contain" />
+              <Image source={images.platform} style={styles.ombra} resizeMode="contain" />
             </View>
             <View style={styles.settings}>
-              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
-                <Text style={styles.settingsText}> Settings</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
-                <Text style={styles.settingsText}> Settings</Text>
-              </TouchableOpacity>
-              <TouchableOpacity activeOpacity={1} style={styles.settingsButton}>
-                <Text style={styles.settingsText}> Settings</Text>
-              </TouchableOpacity>
+              {[...Array(3)].map((_, i) => (
+                <TouchableOpacity key={i} style={styles.settingsButton}>
+                  <Text style={styles.settingsText}>Settings</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         )}
       </View>
-      <HUD setIsPlaying={setIsPlaying}  />
+      <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
   settingsText: {

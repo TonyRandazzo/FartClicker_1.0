@@ -1,45 +1,39 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   View,
-  FlatList,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
-  Animated,
   Image,
   ImageBackground,
   Text,
   ScrollView,
 } from 'react-native';
-import RNFS from 'react-native-fs';
-import HUD from './HUD'
+import HUD from './HUD';
 
-const { width, height } = Dimensions.get('window');
-// Calcola la diagonale dello schermo (in pollici)
-const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
-
-// Definisci i range per piccoli, medi e grandi schermi
-const isSmallScreen = diagonal >= 5 && diagonal <= 7;
-const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
-const isLargeScreen = diagonal > 8.5;
-
-const getSize = (small, medium, large) => {
-  if (isSmallScreen) return small;
-  if (isMediumScreen) return medium;
-  if (isLargeScreen) return large;
+// Centralizzazione delle immagini
+const images = {
+  background: require('../assets/images/nuova schermata mission.png'),
+  missionSeparator: require('../assets/images/separé schermata missioni Schlein.png'),
+  achievementSeparator: require('../assets/images/separé schermata missioni Meloni.png'),
 };
+
+// Dati delle missioni
 const missionItems = [
   { id: 1, name: 'Mission 1', description: 'Completa 5 livelli', progress: 20, total: 50, image: 'https://via.placeholder.com/150' },
   { id: 2, name: 'Mission 2', description: 'Raccogli 10 oggetti', progress: 10, total: 50, image: 'https://via.placeholder.com/150' },
   { id: 3, name: 'Mission 3', description: 'Vinci 3 battaglie', progress: 35, total: 50, image: 'https://via.placeholder.com/150' },
 ];
 
+// Dati degli achievements
+const achievementItems = [
+  { id: 1, title: 'Beginner Collector (Level 1)', description: 'Collect 10 rare items.', cover: 'https://via.placeholder.com/300x150', progress: 20, total: 50 },
+  { id: 2, title: 'Master Explorer (Level 3)', description: 'Explore 5 new worlds.', cover: 'https://via.placeholder.com/300x150', progress: 30, total: 100 },
+  { id: 3, title: 'Skilled Warrior (Level 2)', description: 'Defeat 100 enemies.', cover: 'https://via.placeholder.com/300x150', progress: 75, total: 150 },
+];
 
-
+// Barra di progresso riutilizzabile
 const ProgressBar = ({ progress, total }) => {
   const percentage = (progress / total) * 100;
-
   return (
     <View style={styles.progressContainer}>
       <View style={[styles.progress, { width: `${percentage}%` }]} />
@@ -48,115 +42,53 @@ const ProgressBar = ({ progress, total }) => {
   );
 };
 
-const Mission = ({ isPlaying, setIsPlaying }) => {
-    const [cachedImagePaths, setCachedImagePaths] = useState({});
-
-  const [activeButton, setActiveButton] = useState('missions');
-
-
-
-  const handleSwitchMissions = () => setActiveButton('missions');
-  const handleSwitchAchievements = () => setActiveButton('achievements');
-
-
-
-  const achievementItems = [
-    {
-      id: 1,
-      title: 'Beginner Collector (Level 1)',
-      description: 'Collect 10 rare items to level up.',
-      cover: 'https://via.placeholder.com/300x150', // URL immagine dell'achievement
-      progress: 20,
-      total: 50,
-    },
-    {
-      id: 2,
-      title: 'Master Explorer (Level 3)',
-      description: 'Explore 5 new worlds to level up.',
-      cover: 'https://via.placeholder.com/300x150',
-      progress: 30,
-      total: 100,
-    },
-    {
-      id: 3,
-      title: 'Skilled Warrior (Level 2)',
-      description: 'Defeat 100 enemies to level up.',
-      cover: 'https://via.placeholder.com/300x150',
-      progress: 75,
-      total: 150,
-    },
-    // Aggiungi altri achievement secondo necessità
-  ];
-
-
+const Mission = ({ setIsPlaying }) => {
+  const [activeTab, setActiveTab] = useState('missions');
 
   return (
-    <ImageBackground
-      source={require('../assets/images/nuova schermata mission.png')}
-      style={styles.page1}
-      resizeMode="cover"
-    >
+    <ImageBackground source={images.background} style={styles.page1} resizeMode="cover">
       <View style={styles.mainContainer}>
+        
+        {/* Pulsanti di navigazione */}
         <View style={styles.topButtonsContainer}>
-          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchMissions}>
+          <TouchableOpacity style={styles.topButton} onPress={() => setActiveTab('missions')}>
             <Text style={styles.topButtonText}>Mission</Text>
-            {activeButton === 'missions' && (
-              <View style={styles.backgroundImageMission} />
-            )}
+            {activeTab === 'missions' && <View style={styles.activeTabIndicator} />}
           </TouchableOpacity>
-
-          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAchievements}>
+          <TouchableOpacity style={styles.topButton} onPress={() => setActiveTab('achievements')}>
             <Text style={styles.topButtonText}>Achievement</Text>
-            {activeButton === 'achievements' && (
-              <View style={styles.backgroundImageMission} />
-            )}
+            {activeTab === 'achievements' && <View style={styles.activeTabIndicator} />}
           </TouchableOpacity>
         </View>
 
-        <View style={styles.imageButtonContainer}>
-          <Image
-            source={
-               activeButton === 'missions'
-                ?  require('../assets/images/separé schermata missioni Schlein.png')
-                :  require('../assets/images/separé schermata missioni Meloni.png')
-            }
-            style={styles.topImage}
-          />
+        {/* Immagine separatrice */}
+        <Image source={activeTab === 'missions' ? images.missionSeparator : images.achievementSeparator} style={styles.topImage} />
 
-        </View>
-
-        <View style={styles.missionContent}>
-          {activeButton === 'missions' && (
-            <View style={styles.missionContainer}>
+        <View style={styles.contentContainer}>
+          {activeTab === 'missions' ? (
+            <View style={styles.missionList}>
               {missionItems.map((item) => (
-                <View key={item.id} style={styles.missionWrapper}>
-                  <ImageBackground source={{ uri: item.image }} style={styles.missionBackground}>
-                    <View style={styles.textContainer}>
-                      <Text style={styles.missionName}>{item.name}</Text>
+                <View key={item.id} style={styles.missionItem}>
+                  <ImageBackground source={{ uri: item.image }} style={styles.missionImage}>
+                    <View style={styles.missionTextContainer}>
+                      <Text style={styles.missionTitle}>{item.name}</Text>
                       <Text style={styles.missionDescription}>{item.description}</Text>
-                      <Text style={styles.missionDetails}>Dettagli</Text>
                     </View>
                     <ProgressBar progress={item.progress} total={item.total} />
                   </ImageBackground>
                 </View>
               ))}
             </View>
-          )}
-
-          {activeButton === 'achievements' && (
-            <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
+          ) : (
+            <ScrollView contentContainerStyle={styles.achievementList} showsVerticalScrollIndicator={false}>
               {achievementItems.map((item) => (
-                <View key={item.id} style={styles.achievementWrapper}>
-                  <ImageBackground source={{ uri: item.cover }} style={styles.achievementBackground}>
+                <View key={item.id} style={styles.achievementItem}>
+                  <ImageBackground source={{ uri: item.cover }} style={styles.achievementImage}>
                     <View style={styles.achievementTextContainer}>
-                      <Text style={styles.achievementName}>{item.title}</Text>
+                      <Text style={styles.achievementTitle}>{item.title}</Text>
                       <Text style={styles.achievementDescription}>{item.description}</Text>
-                      <Text style={styles.achievementDetails}>More Info</Text>
                     </View>
-                    <View style={styles.achievementProgressBarContainer}>
-                      <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
-                      <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
-                    </View>
+                    <ProgressBar progress={item.progress} total={item.total} />
                   </ImageBackground>
                 </View>
               ))}
@@ -164,11 +96,13 @@ const Mission = ({ isPlaying, setIsPlaying }) => {
           )}
         </View>
       </View>
-      <HUD setIsPlaying={setIsPlaying} />
 
+      <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

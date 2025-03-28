@@ -1,10 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   View,
-  FlatList,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
   Image,
   ImageBackground,
@@ -12,132 +9,81 @@ import {
   ScrollView,
 } from 'react-native';
 import Video from 'react-native-video';
-import VideoCache from './VideoCache';
-import HUD from './HUD'
-import RNFS from 'react-native-fs';
+import HUD from './HUD';
 
-
-const { width, height } = Dimensions.get('window');
-
-// Calcola la diagonale dello schermo (in pollici)
-const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
-
-// Definisci i range per piccoli, medi e grandi schermi
-const isSmallScreen = diagonal >= 5 && diagonal <= 7;
-const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
-const isLargeScreen = diagonal > 8.5;
-
-const getSize = (small, medium, large) => {
-  if (isSmallScreen) return small;
-  if (isMediumScreen) return medium;
-  if (isLargeScreen) return large;
+// Centralizziamo il caricamento delle immagini
+const images = {
+  backgroundVideo: require('../assets/videos/sfondo_shop.mp4'),
+  barraBluina: require('../assets/images/barra bluina.png'),
+  chronometer: require('../assets/images/chronometer-timer-counter-free-png.webp'),
+  barraMagentine: require('../assets/images/barra magentine.png'),
+  buttonImage: require('../assets/images/button.png'), // Sostituire con il percorso corretto
 };
 
-const shopItemImages = [
-  require('../assets/images/icona soldi 1.png'),
-  require('../assets/images/icona soldi 2.png'),
-  require('../assets/images/icona soldi 3.png'),
-  require('../assets/images/icona soldi sgravior 4.png'),
-  require('../assets/images/icona soldi sgravior 5.png'),
-  require('../assets/images/icona soldi sgravior 6.png'),
+// Array di immagini degli shop items
+const shopItems = [
+  { image: require('../assets/images/icona soldi 1.png'), price: '0,10 $', discount: '' },
+  { image: require('../assets/images/icona soldi 2.png'), price: '0,30 $', discount: '10%' },
+  { image: require('../assets/images/icona soldi 3.png'), price: '0,50 $', discount: '10%' },
+  { image: require('../assets/images/icona soldi sgravior 4.png'), price: '1,00 $', discount: '10%' },
+  { image: require('../assets/images/icona soldi sgravior 5.png'), price: '2,50 $', discount: '10%' },
+  { image: require('../assets/images/icona soldi sgravior 6.png'), price: '5,00 $', discount: '10%' },
 ];
 
-const buttonTexts = [
-  '0,10 $',
-  '0,30 $',
-  '0,50 $',
-  '1,00 $',
-  '2,50 $',
-  '5,00 $',
+// Immagini remote (esempio con placeholder)
+const remoteImages = [
+  'https://via.placeholder.com/100',
+  'https://via.placeholder.com/100',
+  'https://via.placeholder.com/100',
 ];
 
-const topRightTexts = [
-  '',
-  '10%',
-  '10%',
-  '10%',
-  '10%',
-  '10%',
-];
-
-
-
-
-const Shop = ({ isPlaying, setIsPlaying }) => {
-
-
-  const renderBackground = () => {
-    return (
-      <Video
-        source={require('../assets/videos/sfondo shop.mp4')}
-        style={styles.backgroundVideo}
-        resizeMode="cover"
-        repeat={true}
-        controls={false}
-        muted={true}
-        playInBackground={true}
-      />
-    );
-  };
+const Shop = ({ setIsPlaying }) => {
   return (
     <View style={styles.page}>
       <View style={styles.mainContainer}>
-        {renderBackground()}
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
+        {/* Video di sfondo */}
+        <Video
+          source={images.backgroundVideo}
+          style={styles.backgroundVideo}
+          resizeMode="cover"
+          repeat
+          muted
+          playInBackground
+        />
 
-        >
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          {/* Shop Items */}
           <View style={styles.rectangle}>
             <View style={styles.imageContainer}>
-              {shopItemImages.map((imageUrl, index) => (
+              {shopItems.map((item, index) => (
                 <View key={index} style={styles.imageWrapper}>
-                  <Image source={{ uri: imageUrl }} style={styles.shopImage} />
-
-                  {index > 0 && (
-                    <Text style={styles.topRightText}>{topRightTexts[index]}</Text>
-                  )}
+                  <Image source={item.image} style={styles.shopImage} />
+                  {item.discount && <Text style={styles.topRightText}>{item.discount}</Text>}
 
                   <TouchableOpacity style={styles.shopButton} activeOpacity={1}>
-                    <Image source={{ uri: buttonImage }} style={styles.shopButtonImage} />
-                    <Text style={styles.shopButtonText}>{buttonTexts[index]}</Text>
+                    <Image source={images.buttonImage} style={styles.shopButtonImage} />
+                    <Text style={styles.shopButtonText}>{item.price}</Text>
                   </TouchableOpacity>
                 </View>
               ))}
             </View>
           </View>
 
+          {/* Limited Offer 1 */}
           <View style={styles.LimitedOffer}>
-            <Image
-              source={require('../assets/images/barra bluina.png')}
-              style={styles.newImage}
-            />
+            <Image source={images.barraBluina} style={styles.newImage} />
             <Text style={styles.rotatedText}>La tua scritta</Text>
-            <Image
-              source={require('../assets/images/chronometer-timer-counter-free-png.webp')}
-              style={styles.Timer}
-            />
+            <Image source={images.chronometer} style={styles.Timer} />
           </View>
 
+          {/* Limited Offer 2 */}
           <View style={styles.LimitedOffer}>
-            <Image
-              source={require('../assets/images/barra magentine.png')}
-              style={styles.newImage}
-            />
+            <Image source={images.barraMagentine} style={styles.newImage} />
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
-              <Image
-                source={{ uri:  'https://via.placeholder.com/100'}}
-                style={styles.smallImage}
-              />
-              <Image
-                source={{ uri:  'https://via.placeholder.com/100' }}
-                style={styles.smallImage}
-              />
-              <Image
-                source={{ uri:  'https://via.placeholder.com/100' }}
-                style={styles.smallImage}
-              />
+              {remoteImages.map((imgUrl, idx) => (
+                <Image key={idx} source={{ uri: imgUrl }} style={styles.smallImage} />
+              ))}
             </View>
           </View>
         </ScrollView>
@@ -145,7 +91,8 @@ const Shop = ({ isPlaying, setIsPlaying }) => {
       <HUD setIsPlaying={setIsPlaying} />
     </View>
   );
-}
+};
+
 const styles = StyleSheet.create({
   animatedBackgroundContainer: {
     position: 'absolute',

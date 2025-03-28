@@ -322,12 +322,12 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
     xao: require('../assets/images/Characters/Xao.png'),
     fartMan: require('../assets/images/Characters/Fartman.png'),
     alien: require('../assets/images/Characters/Alien.png'),
-    mrFarte: require('../assets/images/Characters/Mr. Fartè.png'),
+    mrFarte: require('../assets/images/Characters/Mr. Farté.png'),
     fangpi: require('../assets/images/Characters/Fangpì.png'),
     amaterasuTsukuyomi: require('../assets/images/Characters/Amaterasu.png'),
     stinkyBlob: require('../assets/images/Characters/Melma puzzona.png'),
     bear: require('../assets/images/Characters/Bear.png'),
-    soprano: require('../assets/images/Characters/Sopranp.png'),
+    soprano: require('../assets/images/Characters/Soprano.png'),
     mrTakeshi: require('../assets/images/Characters/Mr. Takeshi.png'),
     stein: require('../assets/images/Characters/Stein.png'),
     gorilloz: require('../assets/images/Characters/Stein.png')
@@ -608,7 +608,7 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
           <View style={styles.imageContainer}>
             <Image
               style={styles.user}
-              source={require('../assets/images/Prova utente.png')}
+              source={require('../assets/images/Prova utente.jpeg')}
             />
             <TouchableOpacity
               style={styles.buttonUser}

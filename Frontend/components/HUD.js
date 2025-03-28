@@ -71,7 +71,7 @@ function PauseButton({ setIsPlaying }) {
           setIsPaused(true);
         }}>
         <Animated.Image
-          source={require('../assets/images/GreenButton')}
+          source={require('../assets/images/GreenButton.png')}
           style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
           resizeMode="contain"
         />

@@ -14,7 +14,6 @@ import {
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Video from 'react-native-video';
-import VideoCache from './VideoCache';
 import RNFS from 'react-native-fs';
 import HUD from './HUD'
 import Info from './Info';
@@ -63,7 +62,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   }, [opacity]);
 
   const skinItemImages = {
-    marvick: require('../assets/images/Facce/mezzob marvick.png'),
+    marvick: require('../assets/images/Facce/mezzob marvik.png'),
     maestroSasuke: require('../assets/images/Facce/mezzob sasuke.png'),
     bob: require('../assets/images/Facce/mezzob bob.png'),
     cyclop: require('../assets/images/Facce/mezzob cyclop.png'),
@@ -74,8 +73,8 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     robert: require('../assets/images/Facce/mezzob robert.png'),
     xao: require('../assets/images/Facce/mezzob xao.png'),
     fartMan: require('../assets/images/Facce/mezzob fartman.png'),
-    alien: require('../assets/images/Facce/alien aduto mezzob.png'),
-    mrFarte: require('../assets/images/Facce/mezzob Mr. Fartè.png'),
+    alien: require('../assets/images/Facce/alien adulto mezzob.png'),
+    mrFarte: require('../assets/images/Facce/mezzob Mr. Farté.png'),
     fangpi: require('../assets/images/Facce/mezzob fangpiì.png'),
     amaterasuTsukuyomi: require('../assets/images/Facce/mezzob tuskuamateras.png'),
     stinkyBlob: require('../assets/images/Facce/mezzob melma puzzonsa.png'),
@@ -100,8 +99,8 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     non_comune: require('../assets/images/sfondo non comune.png'),
     epico: require('../assets/images/sfondo epico.png'),
     leggendario: require('../assets/images/sfondo leggendaria.png'),
-    mitico: require('../assets/videos/mitico.png'),
-    divinità: require('../assets/videos/divinita.png'),
+    mitico: require('../assets/videos/mitico.mp4'),
+    divinità: require('../assets/videos/divinita.mp4'),
   };
 
   const skinItems = [
@@ -198,61 +197,38 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     return <Info goBack={handleSelectPress} itemId={selectedItemId} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />;
   }
 
+  const images = {
+    background1: require('../assets/images/sfondo skin fermo 1.png'),
+    background2: require('../assets/images/sfondo skin fermo 2.png'),
+    separéSchlein: require('../assets/images/separé schermata skin Schlein.png'),
+    separéMeloni: require('../assets/images/separé schermata skin Meloni.png'),
+    buttonRectangle: require('../assets/images/rettangolo longilineo.png')
+  };
 
   return (
-    <ImageBackground
-      source={require('../assets/images/sfondo skin fermo 1.png')}
-      style={styles.page1}
-      resizeMode="cover"
-    >
+    <ImageBackground source={images.background1} style={styles.page1} resizeMode="cover">
       <Animated.View style={[styles.page2, { opacity }]}>
-        <Image
-          source={require('../assets/images/sfondo skin fermo 2.png')}
-          style={styles.image}
-          resizeMode="cover"
-        />
+        <Image source={images.background2} style={styles.image} resizeMode="cover" />
       </Animated.View>
       <View style={styles.mainContainer}>
         <View style={styles.topButtonsContainer}>
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchSkin}>
             <Text style={styles.topButtonText}>Skin</Text>
-            {activeButton === 'skin' && (
-              <View style={styles.backgroundImage} />
-            )}
+            {activeButton === 'skin' && <View style={styles.backgroundImage} />}
           </TouchableOpacity>
-
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchComic}>
             <Text style={styles.topButtonText}>Comic</Text>
-            {activeButton === 'comic' && (
-              <View style={styles.backgroundImage2} />
-            )}
+            {activeButton === 'comic' && <View style={styles.backgroundImage2} />}
           </TouchableOpacity>
         </View>
         <View style={styles.imageButtonContainer} pointerEvents="none">
-          <Image
-            source={
-              activeButton === 'skin'
-                ? require('../assets/images/separé schermata skin Schlein.png')
-                : require('../assets/images/separé schermata skin Meloni.png')
-            }
-            style={styles.topImage}
-          />
-
+          <Image source={activeButton === 'skin' ? images.separéSchlein : images.separéMeloni} style={styles.topImage} />
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
-            <Image
-              source={require('../assets/images/rettangolo longilineo.png')}
-              style={styles.buttonImage}
-              resizeMode="contain"
-            />
+            <Image source={images.buttonRectangle} style={styles.buttonImage} resizeMode="contain" />
           </TouchableOpacity>
         </View>
-        <View style={styles.separator} pointerEvents="none">
-        </View>
-
-        <ScrollView
-          contentContainerStyle={styles.scrollContainer}
-          showsVerticalScrollIndicator={false}
-        >
+        <View style={styles.separator} pointerEvents="none"></View>
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           {activeButton === 'skin' && (
             <View style={styles.skinContent}>
               {Array(7).fill().map((_, rowIndex) => (
@@ -260,11 +236,11 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
                   {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                     <View key={item.id} style={styles.skinWrapper}>
                       {renderBackground(item)}
-                      <TouchableOpacity style={styles.selection}
+                      <TouchableOpacity
+                        style={styles.selection}
                         activeOpacity={1}
-                        onPress={() =>
-                          setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))
-                        }></TouchableOpacity>
+                        onPress={() => setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))}
+                      ></TouchableOpacity>
                       <Text style={styles.nome}>{item.name}</Text>
                       <Image source={{ uri: item.image }} style={styles.skinImage} />
                       <Text style={styles.classe}>{item.class}</Text>
@@ -281,7 +257,6 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
                             </TouchableOpacity>
                           </View>
                         </>
-
                       )}
                     </View>
                   ))}
@@ -289,7 +264,6 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
               ))}
             </View>
           )}
-
           {activeButton === 'comic' && (
             <View style={styles.comicContent}>
               {comicItems.map((item) => (
@@ -306,6 +280,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     </ImageBackground>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
