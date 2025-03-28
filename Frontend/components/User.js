@@ -35,8 +35,8 @@ const getSize = (small, medium, large) => {
 
 
 
-const imageBehindSwitchUser = 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Schlein.png';
-const imageBehindSwitchrecord = 'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+missioni+Meloni.png';
+const imageBehindSwitchUser = require('../assets/images/separé schermata skin Meloni.png')
+const imageBehindSwitchrecord = require('../assets/images/separé schermata skin Schlein.png');
 
 
 
@@ -45,17 +45,11 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
 
   const handleSwitchAccount = () => setActiveButton('Account');
   const handleSwitchrecords = () => setActiveButton('records');
-    const [cachedImagePaths, setCachedImagePaths] = useState({});
-    const images = [
-'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png',
-'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png',
-'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png',
-'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png',  
-];
+
 
   return (
     <ImageBackground
-      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/sfondo+blu.png' }}
+      source={require('../assets/images/sfondo blu.png')}
       style={styles.page1}
       resizeMode="cover"
     >
@@ -65,14 +59,14 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchrecords}>
             <Text style={styles.topButtonText}>record</Text>
             {activeButton === 'records' && (
-              <Image source={{ uri: imageBehindSwitchrecord }} style={styles.backgroundImagerecord} />
+              <Image source={ imageBehindSwitchrecord } style={styles.backgroundImagerecord} />
             )}
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={handleSwitchAccount}>
             <Text style={styles.topButtonText}>User</Text>
             {activeButton === 'Account' && (
-              <Image source={{ uri: imageBehindSwitchUser }} style={styles.backgroundImageUser} />
+              <Image source={ imageBehindSwitchUser } style={styles.backgroundImageUser} />
             )}
           </TouchableOpacity>
         </View>
@@ -82,7 +76,7 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
           onPress={goBack}
         >
           <Image
-            source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/tasto+arancione+semi+ellittico.png' }}
+            source={require('../assets/images/tasto arancione semi ellittico.png')}
             style={styles.backButtonImage}
           />
           <Text style={styles.backButtonText}>Back</Text>
@@ -91,13 +85,13 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
           <View style={styles.content}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
-                style={styles.characterImage}
+                  source={require('../assets/images/Characters/Fartman.png')}
+                  style={styles.characterImage}
                 resizeMode="contain"
               />
               <Image
-                source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
-                style={styles.ombra}
+                  source={require('../assets/images/piattaforma skin home.png')}
+                  style={styles.ombra}
                 resizeMode="contain"
               />
             </View>
@@ -119,12 +113,12 @@ const User = ({ goBack, isPlaying, setIsPlaying }) => {
             <View style={styles.Accountcreen}>
               <View style={styles.avatar}>
                 <Image
-                  source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/Characters/Fartman.png' }}
+                  source={require('../assets/images/Characters/Fartman.png')}
                   style={styles.characterImage}
                   resizeMode="contain"
                 />
                 <Image
-                  source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/piattaforma+skin+home.png' }}
+                  source={require('../assets/images/piattaforma skin home.png')}
                   style={styles.ombra}
                   resizeMode="contain"
                 />

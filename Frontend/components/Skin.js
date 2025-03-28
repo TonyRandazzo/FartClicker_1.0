@@ -36,7 +36,7 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
-const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
+const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   const [switchComponent, setSwitchComponent] = useState('Select')
   const [activeButton, setActiveButton] = useState('skin');
   const [visibleOptionsId, setVisibleOptionsId] = useState(false);
@@ -66,7 +66,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
     marvick: require('../assets/images/Facce/mezzob marvick.png'),
     maestroSasuke: require('../assets/images/Facce/mezzob sasuke.png'),
     bob: require('../assets/images/Facce/mezzob bob.png'),
-    cyclop:  require('../assets/images/Facce/mezzob cyclop.png'),
+    cyclop: require('../assets/images/Facce/mezzob cyclop.png'),
     babyAlien: require('../assets/images/Facce/mezzobusto alien.png'),
     george: require('../assets/images/Facce/mezzob george.png'),
     yokozuna: require('../assets/images/Facce/mezzob yokkozuna.png'),
@@ -86,22 +86,22 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
     gorilloz: require('../assets/images/Facce/mezzob gorilloz.png')
   };
   const skinItemRarities = {
-    comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+comune.png',
-    non_comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+non+comune.png',
-    raro: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice_intera_raro-transformed.png',
-    epico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+epico.png',
-    leggendario: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+leggendaria.png',
-    mitico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+mitico.png',
-    divinità: 'https://fartclicker.s3.eu-north-1.amazonaws.com/cornice+intera+divinit%C3%A0.png',
+    comune: require('../assets/images/cornice intera comune.png'),
+    non_comune: require('../assets/images/cornice intera non comune.png'),
+    raro: require('../assets/images/cornice_intera_raro-transformed.png'),
+    epico: require('../assets/images/cornice intera epico.png'),
+    leggendario: require('../assets/images/cornice intera leggendaria.png'),
+    mitico: require('../assets/images/cornice intera mitico.png'),
+    divinità: require('../assets/images/cornice intera divinità.png'),
   }
   const skinItemBackgrounds = {
-    comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+blu+con+sfumatura+biancastra+della+schermata+home.png',
-    raro: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+raro.png',
-    non_comune: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+non+comune.png',
-    epico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+epico.png',
-    leggendario: 'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+leggendaria.png',
-    mitico: 'https://fartclicker.s3.eu-north-1.amazonaws.com/mitico.mp4',
-    divinità: 'https://fartclicker.s3.eu-north-1.amazonaws.com/divinita.mp4',
+    comune: require('../assets/images/sfondo blu con sfumatura biancastra della schermata home.png'),
+    raro: require('../assets/images/sfondo raro.png'),
+    non_comune: require('../assets/images/sfondo non comune.png'),
+    epico: require('../assets/images/sfondo epico.png'),
+    leggendario: require('../assets/images/sfondo leggendaria.png'),
+    mitico: require('../assets/videos/mitico.png'),
+    divinità: require('../assets/videos/divinita.png'),
   };
 
   const skinItems = [
@@ -183,7 +183,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
     }
     return (
       <ImageBackground
-        source={{ uri:  (item.background) }}
+        source={{ uri: (item.background) }}
         style={styles.sfondi}
       />
     );
@@ -195,20 +195,19 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
   const handleSwitchComic = () => setActiveButton('comic');
 
   if (switchComponent === 'Info') {
-    return <Info goBack={handleSelectPress} itemId={selectedItemId} isPlaying={isPlaying} setIsPlaying={setIsPlaying}/>;
+    return <Info goBack={handleSelectPress} itemId={selectedItemId} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />;
   }
 
 
   return (
     <ImageBackground
-      source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+1.png' }}
+      source={require('../assets/images/sfondo skin fermo 1.png')}
       style={styles.page1}
       resizeMode="cover"
     >
       <Animated.View style={[styles.page2, { opacity }]}>
         <Image
-          source={{
-            uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/sfondo+skin+fermo+2.png'}}
+          source={require('../assets/images/sfondo skin fermo 2.png')}
           style={styles.image}
           resizeMode="cover"
         />
@@ -231,17 +230,17 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
         </View>
         <View style={styles.imageButtonContainer} pointerEvents="none">
           <Image
-            source={{
-              uri: activeButton === 'skin'
-                ?  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Schlein.png'
-                :  'https://fartclicker.s3.eu-north-1.amazonaws.com/separ%C3%A9+schermata+skin+Meloni.png'
-            }}
+            source={
+              activeButton === 'skin'
+                ? require('../assets/images/separé schermata skin Schlein.png')
+                : require('../assets/images/separé schermata skin Meloni.png')
+            }
             style={styles.topImage}
           />
 
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
             <Image
-              source={{ uri:  'https://fartclicker.s3.eu-north-1.amazonaws.com/rettangolo+longilineo.png' }}
+              source={require('../assets/images/rettangolo longilineo.png')}
               style={styles.buttonImage}
               resizeMode="contain"
             />
@@ -303,7 +302,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId}) => {
           )}
         </ScrollView>
       </View>
-    <HUD setIsPlaying={setIsPlaying} />
+      <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );
 };

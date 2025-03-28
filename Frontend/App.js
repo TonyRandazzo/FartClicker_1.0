@@ -516,7 +516,7 @@ const App = () => {
         <>
           <SafeAreaView style={styles.bottomContainer}>
             <Image
-              source={{ uri: 'https://fartclicker.s3.eu-north-1.amazonaws.com/Home/balaustra+inferiore.png' }}
+              source={require('../Frontend/assets/images/balaustra inferiore.png')}
               style={styles.bottomImage}
             />
           </SafeAreaView>
