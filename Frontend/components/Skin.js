@@ -85,20 +85,20 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     gorilloz: require('../assets/images/Facce/mezzob gorilloz.png')
   };
   const skinItemRarities = {
-    comune: require('../assets/images/cornice intera comune.png'),
-    non_comune: require('../assets/images/cornice intera non comune.png'),
-    raro: require('../assets/images/cornice_intera_raro-transformed.png'),
-    epico: require('../assets/images/cornice intera epico.png'),
-    leggendario: require('../assets/images/cornice intera leggendaria.png'),
-    mitico: require('../assets/images/cornice intera mitico.png'),
-    divinità: require('../assets/images/cornice intera divinità.png'),
+    comune: require('../assets/images/cornice_intera_comune.png'),
+    non_comune: require('../assets/images/cornice_intera_non_comune.png'),
+    raro: require('../assets/images/cornice_intera_rarotransformed.png'),
+    epico: require('../assets/images/cornice_intera_epico.png'),
+    leggendario: require('../assets/images/cornice_intera_leggendaria.png'),
+    mitico: require('../assets/images/cornice_intera_mitico.png'),
+    divinità: require('../assets/images/cornice_intera_divinita.png'),
   }
   const skinItemBackgrounds = {
-    comune: require('../assets/images/sfondo blu con sfumatura biancastra della schermata home.png'),
-    raro: require('../assets/images/sfondo raro.png'),
-    non_comune: require('../assets/images/sfondo non comune.png'),
-    epico: require('../assets/images/sfondo epico.png'),
-    leggendario: require('../assets/images/sfondo leggendaria.png'),
+    comune: require('../assets/images/sfondo_blu_con_sfumatura_biancastra_della_schermata_home.png'),
+    raro: require('../assets/images/sfondo_raro.png'),
+    non_comune: require('../assets/images/sfondo_non_comune.png'),
+    epico: require('../assets/images/sfondo_epico.png'),
+    leggendario: require('../assets/images/sfondo_leggendaria.png'),
     mitico: require('../assets/videos/mitico.mp4'),
     divinità: require('../assets/videos/divinita.mp4'),
   };
@@ -198,17 +198,31 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   }
 
   const images = {
-    background1: require('../assets/images/sfondo skin fermo 1.png'),
-    background2: require('../assets/images/sfondo skin fermo 2.png'),
-    separéSchlein: require('../assets/images/separé schermata skin Schlein.png'),
-    separéMeloni: require('../assets/images/separé schermata skin Meloni.png'),
-    buttonRectangle: require('../assets/images/rettangolo longilineo.png')
+    background1: require('../assets/images/sfondo_skin_fermo_1.png'),
+    background2: require('../assets/images/sfondo_skin_fermo_2.png'),
+    separéSchlein: require('../assets/images/separe_schermata_skin_Schlein.png'),
+    separéMeloni: require('../assets/images/separe_schermata_skin_Meloni.png'),
+    buttonRectangle: require('../assets/images/rettangolo_longilineo.png')
   };
 
   return (
-    <ImageBackground source={images.background1} style={styles.page1} resizeMode="cover">
+    <ImageBackground 
+      source={(() => {
+        if (!images.background1) console.log('Skin - background1 image source is null');
+        return images.background1;
+      })()} 
+      style={styles.page1} 
+      resizeMode="cover"
+    >
       <Animated.View style={[styles.page2, { opacity }]}>
-        <Image source={images.background2} style={styles.image} resizeMode="cover" />
+        <Image 
+          source={(() => {
+            if (!images.background2) console.log('Skin - background2 image source is null');
+            return images.background2;
+          })()} 
+          style={styles.image} 
+          resizeMode="cover" 
+        />
       </Animated.View>
       <View style={styles.mainContainer}>
         <View style={styles.topButtonsContainer}>
@@ -222,9 +236,23 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
           </TouchableOpacity>
         </View>
         <View style={styles.imageButtonContainer} pointerEvents="none">
-          <Image source={activeButton === 'skin' ? images.separéSchlein : images.separéMeloni} style={styles.topImage} />
+          <Image 
+            source={(() => {
+              const img = activeButton === 'skin' ? images.separéSchlein : images.separéMeloni;
+              if (!img) console.log(`Skin - ${activeButton === 'skin' ? 'separéSchlein' : 'separéMeloni'} image source is null`);
+              return img;
+            })()} 
+            style={styles.topImage} 
+          />
           <TouchableOpacity style={styles.sortButton} activeOpacity={1}>
-            <Image source={images.buttonRectangle} style={styles.buttonImage} resizeMode="contain" />
+            <Image 
+              source={(() => {
+                if (!images.buttonRectangle) console.log('Skin - buttonRectangle image source is null');
+                return images.buttonRectangle;
+              })()} 
+              style={styles.buttonImage} 
+              resizeMode="contain" 
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.separator} pointerEvents="none"></View>
@@ -242,9 +270,21 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
                         onPress={() => setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))}
                       ></TouchableOpacity>
                       <Text style={styles.nome}>{item.name}</Text>
-                      <Image source={item.image} style={styles.skinImage} />
+                      <Image 
+                        source={(() => {
+                          if (!item.image) console.log(`Skin - skinItem image source is null (id: ${item.id})`);
+                          return item.image;
+                        })()} 
+                        style={styles.skinImage} 
+                      />
                       <Text style={styles.classe}>{item.class}</Text>
-                      <Image source={item.rarity } style={styles.rarity} />
+                      <Image 
+                        source={(() => {
+                          if (!item.rarity) console.log(`Skin - rarity image source is null (id: ${item.id})`);
+                          return item.rarity;
+                        })()} 
+                        style={styles.rarity} 
+                      />
                       {visibleOptionsId === item.id && (
                         <>
                           <View style={styles.aura}></View>
@@ -268,7 +308,13 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
             <View style={styles.comicContent}>
               {comicItems.map((item) => (
                 <View key={item.id} style={styles.comicItem}>
-                  <Image source={ item.cover } style={styles.comicCover} />
+                  <Image 
+                    source={(() => {
+                      if (!item.cover) console.log(`Skin - comic cover image source is null (id: ${item.id})`);
+                      return item.cover;
+                    })()} 
+                    style={styles.comicCover} 
+                  />
                   <Text style={styles.comicTitle}>{item.title}</Text>
                 </View>
               ))}

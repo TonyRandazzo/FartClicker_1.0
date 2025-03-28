@@ -58,19 +58,25 @@ function PauseButton({ setIsPlaying }) {
 
 // Carica tutte le immagini in un unico oggetto
 const images = {
-  topImage: require('../assets/images/raccoglitore monete ink e impostaz finale.png'),
+  topImage: require('../assets/images/raccoglitore_monete_ink_e_impostaz_finale.png'),
   greenButton: require('../assets/images/GreenButton.png')
 };
+
+
 
 return (
   <>
     <View style={styles.topContainer}>
-      <Image
-        source={images.topImage}
-        style={styles.topImage}
-        resizeMode="cover"
-      />
+      {(images.topImage, 'TopImage') && (
+        <Image
+          source={images.topImage}
+          style={styles.topImage}
+          resizeMode="cover"
+          onError={() => console.warn('[HUD IMAGE ERROR] Failed to load topImage')}
+        />
+      )}
     </View>
+    
     <TouchableOpacity 
       style={styles.button} 
       activeOpacity={1}
@@ -79,12 +85,16 @@ return (
         setIsPaused(true);
       }}
     >
-      <Animated.Image
-        source={images.greenButton}
-        style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
-        resizeMode="contain"
-      />
+      { (images.greenButton, 'GreenButton') && (
+        <Animated.Image
+          source={images.greenButton}
+          style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
+          resizeMode="contain"
+          onError={() => console.warn('[HUD IMAGE ERROR] Failed to load greenButton')}
+        />
+      )}
     </TouchableOpacity>
+    
     {isPaused && (
       <View style={styles.overlay}>
         <View style={styles.modalContent}>

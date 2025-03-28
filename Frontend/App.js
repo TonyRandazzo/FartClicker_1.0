@@ -49,21 +49,12 @@ const localImages = [
 
 const imageUrls = [
   require('./assets/images/toilettatura.png'),
-  require('./assets/images/personaggi icona menù.png'),
-  require('./assets/images/home simbolo.png'),
-  require('./assets/images/rotolo missione.png'),
-  require('./assets/images/map icon.png'),
+  require('./assets/images/personaggi_icona_menu.png'),
+  require('./assets/images/home_simbolo.png'),
+  require('./assets/images/rotolo_missione.png'),
+  require('./assets/images/map_icon.png'),
 ];
 
-const preloadImages = async () => {
-  // Pre-caricamento immagini locali
-  const localPromises = localImages.map((image) =>
-    Image.prefetch(Image.resolveAssetSource(image).uri)
-  );
-
-
-  await Promise.all([...localPromises]);
-};
 
 
 
@@ -175,16 +166,20 @@ const App = () => {
       }, 500); // Mantieni la schermata bianca per 300ms prima di fare lo scroll
     });
   };
+  const preloadImages = async () => {
+    // Pre-caricamento immagini locali
+    const localPromises = localImages.map((image) =>
+      Image.prefetch(Image.resolveAssetSource(image).uri)
+    );
+  
+  
+    await Promise.all([...localPromises]);
+  };
   useEffect(() => {
     // Pre-carica tutte le immagini prima di mostrare l'app
     const loadAssets = async () => {
       await preloadImages();
-      
-      // Controlla e richiedi i permessi durante il caricamento
-      if (Platform.OS === 'android') {
-        await checkAndRequestPermissions();
-      }
-      
+
       setIsReady(true); // Una volta pre-caricate, mostra l'app
     };
     loadAssets();
@@ -349,13 +344,21 @@ const App = () => {
         >
           <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]} />
           <Image
-            source={require('./assets/images/Sfondo.png')}
+            source={(() => {
+              const img = require('./assets/images/Sfondo.png');
+              if (!img) console.log('App - Sfondo.png image source is null');
+              return img;
+            })()}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
           <SafeAreaView style={styles.tema}>
             <Animated.Image
-              source={require('./assets/images/Scoreggia.png')}
+              source={(() => {
+                const img = require('./assets/images/Scoreggia.png');
+                if (!img) console.log('App - Scoreggia.png image source is null');
+                return img;
+              })()}
               style={[
                 styles.checkerboard,
                 {
@@ -367,14 +370,22 @@ const App = () => {
             />
           </SafeAreaView>
           <Image
-            source={require('./assets/images/PersonaggiTitolo.png')}
+            source={(() => {
+              const img = require('./assets/images/PersonaggiTitolo.png');
+              if (!img) console.log('App - PersonaggiTitolo.png image source is null');
+              return img;
+            })()}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
           <Text style={styles.gameText}>{selectedText}</Text>
           <View style={styles.progressBarContainer}>
             <Image
-              source={require('./assets/images/barra.png')}
+              source={(() => {
+                const img = require('./assets/images/barra.png');
+                if (!img) console.log('App - barra.png image source is null');
+                return img;
+              })()}
               style={styles.progressBarBackground}
               resizeMode="stretch"
             />
@@ -382,7 +393,11 @@ const App = () => {
               style={[styles.progressFill, { width: progressInterpolation }]}
             >
               <Image
-                source={require('./assets/images/barra1.png')}
+                source={(() => {
+                  const img = require('./assets/images/barra1.png');
+                  if (!img) console.log('App - barra1.png image source is null');
+                  return img;
+                })()}
                 style={styles.progressFillImage}
                 resizeMode="stretch"
               />
@@ -416,7 +431,11 @@ const App = () => {
         <>
           <SafeAreaView style={styles.bottomContainer}>
             <Image
-              source={require('./assets/images/balaustra inferiore.png')}
+              source={(() => {
+                const img = require('./assets/images/balaustra_inferiore.png');
+                if (!img) console.log('App - balaustra inferiore.png image source is null');
+                return img;
+              })()}
               style={styles.bottomImage}
             />
           </SafeAreaView>
@@ -426,7 +445,17 @@ const App = () => {
                 <Animated.View
                   style={{ transform: [{ scale: scaleValues[index] }, { translateY: translateYValues[index] }] }}
                 >
-                  <Image source={{ uri: url }} style={styles.indicator} resizeMode="contain" />
+                  <Image
+                    source={(() => {
+                      if (!url) {
+                        console.log(`App - indicator image source is null (index: ${index})`);
+                        return {}; // Restituisci un oggetto vuoto come fallback
+                      }
+                      return url; // Restituisci direttamente l'import require
+                    })()}
+                    style={styles.indicator}
+                    resizeMode="contain"
+                  />
                 </Animated.View>
               </TouchableOpacity>
             ))}
@@ -436,58 +465,6 @@ const App = () => {
       {fadeScreenVisible && (
         <Animated.View style={[styles.fadeScreen, { opacity: fadeInOpacity }]} />
       )}
-      {/* {transitionVisible && (
-        <View style={[styles.cascade]}>
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'red',
-                height: '70%',
-                transform: [{
-                  translateY: block1Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, 0]
-                  })
-                }],
-                zIndex: 3
-              }
-            ]}
-          />
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'yellow',
-                height: '20%',
-                transform: [{
-                  translateY: block2Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, -height * 0.7]
-                  })
-                }],
-                zIndex: 2
-              }
-            ]}
-          />
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'orange',
-                height: '10%',
-                transform: [{
-                  translateY: block3Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, -height * 0.9]
-                  })
-                }],
-                zIndex: 1
-              }
-            ]}
-          />
-        </View>
-      )} */}
     </SafeAreaView>
   );
 };

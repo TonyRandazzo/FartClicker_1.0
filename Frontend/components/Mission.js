@@ -17,9 +17,9 @@ const { width, height } = Dimensions.get('window');
 
 // Centralizzazione delle immagini
 const images = {
-  background: require('../assets/images/nuova schermata mission.png'),
-  missionSeparator: require('../assets/images/separé schermata missioni Schlein.png'),
-  achievementSeparator: require('../assets/images/separé schermata missioni Meloni.png'),
+  background: require('../assets/images/nuova_schermata_mission.png'),
+  missionSeparator: require('../assets/images/separe_schermata_missioni_Schlein.png'),
+  achievementSeparator: require('../assets/images/separe_schermata_missioni_Meloni.png'),
 };
 
 // Dati delle missioni
@@ -51,9 +51,15 @@ const Mission = ({ setIsPlaying }) => {
   const [activeTab, setActiveTab] = useState('missions');
 
   return (
-    <ImageBackground source={images.background} style={styles.page1} resizeMode="cover">
+    <ImageBackground 
+      source={(() => {
+        if (!images.background) console.log('Mission - background image source is null');
+        return images.background;
+      })()} 
+      style={styles.page1} 
+      resizeMode="cover"
+    >
       <View style={styles.mainContainer}>
-        
         {/* Pulsanti di navigazione */}
         <View style={styles.topButtonsContainer}>
           <TouchableOpacity style={styles.topButton} onPress={() => setActiveTab('missions')}>
@@ -65,16 +71,29 @@ const Mission = ({ setIsPlaying }) => {
             {activeTab === 'achievements' && <View style={styles.activeTabIndicator} />}
           </TouchableOpacity>
         </View>
-
+  
         {/* Immagine separatrice */}
-        <Image source={activeTab === 'missions' ? images.missionSeparator : images.achievementSeparator} style={styles.topImage} />
-
+        <Image 
+          source={(() => {
+            const img = activeTab === 'missions' ? images.missionSeparator : images.achievementSeparator;
+            if (!img) console.log(`Mission - ${activeTab === 'missions' ? 'missionSeparator' : 'achievementSeparator'} image source is null`);
+            return img;
+          })()} 
+          style={styles.topImage} 
+        />
+  
         <View style={styles.contentContainer}>
           {activeTab === 'missions' ? (
             <View style={styles.missionList}>
               {missionItems.map((item) => (
                 <View key={item.id} style={styles.missionItem}>
-                  <ImageBackground source={item.image } style={styles.missionImage}>
+                  <ImageBackground 
+                    source={(() => {
+                      if (!item.image) console.log(`Mission - missionItem image source is null (id: ${item.id})`);
+                      return item.image;
+                    })()} 
+                    style={styles.missionImage}
+                  >
                     <View style={styles.missionTextContainer}>
                       <Text style={styles.missionTitle}>{item.name}</Text>
                       <Text style={styles.missionDescription}>{item.description}</Text>
@@ -88,7 +107,13 @@ const Mission = ({ setIsPlaying }) => {
             <ScrollView contentContainerStyle={styles.achievementList} showsVerticalScrollIndicator={false}>
               {achievementItems.map((item) => (
                 <View key={item.id} style={styles.achievementItem}>
-                  <ImageBackground source={item.cover} style={styles.achievementImage}>
+                  <ImageBackground 
+                    source={(() => {
+                      if (!item.cover) console.log(`Mission - achievementItem cover image source is null (id: ${item.id})`);
+                      return item.cover;
+                    })()} 
+                    style={styles.achievementImage}
+                  >
                     <View style={styles.achievementTextContainer}>
                       <Text style={styles.achievementTitle}>{item.title}</Text>
                       <Text style={styles.achievementDescription}>{item.description}</Text>
@@ -101,7 +126,7 @@ const Mission = ({ setIsPlaying }) => {
           )}
         </View>
       </View>
-
+  
       <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );

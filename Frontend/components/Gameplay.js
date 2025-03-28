@@ -531,9 +531,11 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
 // Definizione centrale di tutte le immagini
 const images = {
   progressEnd: require('../assets/images/separatore.png'),
-  platform: require('../assets/images/piattaforma skin home.png'),
+  platform: require('../assets/images/piattaforma_skin_home.png'),
 
 };
+
+
 
 return (
   <View style={styles.container}>
@@ -544,56 +546,81 @@ return (
           styles.progressFill, 
           { 
             width: `${(HPbarMidPoint / HPbar) * 100}%`,
-            backgroundColor: '#4CAF50' // Rosso se sotto il 
+            backgroundColor: '#4CAF50'
           }
-        ]} >
-          <Image 
-            source={images.progressEnd} 
-            style={styles.progressEndImage}
-            resizeMode="contain"
-          />
+        ]}>
+          {checkImageSource(images.progressEnd, 'ProgressEnd') && (
+            <Image 
+              source={images.progressEnd} 
+              style={styles.progressEndImage}
+              resizeMode="contain"
+              onError={() => console.error('[Image Error] Failed to load ProgressEnd image')}
+            />
+          )}
         </View>
       </View>
     </View>
     <View style={styles.imagesContainer}>
       {/* Player side */}
       <View style={styles.characterContainer}>
-        <Image
-          source={images.platform}
-          style={styles.ombra}
-          resizeMode="contain"
-        />
-        <Image
-          source={item.skin }
-          style={styles.player}
-          accessible={true}
-          accessibilityLabel="Player character"
-        />
-        {visibleFart && (
+        {checkImageSource(images.platform, 'PlayerPlatform') && (
+          <Image
+            source={images.platform}
+            style={styles.ombra}
+            resizeMode="contain"
+            onError={() => console.error('[Image Error] Failed to load PlayerPlatform image')}
+          />
+        )}
+        
+        {checkImageSource(item?.skin, 'PlayerSkin') ? (
+          <Image
+            source={item.skin }
+            style={styles.player}
+            accessible={true}
+            accessibilityLabel="Player character"
+            onError={() => console.error('[Image Error] Failed to load PlayerSkin image')}
+          />
+        ) : (
+          console.error('[Image Debug] PlayerSkin is missing')
+        )}
+        
+        {visibleFart && checkImageSource(visibleFart, 'PlayerFart') && (
           <Image
             source={visibleFart}
             style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]}
+            onError={() => console.error('[Image Error] Failed to load PlayerFart image')}
           />
         )}
       </View>
 
       {/* Enemy side */}
       <View style={[styles.characterContainer, { bottom: 5 }]}>
-        <Image
-          source={images.platform}
-          style={styles.ombra}
-          resizeMode="contain"
-        />
-        <Image
-          source={enemySkin}
-          style={styles.enemy}
-          accessible={true}
-          accessibilityLabel="Enemy character"
-        />
-        {fartEnemy && (
+        {checkImageSource(images.platform, 'EnemyPlatform') && (
+          <Image
+            source={images.platform}
+            style={styles.ombra}
+            resizeMode="contain"
+            onError={() => console.error('[Image Error] Failed to load EnemyPlatform image')}
+          />
+        )}
+        
+        {checkImageSource(enemySkin, 'EnemySkin') ? (
+          <Image
+            source={enemySkin }
+            style={styles.enemy}
+            accessible={true}
+            accessibilityLabel="Enemy character"
+            onError={() => console.error('[Image Error] Failed to load EnemySkin image')}
+          />
+        ) : (
+          console.error('[Image Debug] EnemySkin is missing')
+        )}
+        
+        {fartEnemy && checkImageSource(fartEnemy, 'EnemyFart') && (
           <Image
             source={fartEnemy}
             style={[styles.farts_enemy, fartPositions[enemyId] || fartPositions[1]]}
+            onError={() => console.error('[Image Error] Failed to load EnemyFart image')}
           />
         )}
       </View>
@@ -602,24 +629,27 @@ return (
     <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
 
     <View style={styles.bottomContainer}>
-      <ImageBackground
-        source={sbarraCombattimento}
-        style={styles.bottomBackground}
-        accessible={true}
-        accessibilityLabel="Sbarra di combattimento"
-      >
-        <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Button 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Button 2</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Button 3</Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
+      {checkImageSource(sbarraCombattimento, 'CombatBar') && (
+        <ImageBackground
+          source={sbarraCombattimento}
+          style={styles.bottomBackground}
+          accessible={true}
+          accessibilityLabel="Sbarra di combattimento"
+          onError={() => console.error('[Image Error] Failed to load CombatBar image')}
+        >
+          <View style={styles.buttonsContainer}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Button 1</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Button 2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Button 3</Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+      )}
     </View>
   </View>
 );

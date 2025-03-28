@@ -70,60 +70,89 @@ const MapScreen = ({ toggleMapScreen }) => {
     return getSize(0, 0, '13%'); // Default per altri casi, se necessario
   };
 
-  return (
-    <ImageBackground
-      source={require('../assets/images/sfondo shop.png')}
-      style={styles.background}
-      resizeMode="cover"
-    >
-      <HUD />
-      <View style={styles.containerContent}>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
-          style={styles.scrollView}
-        >
-          {data.map((item) => (
-            <View key={item.toString()} style={[styles.itemContainer, styles.itemWrapper]}>
-              <View style={styles.dashedLineContainer}>
-                {Array.from({ length: 35 }).map((_, index) => (
-                  <View key={index} style={styles.dashedSegment} />
-                ))}
-              </View>
 
-              <Image
-                source={require('../assets/images/tasto arancione tondo.png')}
-                style={styles.itemImage}
-              />
 
-              <Text
-                style={[styles.itemText, { left: getLeftPosition(item) }]}
-              >
-                {item}
-              </Text>
+// Preload all image sources with debug info
+const imageSources = {
+  background: require('../assets/images/sfondo_shop.png'),
+  roundButton: require('../assets/images/tasto_arancione_tondo.png'),
+  coin: require('../assets/images/COIN_MARVIK.png')
+};
 
-              <View style={styles.ricompensaContainer}>
-                <View style={styles.ricompensa}>
-                  <Image
-                    source={require('../assets/images/COIN MARVIK.png')}
-                    style={styles.ricompensaImage}
-                  />
-                  <Text style={styles.ricompensaText}> 40 </Text>
+Object.entries(imageSources).forEach(([name, source]) => {
+   (source, `${name} (initial load)`);
+});
+
+return (
+  <>
+    { (imageSources.background, 'Background') ? (
+      <ImageBackground
+        source={imageSources.background}
+        style={styles.background}
+        resizeMode="cover"
+        onError={() => console.warn('[MAP SCREEN ERROR] Failed to load background')}
+      >
+        <HUD />
+        <View style={styles.containerContent}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollViewContent}
+            style={styles.scrollView}
+          >
+            {data.map((item) => (
+              <View key={item.toString()} style={[styles.itemContainer, styles.itemWrapper]}>
+                <View style={styles.dashedLineContainer}>
+                  {Array.from({ length: 35 }).map((_, index) => (
+                    <View key={index} style={styles.dashedSegment} />
+                  ))}
                 </View>
-                <View style={styles.ricompensa}>
+
+                { (imageSources.roundButton, 'RoundButton') ? (
                   <Image
-                    source={require('../assets/images/COIN MARVIK.png')}
-                    style={styles.ricompensaImage}
+                    source={imageSources.roundButton}
+                    style={styles.itemImage}
+                    onError={() => console.warn('[MAP SCREEN ERROR] Failed to load round button')}
                   />
-                  <Text style={styles.ricompensaText}> 20 </Text>
+                ) : null}
+
+                <Text
+                  style={[styles.itemText, { left: getLeftPosition(item) }]}
+                >
+                  {item}
+                </Text>
+
+                <View style={styles.ricompensaContainer}>
+                  <View style={styles.ricompensa}>
+                    { (imageSources.coin, 'Coin') ? (
+                      <Image
+                        source={imageSources.coin}
+                        style={styles.ricompensaImage}
+                        onError={() => console.warn('[MAP SCREEN ERROR] Failed to load coin image')}
+                      />
+                    ) : null}
+                    <Text style={styles.ricompensaText}> 40 </Text>
+                  </View>
+                  <View style={styles.ricompensa}>
+                    { (imageSources.coin, 'Coin') ? (
+                      <Image
+                        source={imageSources.coin}
+                        style={styles.ricompensaImage}
+                        onError={() => console.warn('[MAP SCREEN ERROR] Failed to load coin image')}
+                      />
+                    ) : null}
+                    <Text style={styles.ricompensaText}> 20 </Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
-    </ImageBackground>
-  );
+            ))}
+          </ScrollView>
+        </View>
+      </ImageBackground>
+    ) : (
+      console.warn('[MAP SCREEN DEBUG] Background image failed to load - rendering fallback')
+    )}
+  </>
+);
 };
 
 const styles = StyleSheet.create({

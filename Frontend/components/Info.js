@@ -298,59 +298,84 @@ const Info = ({ goBack, itemId, isPlaying, setIsPlaying }) => {
 
 // Definisci tutte le immagini in un unico oggetto all'inizio
 const images = {
-    background: require('../assets/images/Reference schermata da rispettare al millimetro di x!.png'),
-    backButton: require('../assets/images/tasto arancione semi ellittico.png'),
-    platform: require('../assets/images/piattaforma skin home.png'),
+    background: require('../assets/images/Reference_schermata_da_rispettare_al_millimetro_di_x.png'),
+    backButton: require('../assets/images/tasto_arancione_semi_ellittico.png'),
+    platform: require('../assets/images/piattaforma_skin_home.png'),
     
 };
 
-return (
-    <ImageBackground
-        source={images.background}
-        style={styles.page1}
-        resizeMode="cover"
-    >
-        <HUD setIsPlaying={setIsPlaying} />
-        <TouchableOpacity
+
+  
+  return (
+    <>
+      { (images.background, 'Background') ? (
+        <ImageBackground
+          source={images.background}
+          style={styles.page1}
+          resizeMode="cover"
+          onError={() => console.warn('[INFO SCREEN ERROR] Failed to load background')}
+        >
+          <HUD setIsPlaying={setIsPlaying} />
+          
+          <TouchableOpacity
             activeOpacity={1}
             style={styles.backButton}
             onPress={goBack}
-        >
-            <Image
+          >
+            { (images.backButton, 'BackButton') ? (
+              <Image
                 source={images.backButton}
                 style={styles.backButtonImage}
-            />
+                onError={() => console.warn('[INFO SCREEN ERROR] Failed to load backButton')}
+              />
+            ) : null}
             <Text style={styles.backButtonText}>Back</Text>
-        </TouchableOpacity>
-        <View style={styles.imageContainer}>
-            <Image
+          </TouchableOpacity>
+  
+          <View style={styles.imageContainer}>
+            { (item?.skin, 'CharacterSkin') ? (
+              <Image
                 source={item.skin }
                 style={styles.characterImage}
                 resizeMode="contain"
-            />
-            <Image
+                onError={() => console.warn('[INFO SCREEN ERROR] Failed to load character skin')}
+              />
+            ) : (
+              console.warn('[INFO SCREEN DEBUG] Character skin is missing or invalid')
+            )}
+  
+            { (images.platform, 'Platform') ? (
+              <Image
                 source={images.platform}
                 style={styles.ombra}
                 resizeMode="contain"
-            />
-        </View>
-        <View style={styles.rightText}>
+                onError={() => console.warn('[INFO SCREEN ERROR] Failed to load platform')}
+              />
+            ) : null}
+          </View>
+  
+          {/* ... rest of your text components remain unchanged ... */}
+          <View style={styles.rightText}>
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.rarity}>Rarity: {item.rarity}</Text>
             <Text style={styles.class}>Class: {item.class}</Text>
             <View style={styles.descriptionContainer}>
-                <Text style={styles.descriptionTitle}> Description</Text>
-                <Text style={styles.description}>{item.description}</Text>
+              <Text style={styles.descriptionTitle}> Description</Text>
+              <Text style={styles.description}>{item.description}</Text>
             </View>
-        </View>
-        <View style={styles.leftText}>
+          </View>
+          <View style={styles.leftText}>
             <Text style={styles.specialName}> {item.specialName}</Text>
             <Text style={styles.type}> {item.type}</Text>
             <Text style={styles.speed}> {item.speed}</Text>
             <Text style={styles.effect}> {item.effect}</Text>
-        </View>
-    </ImageBackground>
-)
+          </View>
+        </ImageBackground>
+      ) : (
+        console.warn('[INFO SCREEN DEBUG] Background image is missing')
+      )}
+    </>
+  );
 }
 const styles = StyleSheet.create({
     rightText: {

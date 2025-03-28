@@ -28,20 +28,20 @@ const getSize = (small, medium, large) => {
 // Centralizziamo il caricamento delle immagini
 const images = {
   backgroundVideo: require('../assets/videos/sfondo_shop.mp4'),
-  barraBluina: require('../assets/images/barra bluina.png'),
-  chronometer: require('../assets/images/chronometer-timer-counter-free-png.webp'),
-  barraMagentine: require('../assets/images/barra magentine.png'),
-  buttonImage: require('../assets/images/tasto arancione semi ellittico.png'), // Sostituire con il percorso corretto
+  barraBluina: require('../assets/images/barra_bluina.png'),
+  chronometer: require('../assets/images/chronometertimercounterfreepng.webp'),
+  barraMagentine: require('../assets/images/barra_magentine.png'),
+  buttonImage: require('../assets/images/tasto_arancione_semi_ellittico.png'), // Sostituire con il percorso corretto
 };
 
 // Array di immagini degli shop items
 const shopItems = [
-  { image: require('../assets/images/icona soldi 1.png'), price: '0,10 $', discount: '' },
-  { image: require('../assets/images/icona soldi 2.png'), price: '0,30 $', discount: '10%' },
-  { image: require('../assets/images/icona soldi 3.png'), price: '0,50 $', discount: '10%' },
-  { image: require('../assets/images/icona soldi sgravior 4.png'), price: '1,00 $', discount: '10%' },
-  { image: require('../assets/images/icona soldi sgravior 5.png'), price: '2,50 $', discount: '10%' },
-  { image: require('../assets/images/icona soldi sgravior 6.png'), price: '5,00 $', discount: '10%' },
+  { image: require('../assets/images/icona_soldi_1.png'), price: '0,10 $', discount: '' },
+  { image: require('../assets/images/icona_soldi_2.png'), price: '0,30 $', discount: '10%' },
+  { image: require('../assets/images/icona_soldi_3.png'), price: '0,50 $', discount: '10%' },
+  { image: require('../assets/images/icona_soldi_sgravior_4.png'), price: '1,00 $', discount: '10%' },
+  { image: require('../assets/images/icona_soldi_sgravior_5.png'), price: '2,50 $', discount: '10%' },
+  { image: require('../assets/images/icona_soldi_sgravior_6.png'), price: '5,00 $', discount: '10%' },
 ];
 
 // Immagini remote (esempio con placeholder)
@@ -57,7 +57,10 @@ const Shop = ({ setIsPlaying }) => {
       <View style={styles.mainContainer}>
         {/* Video di sfondo */}
         <Video
-          source={images.backgroundVideo}
+          source={(() => {
+            if (!images.backgroundVideo) console.log('Shop - backgroundVideo source is null');
+            return images.backgroundVideo;
+          })()}
           style={styles.backgroundVideo}
           resizeMode="cover"
           repeat
@@ -71,32 +74,69 @@ const Shop = ({ setIsPlaying }) => {
             <View style={styles.imageContainer}>
               {shopItems.map((item, index) => (
                 <View key={index} style={styles.imageWrapper}>
-                  <Image source={item.image} style={styles.shopImage} />
+                  <Image 
+                    source={(() => {
+                      if (!item.image) console.log(`Shop - shopItem image source is null (index: ${index})`);
+                      return item.image;
+                    })()} 
+                    style={styles.shopImage} 
+                  />
                   {item.discount && <Text style={styles.topRightText}>{item.discount}</Text>}
-
+  
                   <TouchableOpacity style={styles.shopButton} activeOpacity={1}>
-                    <Image source={images.buttonImage} style={styles.shopButtonImage} />
+                    <Image 
+                      source={(() => {
+                        if (!images.buttonImage) console.log('Shop - buttonImage source is null');
+                        return images.buttonImage;
+                      })()} 
+                      style={styles.shopButtonImage} 
+                    />
                     <Text style={styles.shopButtonText}>{item.price}</Text>
                   </TouchableOpacity>
                 </View>
               ))}
             </View>
           </View>
-
+  
           {/* Limited Offer 1 */}
           <View style={styles.LimitedOffer}>
-            <Image source={images.barraBluina} style={styles.newImage} />
+            <Image 
+              source={(() => {
+                if (!images.barraBluina) console.log('Shop - barraBluina source is null');
+                return images.barraBluina;
+              })()} 
+              style={styles.newImage} 
+            />
             <Text style={styles.rotatedText}>La tua scritta</Text>
-            <Image source={images.chronometer} style={styles.Timer} />
+            <Image 
+              source={(() => {
+                if (!images.chronometer) console.log('Shop - chronometer source is null');
+                return images.chronometer;
+              })()} 
+              style={styles.Timer} 
+            />
           </View>
-
+  
           {/* Limited Offer 2 */}
           <View style={styles.LimitedOffer}>
-            <Image source={images.barraMagentine} style={styles.newImage} />
+            <Image 
+              source={(() => {
+                if (!images.barraMagentine) console.log('Shop - barraMagentine source is null');
+                return images.barraMagentine;
+              })()} 
+              style={styles.newImage} 
+            />
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
               {remoteImages.map((imgUrl, idx) => (
-                <Image key={idx} source={ imgUrl} style={styles.smallImage} />
+                <Image 
+                  key={idx} 
+                  source={(() => {
+                    if (!imgUrl) console.log(`Shop - remoteImage source is null (index: ${idx})`);
+                    return imgUrl;
+                  })()} 
+                  style={styles.smallImage} 
+                />
               ))}
             </View>
           </View>

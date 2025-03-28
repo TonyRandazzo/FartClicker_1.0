@@ -28,41 +28,84 @@ const getSize = (small, medium, large) => {
 };
 
 const images = {
-  background: require('../assets/images/sfondo blu.png'),
-  switchUser: require('../assets/images/separé schermata skin Meloni.png'),
-  switchRecord: require('../assets/images/separé schermata skin Schlein.png'),
-  backButton: require('../assets/images/tasto arancione semi ellittico.png'),
+  background: require('../assets/images/sfondo_blu.png'),
+  switchUser: require('../assets/images/separe_schermata_skin_Meloni.png'),
+  switchRecord: require('../assets/images/separe_schermata_skin_Schlein.png'),
+  backButton: require('../assets/images/tasto_arancione_semi_ellittico.png'),
   character: require('../assets/images/Characters/Fartman.png'),
-  platform: require('../assets/images/piattaforma skin home.png'),
+  platform: require('../assets/images/piattaforma_skin_home.png'),
 };
 
 const User = ({ goBack, setIsPlaying }) => {
   const [activeButton, setActiveButton] = useState('records');
 
   return (
-    <ImageBackground source={images.background} style={styles.page1} resizeMode="cover">
+    <ImageBackground 
+      source={(() => {
+        if (!images.background) console.log('User - background image source is null');
+        return images.background;
+      })()} 
+      style={styles.page1} 
+      resizeMode="cover"
+    >
       <View style={styles.container}>
         <View style={styles.topButtonsContainer}>
           <TouchableOpacity style={styles.topButton} onPress={() => setActiveButton('records')}>
             <Text style={styles.topButtonText}>Record</Text>
-            {activeButton === 'records' && <Image source={images.switchRecord} style={styles.backgroundImage} />}
+            {activeButton === 'records' && 
+              <Image 
+                source={(() => {
+                  if (!images.switchRecord) console.log('User - switchRecord image source is null');
+                  return images.switchRecord;
+                })()} 
+                style={styles.backgroundImage} 
+              />
+            }
           </TouchableOpacity>
           <TouchableOpacity style={styles.topButton} onPress={() => setActiveButton('Account')}>
             <Text style={styles.topButtonText}>User</Text>
-            {activeButton === 'Account' && <Image source={images.switchUser} style={styles.backgroundImage} />}
+            {activeButton === 'Account' && 
+              <Image 
+                source={(() => {
+                  if (!images.switchUser) console.log('User - switchUser image source is null');
+                  return images.switchUser;
+                })()} 
+                style={styles.backgroundImage} 
+              />
+            }
           </TouchableOpacity>
         </View>
         
         <TouchableOpacity style={styles.backButton} onPress={goBack}>
-          <Image source={images.backButton} style={styles.backButtonImage} />
+          <Image 
+            source={(() => {
+              if (!images.backButton) console.log('User - backButton image source is null');
+              return images.backButton;
+            })()} 
+            style={styles.backButtonImage} 
+          />
           <Text style={styles.backButtonText}>Back</Text>
         </TouchableOpacity>
         
         {activeButton === 'records' ? (
           <View style={styles.content}>
             <View style={styles.imageContainer}>
-              <Image source={images.character} style={styles.characterImage} resizeMode="contain" />
-              <Image source={images.platform} style={styles.ombra} resizeMode="contain" />
+              <Image 
+                source={(() => {
+                  if (!images.character) console.log('User - character image source is null');
+                  return images.character;
+                })()} 
+                style={styles.characterImage} 
+                resizeMode="contain" 
+              />
+              <Image 
+                source={(() => {
+                  if (!images.platform) console.log('User - platform image source is null');
+                  return images.platform;
+                })()} 
+                style={styles.ombra} 
+                resizeMode="contain" 
+              />
             </View>
             <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
               {Array.from({ length: 15 }).map((_, index) => (
@@ -75,8 +118,22 @@ const User = ({ goBack, setIsPlaying }) => {
         ) : (
           <View style={styles.container}>
             <View style={styles.avatar}>
-              <Image source={images.character} style={styles.characterImage} resizeMode="contain" />
-              <Image source={images.platform} style={styles.ombra} resizeMode="contain" />
+              <Image 
+                source={(() => {
+                  if (!images.character) console.log('User - character image source is null (Account section)');
+                  return images.character;
+                })()} 
+                style={styles.characterImage} 
+                resizeMode="contain" 
+              />
+              <Image 
+                source={(() => {
+                  if (!images.platform) console.log('User - platform image source is null (Account section)');
+                  return images.platform;
+                })()} 
+                style={styles.ombra} 
+                resizeMode="contain" 
+              />
             </View>
             <View style={styles.settings}>
               {[...Array(3)].map((_, i) => (
@@ -91,8 +148,7 @@ const User = ({ goBack, setIsPlaying }) => {
       <HUD setIsPlaying={setIsPlaying} />
     </ImageBackground>
   );
-};
-
+}
 
 const styles = StyleSheet.create({
   settingsText: {
