@@ -25,32 +25,7 @@ import Shop from './components/Shop';
 import Home from './components/Home';
 import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
-import { setJSExceptionHandler, setNativeExceptionHandler } from 'react-native-exception-handler';
 
-// Gestione degli errori JavaScript
-setJSExceptionHandler((error, isFatal) => {
-  // Puoi inviare l'errore a un servizio di logging qui
-  console.error('Errore JavaScript non gestito:', error);
-
-  if (isFatal) {
-    Alert.alert(
-      'Errore non gestito',
-      `Si è verificato un errore fatale: ${error.name} ${error.message}\nL'applicazione potrebbe essere instabile.`,
-      [{
-        text: 'Chiudi',
-        onPress: () => {
-          // Puoi decidere di chiudere l'app o fare altro
-        }
-      }]
-    );
-  }
-}, true);
-
-// Gestione degli errori nativi (crash)
-setNativeExceptionHandler((exceptionString) => {
-  // Puoi inviare l'errore a un servizio di logging qui
-  console.error('Errore nativo non gestito:', exceptionString);
-});
 const { width, height } = Dimensions.get('window');
 
 
@@ -72,7 +47,13 @@ const localImages = [
 ];
 
 
-
+const imageUrls = [
+  require('./assets/images/toilettatura.png'),
+  require('./assets/images/personaggi icona menù.png'),
+  require('./assets/images/home simbolo.png'),
+  require('./assets/images/rotolo missione.png'),
+  require('./assets/images/map icon.png'),
+];
 
 const preloadImages = async () => {
   // Pre-caricamento immagini locali
@@ -435,7 +416,7 @@ const App = () => {
         <>
           <SafeAreaView style={styles.bottomContainer}>
             <Image
-              source={require('../Frontend/assets/images/balaustra inferiore.png')}
+              source={require('./assets/images/balaustra inferiore.png')}
               style={styles.bottomImage}
             />
           </SafeAreaView>

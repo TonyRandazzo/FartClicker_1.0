@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
+  SafeAreaView,
   View,
+  FlatList,
   StyleSheet,
+  Dimensions,
   TouchableOpacity,
+  Animated,
   Image,
   ImageBackground,
   Text,
@@ -10,14 +14,24 @@ import {
 } from 'react-native';
 import Video from 'react-native-video';
 import HUD from './HUD';
+const { width, height } = Dimensions.get('window');
+const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
+const isSmallScreen = diagonal >= 5 && diagonal <= 7;
+const isMediumScreen = diagonal > 7 && diagonal <= 8.5;
+const isLargeScreen = diagonal > 8.5;
 
+const getSize = (small, medium, large) => {
+  if (isSmallScreen) return small;
+  if (isMediumScreen) return medium;
+  if (isLargeScreen) return large;
+};
 // Centralizziamo il caricamento delle immagini
 const images = {
   backgroundVideo: require('../assets/videos/sfondo_shop.mp4'),
   barraBluina: require('../assets/images/barra bluina.png'),
   chronometer: require('../assets/images/chronometer-timer-counter-free-png.webp'),
   barraMagentine: require('../assets/images/barra magentine.png'),
-  buttonImage: require('../assets/images/button.png'), // Sostituire con il percorso corretto
+  buttonImage: require('../assets/images/tasto arancione semi ellittico.png'), // Sostituire con il percorso corretto
 };
 
 // Array di immagini degli shop items
@@ -82,7 +96,7 @@ const Shop = ({ setIsPlaying }) => {
             <Text style={styles.rotatedText}>Testo Rotato</Text>
             <View style={styles.threeImagesContainer}>
               {remoteImages.map((imgUrl, idx) => (
-                <Image key={idx} source={{ uri: imgUrl }} style={styles.smallImage} />
+                <Image key={idx} source={ imgUrl} style={styles.smallImage} />
               ))}
             </View>
           </View>

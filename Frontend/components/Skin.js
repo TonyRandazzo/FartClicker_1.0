@@ -161,7 +161,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
       const videoSource = cachedVideoPaths[item.background] || item.background;
       return (
         <Video
-          source={{ uri: videoSource }}
+          source={ videoSource }
           style={styles.sfondiAnimati}
           resizeMode="cover"
           muted={true}
@@ -182,7 +182,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
     }
     return (
       <ImageBackground
-        source={{ uri: (item.background) }}
+        source={item.background}
         style={styles.sfondi}
       />
     );
@@ -242,9 +242,9 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
                         onPress={() => setVisibleOptionsId((prevId) => (prevId === item.id ? null : item.id))}
                       ></TouchableOpacity>
                       <Text style={styles.nome}>{item.name}</Text>
-                      <Image source={{ uri: item.image }} style={styles.skinImage} />
+                      <Image source={item.image} style={styles.skinImage} />
                       <Text style={styles.classe}>{item.class}</Text>
-                      <Image source={{ uri: item.rarity }} style={styles.rarity} />
+                      <Image source={item.rarity } style={styles.rarity} />
                       {visibleOptionsId === item.id && (
                         <>
                           <View style={styles.aura}></View>
@@ -268,7 +268,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
             <View style={styles.comicContent}>
               {comicItems.map((item) => (
                 <View key={item.id} style={styles.comicItem}>
-                  <Image source={{ uri: item.cover }} style={styles.comicCover} />
+                  <Image source={ item.cover } style={styles.comicCover} />
                   <Text style={styles.comicTitle}>{item.title}</Text>
                 </View>
               ))}

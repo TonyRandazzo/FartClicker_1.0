@@ -296,55 +296,62 @@ const Info = ({ goBack, itemId, isPlaying, setIsPlaying }) => {
         return null;
     }
 
-    return (
-        <ImageBackground
-            source={require('../assets/images/Reference schermata da rispettare al millimetro di x!.png')}
-            style={styles.page1}
-            resizeMode="cover"
-        >
-            <HUD setIsPlaying={setIsPlaying} />
-            <TouchableOpacity
-                activeOpacity={1}
-                style={styles.backButton}
-                onPress={goBack}
-            >
-                <Image
-                    source={{ uri: require('../assets/images/tasto arancione semi ellittico.png') }}
-                    style={styles.backButtonImage}
-                />
-                <Text style={styles.backButtonText}>Back</Text>
-            </TouchableOpacity>
-            <View style={styles.imageContainer}>
-                <Image
-                    source={{ uri: item.skin }}
-                    style={styles.characterImage}
-                    resizeMode="contain"
-                />
-                <Image
-                    source={require('../assets/images/piattaforma skin home.png')}
-                    style={styles.ombra}
-                    resizeMode="contain"
-                />
-            </View>
-            <View style={styles.rightText}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.rarity}>Rarity: {item.rarity}</Text>
-                <Text style={styles.class}>Class: {item.class}</Text>
-                <View style={styles.descriptionContainer}>
-                    <Text style={styles.descriptionTitle}> Description</Text>
-                    <Text style={styles.description}>{item.description}</Text>
-                </View>
-            </View>
-            <View style={styles.leftText}>
-                <Text style={styles.specialName}> {item.specialName}</Text>
-                <Text style={styles.type}> {item.type}</Text>
-                <Text style={styles.speed}> {item.speed}</Text>
-                <Text style={styles.effect}> {item.effect}</Text>
-            </View>
-        </ImageBackground>
-    )
-}
+// Definisci tutte le immagini in un unico oggetto all'inizio
+const images = {
+    background: require('../assets/images/Reference schermata da rispettare al millimetro di x!.png'),
+    backButton: require('../assets/images/tasto arancione semi ellittico.png'),
+    platform: require('../assets/images/piattaforma skin home.png'),
+    
+};
 
+return (
+    <ImageBackground
+        source={images.background}
+        style={styles.page1}
+        resizeMode="cover"
+    >
+        <HUD setIsPlaying={setIsPlaying} />
+        <TouchableOpacity
+            activeOpacity={1}
+            style={styles.backButton}
+            onPress={goBack}
+        >
+            <Image
+                source={images.backButton}
+                style={styles.backButtonImage}
+            />
+            <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+        <View style={styles.imageContainer}>
+            <Image
+                source={item.skin }
+                style={styles.characterImage}
+                resizeMode="contain"
+            />
+            <Image
+                source={images.platform}
+                style={styles.ombra}
+                resizeMode="contain"
+            />
+        </View>
+        <View style={styles.rightText}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.rarity}>Rarity: {item.rarity}</Text>
+            <Text style={styles.class}>Class: {item.class}</Text>
+            <View style={styles.descriptionContainer}>
+                <Text style={styles.descriptionTitle}> Description</Text>
+                <Text style={styles.description}>{item.description}</Text>
+            </View>
+        </View>
+        <View style={styles.leftText}>
+            <Text style={styles.specialName}> {item.specialName}</Text>
+            <Text style={styles.type}> {item.type}</Text>
+            <Text style={styles.speed}> {item.speed}</Text>
+            <Text style={styles.effect}> {item.effect}</Text>
+        </View>
+    </ImageBackground>
+)
+}
 const styles = StyleSheet.create({
     rightText: {
         position: 'absolute',

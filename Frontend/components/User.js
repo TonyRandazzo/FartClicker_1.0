@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
+  SafeAreaView,
   View,
+  FlatList,
+  StyleSheet,
+  Dimensions,
   TouchableOpacity,
+  Animated,
   Image,
   ImageBackground,
   Text,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import HUD from './HUD';
 

@@ -528,92 +528,101 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   const item = itemsData[selectedCharacterId] || itemsData[1];
 
 
-  return (
-    <View style={styles.container}>
-      <HUD setIsPlaying={setIsPlaying} />
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBackground}>
-          <View style={[
-            styles.progressFill, 
-            { 
-              width: `${(HPbarMidPoint / HPbar) * 100}%`,
-              backgroundColor: '#4CAF50' // Rosso se sotto il 
-            }
-          ]} >
-              <Image 
-              source={require('../assets/images/separatore.png')} 
-              style={styles.progressEndImage}
-              resizeMode="contain"
-            />
-          </View>
-        </View>
-      </View>
-      <View style={styles.imagesContainer}>
-        {/* Player side */}
-        <View style={styles.characterContainer}>
-          <Image
-            source={ require('../assets/images/piattaforma skin home.png')}
-            style={styles.ombra}
+// Definizione centrale di tutte le immagini
+const images = {
+  progressEnd: require('../assets/images/separatore.png'),
+  platform: require('../assets/images/piattaforma skin home.png'),
+
+};
+
+return (
+  <View style={styles.container}>
+    <HUD setIsPlaying={setIsPlaying} />
+    <View style={styles.progressContainer}>
+      <View style={styles.progressBackground}>
+        <View style={[
+          styles.progressFill, 
+          { 
+            width: `${(HPbarMidPoint / HPbar) * 100}%`,
+            backgroundColor: '#4CAF50' // Rosso se sotto il 
+          }
+        ]} >
+          <Image 
+            source={images.progressEnd} 
+            style={styles.progressEndImage}
             resizeMode="contain"
           />
-          <Image
-            source={{ uri: item.skin }}
-            style={styles.player}
-            accessible={true}
-            accessibilityLabel="Player character"
-          />
-          {visibleFart && (
-            <Image
-              source={visibleFart}
-              style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
-          )}
         </View>
-
-        {/* Enemy side */}
-        <View style={[styles.characterContainer, { bottom: 5 }]}>
-          <Image
-            source={ require('../assets/images/piattaforma skin home.png')}
-            style={styles.ombra}
-            resizeMode="contain"
-          />
-          <Image
-            source={{ uri: enemySkin }}
-            style={styles.enemy}
-            accessible={true}
-            accessibilityLabel="Enemy character"
-          />
-          {fartEnemy && (
-            <Image
-              source={fartEnemy}
-              style={[styles.farts_enemy, fartPositions[enemyId] || fartPositions[1]]} />
-          )}
-        </View>
-      </View>
-
-      <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
-
-      <View style={styles.bottomContainer}>
-        <ImageBackground
-          source={sbarraCombattimento}
-          style={styles.bottomBackground}
-          accessible={true}
-          accessibilityLabel="Sbarra di combattimento"
-        >
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 3</Text>
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
       </View>
     </View>
-  );
+    <View style={styles.imagesContainer}>
+      {/* Player side */}
+      <View style={styles.characterContainer}>
+        <Image
+          source={images.platform}
+          style={styles.ombra}
+          resizeMode="contain"
+        />
+        <Image
+          source={item.skin }
+          style={styles.player}
+          accessible={true}
+          accessibilityLabel="Player character"
+        />
+        {visibleFart && (
+          <Image
+            source={visibleFart}
+            style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]}
+          />
+        )}
+      </View>
+
+      {/* Enemy side */}
+      <View style={[styles.characterContainer, { bottom: 5 }]}>
+        <Image
+          source={images.platform}
+          style={styles.ombra}
+          resizeMode="contain"
+        />
+        <Image
+          source={enemySkin}
+          style={styles.enemy}
+          accessible={true}
+          accessibilityLabel="Enemy character"
+        />
+        {fartEnemy && (
+          <Image
+            source={fartEnemy}
+            style={[styles.farts_enemy, fartPositions[enemyId] || fartPositions[1]]}
+          />
+        )}
+      </View>
+    </View>
+
+    <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
+
+    <View style={styles.bottomContainer}>
+      <ImageBackground
+        source={sbarraCombattimento}
+        style={styles.bottomBackground}
+        accessible={true}
+        accessibilityLabel="Sbarra di combattimento"
+      >
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 3</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    </View>
+  </View>
+);
 }
 
 const styles = ScaledSheet.create({

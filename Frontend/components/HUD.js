@@ -56,51 +56,60 @@ function PauseButton({ setIsPlaying }) {
 
 
 
-  return (
-    <>
-      <View style={styles.topContainer}>
-        <Image
-          source={require('../assets/images/raccoglitore monete ink e impostaz finale.png')}
-          style={styles.topImage}
-          resizeMode="cover"
-        />
-      </View>
-      <TouchableOpacity style={styles.button} activeOpacity={1}
-        onPressIn={() => {
-          bounceAnimation(pauseScaleAnim);
-          setIsPaused(true);
-        }}>
-        <Animated.Image
-          source={require('../assets/images/GreenButton.png')}
-          style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-      {isPaused && (
-        <View style={styles.overlay}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setIsPaused(false)}
-            >
-              <Text style={styles.modalButtonText}>Resume</Text>
-            </TouchableOpacity>
+// Carica tutte le immagini in un unico oggetto
+const images = {
+  topImage: require('../assets/images/raccoglitore monete ink e impostaz finale.png'),
+  greenButton: require('../assets/images/GreenButton.png')
+};
 
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => {
-                setIsPaused(false);
-                setIsPlaying(true);
-                console.log('Exit action triggered');
-              }}
-            >
-              <Text style={styles.modalButtonText}>Exit</Text>
-            </TouchableOpacity>
-          </View>
+return (
+  <>
+    <View style={styles.topContainer}>
+      <Image
+        source={images.topImage}
+        style={styles.topImage}
+        resizeMode="cover"
+      />
+    </View>
+    <TouchableOpacity 
+      style={styles.button} 
+      activeOpacity={1}
+      onPressIn={() => {
+        bounceAnimation(pauseScaleAnim);  
+        setIsPaused(true);
+      }}
+    >
+      <Animated.Image
+        source={images.greenButton}
+        style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
+        resizeMode="contain"
+      />
+    </TouchableOpacity>
+    {isPaused && (
+      <View style={styles.overlay}>
+        <View style={styles.modalContent}>
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => setIsPaused(false)}
+          >
+            <Text style={styles.modalButtonText}>Resume</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.modalButton}
+            onPress={() => {
+              setIsPaused(false);
+              setIsPlaying(true);
+              console.log('Exit action triggered');
+            }}
+          >
+            <Text style={styles.modalButtonText}>Exit</Text>
+          </TouchableOpacity>
         </View>
-      )}
-    </>
-  );
+      </View>
+    )}
+  </>
+);
 }
 
 const styles = StyleSheet.create({

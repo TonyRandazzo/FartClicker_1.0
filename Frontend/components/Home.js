@@ -579,177 +579,196 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   const item = itemsData[selectedCharacterId] || itemsData[1];
 
   console.log(visibleFart)
-  return (
-    <ImageBackground
-      source={require('../assets/images/sfondo blu.png')}
-      style={styles.page1}
-      resizeMode="cover"
-    >
-      <SafeAreaView style={styles.tema}>
-        <Animated.Image
-          source={require("../assets/images/silouette scoreggia da mettere su sfondo, dietro il livello dell'impulso di luce.png")}
-          style={[
-            styles.checkerboard,
-            {
-              opacity: checkerboardOpacity,
-              transform: [{ scale: checkerboardScale }],
-            },
-          ]}
-          resizeMode="repeat"
-        />
-      </SafeAreaView>
-      <HUD setIsPlaying={setIsPlaying} />
-      <View style={styles.mainContainer}>
-        <Animated.Image
-          source={require('../assets/images/impulso di luce.png')}
-          style={[styles.impulso, { opacity: impulsoOpacity }]}
-        />
-        <View style={styles.containerUser}>
-          <View style={styles.imageContainer}>
-            <Image
-              style={styles.user}
-              source={require('../assets/images/Prova utente.jpeg')}
-            />
-            <TouchableOpacity
-              style={styles.buttonUser}
-              activeOpacity={1}
-              onPress={handleButtonUserPress}
-            >
-              <Image
-                source={require('../assets/images/cerchio contentente personaggio in home casupola.png')}
-                style={styles.buttonImageUser}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.buttonsRowTop}>
-          <View style={styles.buttonsRowTopLeft}>
-            <ImageBackground
-              style={styles.buttonsRowTopLeftBackground}
-              source={require('../assets/images/balaustrino home.png')}
-            />
-            <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
-              <Animated.Image
-                source={require('../assets/images/rewards icon.png')}
-                style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
-              <Animated.Image
-                source={require('../assets/images/items icon V.2 2.png')}
-                style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
-              />
-              <Text style={styles.buttonText}></Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonsRowTopRight}>
-            <ImageBackground
-              style={styles.buttonsRowTopRightBackground}
-              source={require('../assets/images/balaustrino home.png')}
-            />
-            <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
-              <Animated.Image
-              source={require('../assets/images/passives icon.png')}
-              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
-              />
-              <Text style={styles.buttonText}></Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
-              <Animated.Image
-              source={require('../assets/images/newspaper.png')}
-              style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
-              />
-              <Text style={styles.buttonText}></Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+// Definizione centrale di tutte le immagini
+const images = {
+  background: require('../assets/images/sfondo blu.png'),
+  checkerboard: require("../assets/images/silouette scoreggia da mettere su sfondo, dietro il livello dell'impulso di luce.png"),
+  impulso: require('../assets/images/impulso di luce.png'),
+  user: require('../assets/images/Prova utente.jpeg'),
+  userButton: require('../assets/images/cerchio contentente personaggio in home casupola.png'),
+  balaustrino: require('../assets/images/balaustrino home.png'),
+  rewardsIcon: require('../assets/images/rewards icon.png'),
+  itemsIcon: require('../assets/images/items icon V.2 2.png'),
+  passivesIcon: require('../assets/images/passives icon.png'),
+  newspaper: require('../assets/images/newspaper.png'),
+  characterPlatform: require('../assets/images/piattaforma skin home.png'),
+  playButton: require('../assets/images/tasto arancione semi ellittico.png'),
+  // L'immagine dello skin e del fart sono dinamiche e vengono gestite separatamente
+};
 
-        <View style={styles.characterContainer}>
+return (
+  <ImageBackground
+    source={images.background}
+    style={styles.page1}
+    resizeMode="cover"
+  >
+    <SafeAreaView style={styles.tema}>
+      <Animated.Image
+        source={images.checkerboard}
+        style={[
+          styles.checkerboard,
+          {
+            opacity: checkerboardOpacity,
+            transform: [{ scale: checkerboardScale }],
+          },
+        ]}
+        resizeMode="repeat"
+      />
+    </SafeAreaView>
+    <HUD setIsPlaying={setIsPlaying} />
+    <View style={styles.mainContainer}>
+      <Animated.Image
+        source={images.impulso}
+        style={[styles.impulso, { opacity: impulsoOpacity }]}
+      />
+      <View style={styles.containerUser}>
+        <View style={styles.imageContainer}>
           <Image
-            source={{ uri: item.skin }}
-            style={styles.characterImage}
-            resizeMode="contain"
+            style={styles.user}
+            source={images.user}
           />
-          <Image
-            source={require('../assets/images/piattaforma skin home.png')}
-            style={styles.ombra}
-            resizeMode="contain"
-          />
-          {visibleFart && (
+          <TouchableOpacity
+            style={styles.buttonUser}
+            activeOpacity={1}
+            onPress={handleButtonUserPress}
+          >
             <Image
-              source={visibleFart}
-              style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} />
-          )}
-
+              source={images.userButton}
+              style={styles.buttonImageUser}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.playButton}
-          activeOpacity={1}
-          onPress={handlePlayPress}
-          onPressIn={() => bounceAnimation(playScaleAnim)} >
-          <Animated.Image
-            source={require('../assets/images/tasto arancione semi ellittico.png')}
-            style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
-          />
-          <Text style={styles.playButtonText}>
-            Play
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
       </View>
-      {transitionVisible && (
-        <View style={[styles.cascade]}>
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'red',
-                height: '70%',
-                transform: [{
-                  translateY: block1Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, 0]
-                  })
-                }],
-                zIndex: 3
-              }
-            ]}
+      <View style={styles.buttonsRowTop}>
+        <View style={styles.buttonsRowTopLeft}>
+          <ImageBackground
+            style={styles.buttonsRowTopLeftBackground}
+            source={images.balaustrino}
           />
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'yellow',
-                height: '20%',
-                transform: [{
-                  translateY: block2Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, -height * 0.7]
-                  })
-                }],
-                zIndex: 2
-              }
-            ]}
-          />
-          <Animated.View
-            style={[
-              styles.animatedBlock,
-              {
-                backgroundColor: 'orange',
-                height: '10%',
-                transform: [{
-                  translateY: block3Animation.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [height, -height * 0.9]
-                  })
-                }],
-                zIndex: 1
-              }
-            ]}
-          />
+          <TouchableOpacity style={styles.rewardsButton} activeOpacity={1} onPressIn={() => bounceAnimation(rewardsScaleAnim)} >
+            <Animated.Image
+              source={images.rewardsIcon}
+              style={[styles.buttonImageMenu, { transform: [{ scale: rewardsScaleAnim }] }]}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(itemsScaleAnim)} >
+            <Animated.Image
+              source={images.itemsIcon}
+              style={[styles.buttonImageMenu, { transform: [{ scale: itemsScaleAnim }] }]}
+            />
+            <Text style={styles.buttonText}></Text>
+          </TouchableOpacity>
         </View>
-      )}
-    </ImageBackground>
-  );
+        <View style={styles.buttonsRowTopRight}>
+          <ImageBackground
+            style={styles.buttonsRowTopRightBackground}
+            source={images.balaustrino}
+          />
+          <TouchableOpacity style={styles.itemsButton} activeOpacity={1} onPressIn={() => bounceAnimation(passiveScaleAnim)} >
+            <Animated.Image
+              source={images.passivesIcon}
+              style={[styles.buttonImageMenu, { transform: [{ scale: passiveScaleAnim }] }]}
+            />
+            <Text style={styles.buttonText}></Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.newsButton} activeOpacity={1} onPressIn={() => bounceAnimation(newsScaleAnim)} >
+            <Animated.Image
+              source={images.newspaper}
+              style={[styles.buttonImageMenu, { transform: [{ scale: newsScaleAnim }] }]}
+            />
+            <Text style={styles.buttonText}></Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.characterContainer}>
+        <Image
+          source={item.skin }
+          style={styles.characterImage}
+          resizeMode="contain"
+        />
+        <Image
+          source={images.characterPlatform}
+          style={styles.ombra}
+          resizeMode="contain"
+        />
+        {visibleFart && (
+          <Image
+            source={visibleFart}
+            style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]} 
+          />
+        )}
+      </View>
+      <TouchableOpacity 
+        style={styles.playButton}
+        activeOpacity={1}
+        onPress={handlePlayPress}
+        onPressIn={() => bounceAnimation(playScaleAnim)} 
+      >
+        <Animated.Image
+          source={images.playButton}
+          style={[styles.playButtonImage, { transform: [{ scale: playScaleAnim }] }]}
+        />
+        <Text style={styles.playButtonText}>
+          Play
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
+    </View>
+    {transitionVisible && (
+      <View style={[styles.cascade]}>
+        <Animated.View
+          style={[
+            styles.animatedBlock,
+            {
+              backgroundColor: 'red',
+              height: '70%',
+              transform: [{
+                translateY: block1Animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [height, 0]
+                })
+              }],
+              zIndex: 3
+            }
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.animatedBlock,
+            {
+              backgroundColor: 'yellow',
+              height: '20%',
+              transform: [{
+                translateY: block2Animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [height, -height * 0.7]
+                })
+              }],
+              zIndex: 2
+            }
+          ]}
+        />
+        <Animated.View
+          style={[
+            styles.animatedBlock,
+            {
+              backgroundColor: 'orange',
+              height: '10%',
+              transform: [{
+                translateY: block3Animation.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [height, -height * 0.9]
+                })
+              }],
+              zIndex: 1
+            }
+          ]}
+        />
+      </View>
+    )}
+  </ImageBackground>
+);
 };
 
 const styles = StyleSheet.create({

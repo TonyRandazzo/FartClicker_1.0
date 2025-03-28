@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
+  SafeAreaView,
   View,
+  FlatList,
   StyleSheet,
+  Dimensions,
   TouchableOpacity,
+  Animated,
   Image,
   ImageBackground,
   Text,
   ScrollView,
 } from 'react-native';
 import HUD from './HUD';
+const { width, height } = Dimensions.get('window');
 
 // Centralizzazione delle immagini
 const images = {
@@ -69,7 +74,7 @@ const Mission = ({ setIsPlaying }) => {
             <View style={styles.missionList}>
               {missionItems.map((item) => (
                 <View key={item.id} style={styles.missionItem}>
-                  <ImageBackground source={{ uri: item.image }} style={styles.missionImage}>
+                  <ImageBackground source={item.image } style={styles.missionImage}>
                     <View style={styles.missionTextContainer}>
                       <Text style={styles.missionTitle}>{item.name}</Text>
                       <Text style={styles.missionDescription}>{item.description}</Text>
@@ -83,7 +88,7 @@ const Mission = ({ setIsPlaying }) => {
             <ScrollView contentContainerStyle={styles.achievementList} showsVerticalScrollIndicator={false}>
               {achievementItems.map((item) => (
                 <View key={item.id} style={styles.achievementItem}>
-                  <ImageBackground source={{ uri: item.cover }} style={styles.achievementImage}>
+                  <ImageBackground source={item.cover} style={styles.achievementImage}>
                     <View style={styles.achievementTextContainer}>
                       <Text style={styles.achievementTitle}>{item.title}</Text>
                       <Text style={styles.achievementDescription}>{item.description}</Text>
