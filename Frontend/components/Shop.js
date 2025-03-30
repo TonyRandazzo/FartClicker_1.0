@@ -25,6 +25,42 @@ const getSize = (small, medium, large) => {
   if (isMediumScreen) return medium;
   if (isLargeScreen) return large;
 };
+
+const OptimizedVideoBackground = ({ source }) => {
+  const videoRef = useRef(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      // Cleanup quando il componente smonta
+      if (videoRef.current) {
+        videoRef.current.seek(0);
+      }
+    };
+  }, []);
+
+  return (
+    <Video
+      ref={videoRef}
+      source={source}
+      style={StyleSheet.absoluteFill}
+      resizeMode="cover"
+      muted
+      repeat
+      onLoad={() => setIsLoaded(true)}
+      onError={(error) => console.error('Video error:', error)}
+      bufferConfig={{
+        minBufferMs: 15000,
+        maxBufferMs: 30000,
+        bufferForPlaybackMs: 2500,
+        bufferForPlaybackAfterRebufferMs: 5000
+      }}
+      playInBackground={false}
+      playWhenInactive={false}
+      ignoreSilentSwitch="obey"
+    />
+  );
+};
 // Centralizziamo il caricamento delle immagini
 const images = {
   backgroundVideo: require('../assets/videos/sfondo_shop.mp4'),
@@ -56,17 +92,8 @@ const Shop = ({ setIsPlaying }) => {
     <View style={styles.page}>
       <View style={styles.mainContainer}>
         {/* Video di sfondo */}
-        <Video
-          source={(() => {
-            if (!images.backgroundVideo) console.log('Shop - backgroundVideo source is null');
-            return images.backgroundVideo;
-          })()}
-          style={styles.backgroundVideo}
-          resizeMode="cover"
-          repeat
-          muted
-          playInBackground
-        />
+        <OptimizedVideoBackground source={images.backgroundVideo} />
+
 
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           {/* Shop Items */}

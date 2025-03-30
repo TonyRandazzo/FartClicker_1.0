@@ -227,10 +227,10 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
 
   const skinItemImages = {
     marvick: require('../assets/images/Characters/Marvick.png'),
-    maestroSasuke: require('../assets/images/Characters/Maestro Sasuke.png'),
+    maestroSasuke: require('../assets/images/Characters/Maestro_Sasuke.png'),
     bob: require('../assets/images/Characters/BoB.png'),
     cyclop:  require('../assets/images/Characters/Cyclop.png'),
-    babyAlien: require('../assets/images/Characters/Baby Alien.png'),
+    babyAlien: require('../assets/images/Characters/Baby_Alien.png'),
     george: require('../assets/images/Characters/George.png'),
     yokozuna: require('../assets/images/Characters/Yokozuna.png'),
     dracula: require('../assets/images/Characters/Dracula.png'),
@@ -238,13 +238,13 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     xao: require('../assets/images/Characters/Xao.png'),
     fartMan: require('../assets/images/Characters/Fartman.png'),
     alien: require('../assets/images/Characters/Alien.png'),
-    mrFarte: require('../assets/images/Characters/Mr. Farté.png'),
+    mrFarte: require('../assets/images/Characters/Mr._Farté.png'),
     fangpi: require('../assets/images/Characters/Fangpì.png'),
     amaterasuTsukuyomi: require('../assets/images/Characters/Amaterasu.png'),
-    stinkyBlob: require('../assets/images/Characters/Melma puzzona.png'),
+    stinkyBlob: require('../assets/images/Characters/Melma_puzzona.png'),
     bear: require('../assets/images/Characters/Bear.png'),
     soprano: require('../assets/images/Characters/Soprano.png'),
-    mrTakeshi: require('../assets/images/Characters/Mr. Takeshi.png'),
+    mrTakeshi: require('../assets/images/Characters/Mr._Takeshi.png'),
     stein: require('../assets/images/Characters/Stein.png'),
     gorilloz: require('../assets/images/Characters/Stein.png')
   };
@@ -549,7 +549,7 @@ return (
             backgroundColor: '#4CAF50'
           }
         ]}>
-          {checkImageSource(images.progressEnd, 'ProgressEnd') && (
+          {images.progressEnd && (
             <Image 
               source={images.progressEnd} 
               style={styles.progressEndImage}
@@ -561,9 +561,8 @@ return (
       </View>
     </View>
     <View style={styles.imagesContainer}>
-      {/* Player side */}
       <View style={styles.characterContainer}>
-        {checkImageSource(images.platform, 'PlayerPlatform') && (
+        {images.platform && (
           <Image
             source={images.platform}
             style={styles.ombra}
@@ -572,19 +571,17 @@ return (
           />
         )}
         
-        {checkImageSource(item?.skin, 'PlayerSkin') ? (
+        {item?.skin ? (
           <Image
-            source={item.skin }
+            source={item.skin}
             style={styles.player}
             accessible={true}
             accessibilityLabel="Player character"
             onError={() => console.error('[Image Error] Failed to load PlayerSkin image')}
           />
-        ) : (
-          console.error('[Image Debug] PlayerSkin is missing')
-        )}
+        ) : console.error('[Image Debug] PlayerSkin is missing')}
         
-        {visibleFart && checkImageSource(visibleFart, 'PlayerFart') && (
+        {visibleFart && (
           <Image
             source={visibleFart}
             style={[styles.farts, fartPositions[selectedCharacterId] || fartPositions[1]]}
@@ -593,9 +590,8 @@ return (
         )}
       </View>
 
-      {/* Enemy side */}
       <View style={[styles.characterContainer, { bottom: 5 }]}>
-        {checkImageSource(images.platform, 'EnemyPlatform') && (
+        {images.platform && (
           <Image
             source={images.platform}
             style={styles.ombra}
@@ -604,19 +600,17 @@ return (
           />
         )}
         
-        {checkImageSource(enemySkin, 'EnemySkin') ? (
+        {enemySkin ? (
           <Image
-            source={enemySkin }
+            source={enemySkin}
             style={styles.enemy}
             accessible={true}
             accessibilityLabel="Enemy character"
             onError={() => console.error('[Image Error] Failed to load EnemySkin image')}
           />
-        ) : (
-          console.error('[Image Debug] EnemySkin is missing')
-        )}
+        ) : console.error('[Image Debug] EnemySkin is missing')}
         
-        {fartEnemy && checkImageSource(fartEnemy, 'EnemyFart') && (
+        {fartEnemy && (
           <Image
             source={fartEnemy}
             style={[styles.farts_enemy, fartPositions[enemyId] || fartPositions[1]]}
@@ -629,7 +623,7 @@ return (
     <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
 
     <View style={styles.bottomContainer}>
-      {checkImageSource(sbarraCombattimento, 'CombatBar') && (
+      {sbarraCombattimento && (
         <ImageBackground
           source={sbarraCombattimento}
           style={styles.bottomBackground}
@@ -678,7 +672,6 @@ const styles = ScaledSheet.create({
   },
   progressContainer: {
     elevation: 90,
-    zIndex: 50,
     paddingHorizontal: '20@s',
     paddingTop: '90@vs',
   },

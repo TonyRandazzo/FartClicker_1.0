@@ -35,6 +35,33 @@ const getSize = (small, medium, large) => {
   if (isLargeScreen) return large;
 };
 
+const OptimizedVideo = ({ source, style, index }) => {
+  const videoRefs = useRef([]);
+
+  useEffect(() => {
+    // Assicura che tutti i video partano simultaneamente
+    videoRefs.current.forEach((video) => {
+      if (video) {
+        video.seek(0);
+      }
+    });
+  }, []);
+
+  return (
+    <View style={style}>
+      <Video
+        ref={(ref) => (videoRefs.current[index] = ref)}
+        source={source}
+        style={StyleSheet.absoluteFill}
+        resizeMode="cover"
+        muted
+        repeat
+        onError={(error) => console.error(`Video error at index ${index}:`, error)}
+      />
+    </View>
+  );
+};
+
 const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   const [switchComponent, setSwitchComponent] = useState('Select')
   const [activeButton, setActiveButton] = useState('skin');
@@ -62,27 +89,27 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   }, [opacity]);
 
   const skinItemImages = {
-    marvick: require('../assets/images/Facce/mezzob marvik.png'),
-    maestroSasuke: require('../assets/images/Facce/mezzob sasuke.png'),
-    bob: require('../assets/images/Facce/mezzob bob.png'),
-    cyclop: require('../assets/images/Facce/mezzob cyclop.png'),
-    babyAlien: require('../assets/images/Facce/mezzobusto alien.png'),
-    george: require('../assets/images/Facce/mezzob george.png'),
-    yokozuna: require('../assets/images/Facce/mezzob yokkozuna.png'),
-    dracula: require('../assets/images/Facce/Mezzob Draccula.png'),
-    robert: require('../assets/images/Facce/mezzob robert.png'),
-    xao: require('../assets/images/Facce/mezzob xao.png'),
-    fartMan: require('../assets/images/Facce/mezzob fartman.png'),
-    alien: require('../assets/images/Facce/alien adulto mezzob.png'),
-    mrFarte: require('../assets/images/Facce/mezzob Mr. Farté.png'),
-    fangpi: require('../assets/images/Facce/mezzob fangpiì.png'),
-    amaterasuTsukuyomi: require('../assets/images/Facce/mezzob tuskuamateras.png'),
-    stinkyBlob: require('../assets/images/Facce/mezzob melma puzzonsa.png'),
-    bear: require('../assets/images/Facce/mezzobusto bear.png'),
-    soprano: require('../assets/images/Facce/mezzob soprano.png'),
-    mrTakeshi: require('../assets/images/Facce/mezzob mr. takeshi.png'),
-    stein: require('../assets/images/Facce/mezzob stein.png'),
-    gorilloz: require('../assets/images/Facce/mezzob gorilloz.png')
+    marvick: require('../assets/images/Facce/mezzob_marvik.png'),
+    maestroSasuke: require('../assets/images/Facce/mezzob_sasuke.png'),
+    bob: require('../assets/images/Facce/mezzob_bob.png'),
+    cyclop: require('../assets/images/Facce/mezzob_cyclop.png'),
+    babyAlien: require('../assets/images/Facce/mezzobusto_alien.png'),
+    george: require('../assets/images/Facce/mezzob_george.png'),
+    yokozuna: require('../assets/images/Facce/mezzob_yokkozuna.png'),
+    dracula: require('../assets/images/Facce/Mezzob_Draccula.png'),
+    robert: require('../assets/images/Facce/mezzob_robert.png'),
+    xao: require('../assets/images/Facce/mezzob_xao.png'),
+    fartMan: require('../assets/images/Facce/mezzob_fartman.png'),
+    alien: require('../assets/images/Facce/alien_adulto_mezzob.png'),
+    mrFarte: require('../assets/images/Facce/mezzob_Mr._Farté.png'),
+    fangpi: require('../assets/images/Facce/mezzob_fangpiì.png'),
+    amaterasuTsukuyomi: require('../assets/images/Facce/mezzob_tuskuamateras.png'),
+    stinkyBlob: require('../assets/images/Facce/mezzob_melma_puzzonsa.png'),
+    bear: require('../assets/images/Facce/mezzobusto_bear.png'),
+    soprano: require('../assets/images/Facce/mezzob_soprano.png'),
+    mrTakeshi: require('../assets/images/Facce/mezzob_mr._takeshi.png'),
+    stein: require('../assets/images/Facce/mezzob_stein.png'),
+    gorilloz: require('../assets/images/Facce/mezzob_gorilloz.png')
   };
   const skinItemRarities = {
     comune: require('../assets/images/cornice_intera_comune.png'),
@@ -134,10 +161,6 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
   }));
 
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const [cachedImagePaths, setCachedImagePaths] = useState({});
-  const [cachedVideoPaths, setCachedVideoPaths] = useState({});
   const [selectedItemId, setSelectedItemId] = useState(null);
 
   const handleInfoPress = (id) => {
@@ -155,28 +178,15 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
 
   // Initialize caches when component mounts
 
-  // Modified render functions to use cached images
-  const renderBackground = (item) => {
+
+
+  const renderBackground = (item, index) => {
     if (item.rarity === skinItemRarities.mitico || item.rarity === skinItemRarities.divinità) {
-      const videoSource = cachedVideoPaths[item.background] || item.background;
       return (
-        <Video
-          source={ videoSource }
+        <OptimizedVideo 
+          source={item.background} 
           style={styles.sfondiAnimati}
-          resizeMode="cover"
-          muted={true}
-          repeat={true}
-          controls={false}
-          disableFocus
-          onError={(error) => {
-            console.error('Video playback error:', error);
-            if (videoSource !== item.background) {
-              setCachedVideoPaths(prev => ({
-                ...prev,
-                [item.background]: item.background
-              }));
-            }
-          }}
+          index={index}
         />
       );
     }
@@ -263,7 +273,7 @@ const Skin = ({ isPlaying, setIsPlaying, setSelectedCharacterId }) => {
                 <View key={rowIndex} style={styles.skinRow}>
                   {skinItems.slice(rowIndex * 3, (rowIndex + 1) * 3).map((item) => (
                     <View key={item.id} style={styles.skinWrapper}>
-                      {renderBackground(item)}
+                      {renderBackground(item, item.id)}
                       <TouchableOpacity
                         style={styles.selection}
                         activeOpacity={1}
