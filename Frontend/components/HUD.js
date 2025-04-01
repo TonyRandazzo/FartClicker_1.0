@@ -12,9 +12,11 @@ import {
   Text,
   ScrollView,
   Modal,
+  NativeModules,
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
+const { RNRestart } = NativeModules;
 
 const { width, height } = Dimensions.get('window');
 const diagonal = Math.sqrt(width ** 2 + height ** 2) / (width / height);
@@ -109,9 +111,8 @@ return (
             style={styles.modalButton}
             onPress={() => {
               setIsPaused(false);
-              setIsPlaying(true);
-              console.log('Exit action triggered');
-            }}
+              setIsPlaying(false);
+              RNRestart.Restart();            }}
           >
             <Text style={styles.modalButtonText}>Exit</Text>
           </TouchableOpacity>

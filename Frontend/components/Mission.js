@@ -60,43 +60,52 @@ const Mission = ({ setIsPlaying }) => {
       resizeMode="cover"
     >
       <View style={styles.mainContainer}>
-        {/* Pulsanti di navigazione */}
+        {/* Top buttons container */}
         <View style={styles.topButtonsContainer}>
-          <TouchableOpacity style={styles.topButton} onPress={() => setActiveTab('missions')}>
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={() => setActiveTab('missions')}>
             <Text style={styles.topButtonText}>Mission</Text>
-            {activeTab === 'missions' && <View style={styles.activeTabIndicator} />}
+            {activeTab === 'missions' && (
+              <View style={styles.backgroundImageMission} />
+            )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.topButton} onPress={() => setActiveTab('achievements')}>
+  
+          <TouchableOpacity style={styles.topButton} activeOpacity={1} onPress={() => setActiveTab('achievements')}>
             <Text style={styles.topButtonText}>Achievement</Text>
-            {activeTab === 'achievements' && <View style={styles.activeTabIndicator} />}
+            {activeTab === 'achievements' && (
+              <View style={styles.backgroundImageMission} />
+            )}
           </TouchableOpacity>
         </View>
   
-        {/* Immagine separatrice */}
-        <Image 
-          source={(() => {
-            const img = activeTab === 'missions' ? images.missionSeparator : images.achievementSeparator;
-            if (!img) console.log(`Mission - ${activeTab === 'missions' ? 'missionSeparator' : 'achievementSeparator'} image source is null`);
-            return img;
-          })()} 
-          style={styles.topImage} 
-        />
+        {/* Separator image */}
+        <View style={styles.imageButtonContainer}>
+          <Image
+            source={(() => {
+              const img = activeTab === 'missions' ? images.missionSeparator : images.achievementSeparator;
+              if (!img) console.log(`Mission - ${activeTab === 'missions' ? 'missionSeparator' : 'achievementSeparator'} image source is null`);
+              return img;
+            })()}
+            style={styles.topImage}
+          />
+        </View>
   
-        <View style={styles.contentContainer}>
+        {/* Content area */}
+        <View style={styles.missionContent}>
           {activeTab === 'missions' ? (
-            <View style={styles.missionList}>
+            <View style={styles.missionContainer}>
               {missionItems.map((item) => (
-                <View key={item.id} style={styles.missionItem}>
+                <View key={item.id} style={styles.missionWrapper}>
                   <ImageBackground 
                     source={(() => {
                       if (!item.image) console.log(`Mission - missionItem image source is null (id: ${item.id})`);
                       return item.image;
-                    })()} 
-                    style={styles.missionImage}
+                    })()}
+                    style={styles.missionBackground}
                   >
-                    <View style={styles.missionTextContainer}>
-                      <Text style={styles.missionTitle}>{item.name}</Text>
+                    <View style={styles.textContainer}>
+                      <Text style={styles.missionName}>{item.name}</Text>
                       <Text style={styles.missionDescription}>{item.description}</Text>
+                      <Text style={styles.missionDetails}>Dettagli</Text>
                     </View>
                     <ProgressBar progress={item.progress} total={item.total} />
                   </ImageBackground>
@@ -104,21 +113,25 @@ const Mission = ({ setIsPlaying }) => {
               ))}
             </View>
           ) : (
-            <ScrollView contentContainerStyle={styles.achievementList} showsVerticalScrollIndicator={false}>
+            <ScrollView contentContainerStyle={styles.achievementScrollContainer} showsVerticalScrollIndicator={false}>
               {achievementItems.map((item) => (
-                <View key={item.id} style={styles.achievementItem}>
+                <View key={item.id} style={styles.achievementWrapper}>
                   <ImageBackground 
                     source={(() => {
                       if (!item.cover) console.log(`Mission - achievementItem cover image source is null (id: ${item.id})`);
                       return item.cover;
-                    })()} 
-                    style={styles.achievementImage}
+                    })()}
+                    style={styles.achievementBackground}
                   >
                     <View style={styles.achievementTextContainer}>
-                      <Text style={styles.achievementTitle}>{item.title}</Text>
+                      <Text style={styles.achievementName}>{item.title}</Text>
                       <Text style={styles.achievementDescription}>{item.description}</Text>
+                      <Text style={styles.achievementDetails}>More Info</Text>
                     </View>
-                    <ProgressBar progress={item.progress} total={item.total} />
+                    <View style={styles.achievementProgressBarContainer}>
+                      <View style={[styles.achievementProgressBar, { width: `${(item.progress / item.total) * 100}%` }]} />
+                      <Text style={styles.achievementProgressText}>{`${item.progress}/${item.total}`}</Text>
+                    </View>
                   </ImageBackground>
                 </View>
               ))}

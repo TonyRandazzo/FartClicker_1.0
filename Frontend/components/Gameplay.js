@@ -92,7 +92,7 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     scheduleNextAttack();
 
     return () => clearTimeout(timeoutId);
-  }, [isPlaying, lambdaRound, HPbarMidPoint]);
+  }, [lambdaRound, HPbarMidPoint]);
 
   const [progress, setProgress] = useState(0);
   const fartPositions = {

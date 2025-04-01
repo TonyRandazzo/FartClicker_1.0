@@ -57,10 +57,10 @@ const Home = ({ isPlaying, setIsPlaying, selectedCharacterId }) => {
   };
   const fartPositions = {
     1: {
-      top: 200,
+      top: 150,
       right: null,
       bottom: null,
-      left: 120,
+      left: 150,
     },
     2: {
       top: 380,
@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centra verticalmente
     alignItems: 'center', // Centra orizzontalmente
     position: 'relative',
-    marginTop: height * 0.2
+    marginTop: 90
   },
   characterImage: {
     position: 'absolute',
@@ -865,8 +865,8 @@ const styles = StyleSheet.create({
   },
   ombra: {
     position: 'relative', // Sovrappone l'immagine sotto
-    width: 550,
-    height: 720,
+    width: width,
+    height: height,
   },
   impulso: {
     position: 'absolute',

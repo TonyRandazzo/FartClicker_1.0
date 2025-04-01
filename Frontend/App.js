@@ -148,7 +148,7 @@ const App = () => {
     // Animazione di dissolvenza bianca
     Animated.timing(fadeInOpacity, {
       toValue: 1,
-      duration: 500,
+      duration: 300,
       useNativeDriver: true,
     }).start(() => {
       setTimeout(() => {
@@ -158,12 +158,12 @@ const App = () => {
         // Dopo che la schermata di dissolvenza è apparsa, la facciamo scomparire
         Animated.timing(fadeInOpacity, {
           toValue: 0,
-          duration: 500,
+          duration: 300,
           useNativeDriver: true,
         }).start(() => {
           setFadeScreenVisible(false);
         });
-      }, 500); // Mantieni la schermata bianca per 300ms prima di fare lo scroll
+      }, 300); // Mantieni la schermata bianca per 300ms prima di fare lo scroll
     });
   };
   const preloadImages = async () => {
@@ -220,7 +220,7 @@ const App = () => {
     // Avvia l'animazione della barra di caricamento
     const animation = Animated.timing(progressValue, {
       toValue: 100, // Fine dell'animazione (100%)
-      duration: 20000,
+      duration: 5000,
       useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
     });
 
@@ -520,7 +520,7 @@ const styles = ScaledSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'white',
+    backgroundColor: 'DodgerBlue',
     width: width,
     height: height,
     zIndex: 10,
