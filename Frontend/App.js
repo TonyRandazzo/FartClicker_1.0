@@ -25,18 +25,20 @@ import Shop from './components/Shop';
 import Home from './components/Home';
 import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
+import { createClient } from '@supabase/supabase-js';
+import 'react-native-url-polyfill/auto';
 
+const SUPABASE_URL = 'https://mtwsyxmhjhahirdeisnz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3N5eG1oamhhaGlyZGVpc256Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNDYxMDgsImV4cCI6MjA1ODkyMjEwOH0.-5qoeUa4iXkXMsN3vRW4df3WyKOETavF6lqnRHNN8Pk';
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const { width, height } = Dimensions.get('window');
-
-
-// isPlaying={isPlaying} setIsPlaying={setIsPlaying} 
 
 Text.defaultProps = Text.defaultProps || {};
 Text.defaultProps.allowFontScaling = false;
 
 TextInput.defaultProps = TextInput.defaultProps || {};
 TextInput.defaultProps.allowFontScaling = false;
-
 
 const localImages = [
   require('./assets/images/Sfondo.png'),
@@ -46,7 +48,6 @@ const localImages = [
   require('./assets/images/barra1.png'),
 ];
 
-
 const imageUrls = [
   require('./assets/images/toilettatura.png'),
   require('./assets/images/personaggi_icona_menu.png'),
@@ -54,9 +55,6 @@ const imageUrls = [
   require('./assets/images/rotolo_missione.png'),
   require('./assets/images/map_icon.png'),
 ];
-
-
-
 
 const App = () => {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -80,21 +78,89 @@ const App = () => {
   const translateYValues = useRef(imageUrls.map(() => new Animated.Value(0))).current;
   const fadeOutOpacity = useRef(new Animated.Value(1)).current;
   const fadeInOpacity = useRef(new Animated.Value(0)).current;
-  const progressValue = useRef(new Animated.Value(0)).current; // Valore per la barra di caricamento
-  const [isVisible, setIsVisible] = useState(true); // Stato per visibilità dell'immagine a schermo intero
+  const progressValue = useRef(new Animated.Value(0)).current;
+  const [isVisible, setIsVisible] = useState(true);
   const checkerboardOpacity = useRef(new Animated.Value(0)).current;
-  const checkerboardScale = useRef(new Animated.Value(1)).current; // Scala iniziale a 1
+  const checkerboardScale = useRef(new Animated.Value(1)).current;
   const [isReady, setIsReady] = useState(false);
-  const [fadeScreenVisible, setFadeScreenVisible] = useState(false); // Stato per la schermata di fade
+  const [fadeScreenVisible, setFadeScreenVisible] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [username, setUsername] = useState('');
+  const [registrationCompleted, setRegistrationCompleted] = useState(false);
 
+  // Schermata di registrazione
+  const RegistrationScreen = () => {
+    const handleSubmit = async () => {
+      if (!username.trim()) {
+        Alert.alert('Errore', 'Inserisci un username valido');
+        return;
+      }
 
+      try {
+        // Inserisci l'utente nel database
+        const { data, error } = await supabase
+          .from('main')
+          .insert([{ user: username.trim() }])
+          .select();
+
+        if (error) throw error;
+
+        console.log('Utente registrato:', data);
+        setRegistrationCompleted(true);
+        setShowRegistration(false);
+        goToPage(2); // Vai alla home dopo la registrazione
+      } catch (error) {
+        console.error('Errore durante la registrazione:', error);
+        Alert.alert('Errore', 'Si è verificato un errore durante la registrazione');
+      }
+    };
+
+    return (
+      <View style={styles.registrationContainer}>
+        <ImageBackground
+          source={require('./assets/images/sfondo_blu.png')}
+          style={styles.registrationBackground}
+          resizeMode="cover"
+        >
+          <View style={styles.registrationContent}>
+            {/* Sfondo arancione per il form */}
+            <Image 
+              source={require('./assets/images/rettangolo_arancione_basso.png')}
+              style={styles.orangeBackground}
+              resizeMode="stretch"
+            />
+            
+            <View style={styles.formContainer}>
+              <Text style={styles.registrationText}>Scegli il tuo username:</Text>
+              
+              <TextInput
+                style={styles.registrationInput}
+                value={username}
+                onChangeText={setUsername}
+                placeholder="Username"
+                placeholderTextColor="#aaa"
+                maxLength={20}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              
+              <TouchableOpacity
+                style={styles.registrationButton}
+                onPress={handleSubmit}
+              >
+                <Text style={styles.registrationButtonText}>INIZIA</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ImageBackground>
+      </View>
+    );
+  };
 
   const goToPage = (index) => {
-    // Mostra la schermata di dissolvenza bianca prima di fare lo scroll
-    setFadeScreenVisible(true)
+    setFadeScreenVisible(true);
     setTransitionVisible(true);
 
-    // Animazione dei blocchi che salgono
     const upAnimation = Animated.parallel([
       Animated.timing(block1Animation, {
         toValue: 1,
@@ -115,7 +181,6 @@ const App = () => {
       })
     ]);
 
-    // Animazione dei blocchi che scendono
     const downAnimation = Animated.parallel([
       Animated.timing(block1Animation, {
         toValue: 0,
@@ -134,7 +199,6 @@ const App = () => {
       })
     ]);
 
-    // Sequenza completa
     Animated.sequence([
       upAnimation,
       Animated.delay(200),
@@ -143,9 +207,8 @@ const App = () => {
       setTransitionVisible(false);
       flatListRef.current?.scrollToIndex({ index, animated: false });
       setCurrentIndex(index);
-    }); flatListRef.current?.scrollToIndex({ index, animated: false });
+    });
 
-    // Animazione di dissolvenza bianca
     Animated.timing(fadeInOpacity, {
       toValue: 1,
       duration: 300,
@@ -155,7 +218,6 @@ const App = () => {
         flatListRef.current?.scrollToIndex({ index, animated: true });
         setCurrentIndex(index);
 
-        // Dopo che la schermata di dissolvenza è apparsa, la facciamo scomparire
         Animated.timing(fadeInOpacity, {
           toValue: 0,
           duration: 300,
@@ -163,111 +225,82 @@ const App = () => {
         }).start(() => {
           setFadeScreenVisible(false);
         });
-      }, 300); // Mantieni la schermata bianca per 300ms prima di fare lo scroll
+      }, 300);
     });
   };
+
   const preloadImages = async () => {
-    // Pre-caricamento immagini locali
     const localPromises = localImages.map((image) =>
       Image.prefetch(Image.resolveAssetSource(image).uri)
     );
   
-  
     await Promise.all([...localPromises]);
   };
+
   useEffect(() => {
-    // Pre-carica tutte le immagini prima di mostrare l'app
     const loadAssets = async () => {
       await preloadImages();
-
-      setIsReady(true); // Una volta pre-caricate, mostra l'app
+      setIsReady(true); 
     };
     loadAssets();
   }, []);
 
-
   useEffect(() => {
-    // Configura l'animazione per la scala
     const scaleAnimation = Animated.timing(checkerboardScale, {
-      toValue: 1.1, // Diventa il doppio della dimensione originale
+      toValue: 1.1,
       duration: 4000,
       useNativeDriver: true,
     });
 
-    // Configura l'animazione per l'opacità
     const fadeAnimation = Animated.sequence([
       Animated.timing(checkerboardOpacity, {
-        toValue: 0.8, // Diventa visibile
+        toValue: 0.8,
         duration: 2000,
         useNativeDriver: true,
       }),
       Animated.timing(checkerboardOpacity, {
-        toValue: 0, // Diventa invisibile
+        toValue: 0,
         duration: 2000,
         useNativeDriver: true,
       }),
     ]);
 
-    // Combina scala e opacità
     const combinedAnimation = Animated.parallel([scaleAnimation, fadeAnimation]);
-
-    // Loop continuo
     Animated.loop(combinedAnimation).start();
   }, []);
 
-
   useEffect(() => {
-    // Avvia l'animazione della barra di caricamento
     const animation = Animated.timing(progressValue, {
-      toValue: 100, // Fine dell'animazione (100%)
+      toValue: 100,
       duration: 5000,
-      useNativeDriver: false, // Deve essere false per larghezza (non supporta il layout)
+      useNativeDriver: false,
     });
 
     animation.start(() => {
-      // Una volta completata l'animazione, nascondi l'immagine
       Animated.timing(fadeOutOpacity, {
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
       }).start(() => {
         setIsVisible(false);
-        goToPage(2);
+        // Mostra la schermata di registrazione invece di andare direttamente alla home
+        setShowRegistration(true);
       });
     });
 
-    return () => animation.stop(); // Ferma l'animazione in caso di smontaggio del componente
+    return () => animation.stop();
   }, []);
-
 
   const progressInterpolation = progressValue.interpolate({
     inputRange: [0, 100],
     outputRange: ['0%', '100%'],
   });
 
-
-
-
-
-
-
   const onViewRef = useRef(({ viewableItems, changed }) => {
     if (viewableItems.length > 0) {
       const newIndex = viewableItems[0].index;
-
       setCurrentIndex(newIndex);
       setActiveIndex(newIndex);
-
-      setTimeout(() => {
-        console.log('--- Scroll Debug Info ---');
-        console.log('Viewable Items:', viewableItems.map(item => ({ index: item.index, key: item.key })));
-        console.log('Changed:', changed.map(item => ({ index: item.index, key: item.key, isViewable: item.isViewable })));
-        console.log('New Index:', newIndex);
-        console.log('Current Index:', newIndex);
-        console.log('Active Index:', newIndex);
-        console.log('------------------------');
-      }, 0);
-
       animateIcons(newIndex);
     }
   }).current;
@@ -304,19 +337,17 @@ const App = () => {
 
   useEffect(() => {
     Immersive.on();
-
     return () => {
       Immersive.off();
     };
   }, []);
-
-
 
   useEffect(() => {
     if (flatListRef.current) {
       flatListRef.current.scrollToIndex({ index: 2, animated: false });
     }
   }, []);
+
   const [selectedText, setSelectedText] = useState('');
 
   const textOptions = [
@@ -334,7 +365,7 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" hidden={true} />
 
-      {/* Schermata di caricamento sovrapposta */}
+      {/* Schermata di caricamento */}
       {isVisible && (
         <Animated.View
           style={[
@@ -344,21 +375,13 @@ const App = () => {
         >
           <Animated.View style={[styles.whiteBG, { opacity: fadeOutOpacity }]} />
           <Image
-            source={(() => {
-              const img = require('./assets/images/Sfondo.png');
-              if (!img) console.log('App - Sfondo.png image source is null');
-              return img;
-            })()}
+            source={require('./assets/images/Sfondo.png')}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
           <SafeAreaView style={styles.tema}>
             <Animated.Image
-              source={(() => {
-                const img = require('./assets/images/Scoreggia.png');
-                if (!img) console.log('App - Scoreggia.png image source is null');
-                return img;
-              })()}
+              source={require('./assets/images/Scoreggia.png')}
               style={[
                 styles.checkerboard,
                 {
@@ -370,22 +393,14 @@ const App = () => {
             />
           </SafeAreaView>
           <Image
-            source={(() => {
-              const img = require('./assets/images/PersonaggiTitolo.png');
-              if (!img) console.log('App - PersonaggiTitolo.png image source is null');
-              return img;
-            })()}
+            source={require('./assets/images/PersonaggiTitolo.png')}
             style={styles.fullScreenImage}
             resizeMode="cover"
           />
           <Text style={styles.gameText}>{selectedText}</Text>
           <View style={styles.progressBarContainer}>
             <Image
-              source={(() => {
-                const img = require('./assets/images/barra.png');
-                if (!img) console.log('App - barra.png image source is null');
-                return img;
-              })()}
+              source={require('./assets/images/barra.png')}
               style={styles.progressBarBackground}
               resizeMode="stretch"
             />
@@ -393,11 +408,7 @@ const App = () => {
               style={[styles.progressFill, { width: progressInterpolation }]}
             >
               <Image
-                source={(() => {
-                  const img = require('./assets/images/barra1.png');
-                  if (!img) console.log('App - barra1.png image source is null');
-                  return img;
-                })()}
+                source={require('./assets/images/barra1.png')}
                 style={styles.progressFillImage}
                 resizeMode="stretch"
               />
@@ -406,62 +417,63 @@ const App = () => {
         </Animated.View>
       )}
 
-      <Animated.FlatList
-        data={pages}
-        renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
-        horizontal
-        pagingEnabled
-        ref={flatListRef}
-        showsHorizontalScrollIndicator={false}
-        initialNumToRender={5}
-        maxToRenderPerBatch={10}
-        keyExtractor={(item, index) => `page_${index}`}
-        getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
-        onViewableItemsChanged={onViewRef}
-        viewabilityConfig={viewConfigRef.current}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: true }
-        )}
-        scrollEventThrottle={16}
-        scrollEnabled={false}
-      />
+      {/* Schermata di registrazione */}
+      {showRegistration && !registrationCompleted && (
+        <RegistrationScreen />
+      )}
 
-      {isPlaying && (
+      {/* App principale */}
+      {!showRegistration && registrationCompleted && (
         <>
-          <SafeAreaView style={styles.bottomContainer}>
-            <Image
-              source={(() => {
-                const img = require('./assets/images/balaustra_inferiore.png');
-                if (!img) console.log('App - balaustra inferiore.png image source is null');
-                return img;
-              })()}
-              style={styles.bottomImage}
-            />
-          </SafeAreaView>
-          <SafeAreaView style={styles.indicatorContainer}>
-            {imageUrls.map((url, index) => (
-              <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
-                <Animated.View
-                  style={{ transform: [{ scale: scaleValues[index] }, { translateY: translateYValues[index] }] }}
-                >
-                  <Image
-                    source={(() => {
-                      if (!url) {
-                        console.log(`App - indicator image source is null (index: ${index})`);
-                        return {}; // Restituisci un oggetto vuoto come fallback
-                      }
-                      return url; // Restituisci direttamente l'import require
-                    })()}
-                    style={styles.indicator}
-                    resizeMode="contain"
-                  />
-                </Animated.View>
-              </TouchableOpacity>
-            ))}
-          </SafeAreaView>
+          <Animated.FlatList
+            data={pages}
+            renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
+            horizontal
+            pagingEnabled
+            ref={flatListRef}
+            showsHorizontalScrollIndicator={false}
+            initialNumToRender={5}
+            maxToRenderPerBatch={10}
+            keyExtractor={(item, index) => `page_${index}`}
+            getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
+            onViewableItemsChanged={onViewRef}
+            viewabilityConfig={viewConfigRef.current}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+              { useNativeDriver: true }
+            )}
+            scrollEventThrottle={16}
+            scrollEnabled={false}
+          />
+
+          {isPlaying && (
+            <>
+              <SafeAreaView style={styles.bottomContainer}>
+                <Image
+                  source={require('./assets/images/balaustra_inferiore.png')}
+                  style={styles.bottomImage}
+                />
+              </SafeAreaView>
+              <SafeAreaView style={styles.indicatorContainer}>
+                {imageUrls.map((url, index) => (
+                  <TouchableOpacity key={index} onPress={() => goToPage(index)} activeOpacity={1}>
+                    <Animated.View
+                      style={{ transform: [{ scale: scaleValues[index] }, { translateY: translateYValues[index] }] }}
+                    >
+                      <Image
+                        source={url}
+                        style={styles.indicator}
+                        resizeMode="contain"
+                      />
+                    </Animated.View>
+                  </TouchableOpacity>
+                ))}
+              </SafeAreaView>
+            </>
+          )}
         </>
       )}
+
       {fadeScreenVisible && (
         <Animated.View style={[styles.fadeScreen, { opacity: fadeInOpacity }]} />
       )}
@@ -470,6 +482,68 @@ const App = () => {
 };
 
 const styles = ScaledSheet.create({
+  registrationContainer: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    zIndex: 20,
+  },
+  registrationBackground: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  registrationContent: {
+    width: '80%',
+    alignItems: 'center',
+    position: 'relative', // Per posizionamento assoluto dello sfondo
+  },
+  orangeBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%', // O un valore specifico se vuoi controllare l'altezza
+    top: 0,
+    left: 0,
+    zIndex: 0, // Manda dietro al contenuto
+  },
+  registrationImage: {
+    width: 200,
+    height: 100,
+    marginBottom: 30,
+  },
+  registrationText: {
+    color: 'white',
+    fontSize: 18,
+    marginBottom: 20,
+    textAlign: 'center',
+    fontFamily: 'LuckiestGuy-8jyD', // Sostituisci con il tuo font
+  },
+  registrationInput: {
+    width: '100%',
+    height: 50,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginBottom: 30,
+    color: 'black',
+  },
+  registrationButton: {
+    backgroundColor: '#FFD700', // Colore oro
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    elevation: 5,
+  },
+  registrationButtonText: {
+    color: 'black',
+    fontSize: 18,
+    fontWeight: 'bold',
+    fontFamily: 'LuckiestGuy-8jyD', // Sostituisci con il tuo font
+  },
   animatedBlock: {
     position: 'absolute',
     bottom: 0,
