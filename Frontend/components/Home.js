@@ -855,7 +855,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Centra verticalmente
     alignItems: 'center', // Centra orizzontalmente
     position: 'relative',
-    marginTop: 90
+    marginTop: 75,
   },
   characterImage: {
     position: 'absolute',

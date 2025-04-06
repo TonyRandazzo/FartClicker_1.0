@@ -27,6 +27,7 @@ import MapScreen from './components/MapScreen';
 import Immersive from 'react-native-immersive';
 import { createClient } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SUPABASE_URL = 'https://mtwsyxmhjhahirdeisnz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3N5eG1oamhhaGlyZGVpc256Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNDYxMDgsImV4cCI6MjA1ODkyMjEwOH0.-5qoeUa4iXkXMsN3vRW4df3WyKOETavF6lqnRHNN8Pk';
@@ -88,7 +89,50 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [registrationCompleted, setRegistrationCompleted] = useState(false);
 
-  // Schermata di registrazione
+  useEffect(() => {
+    const checkLoggedInUser = async () => {
+      try {
+        const storedUser = await AsyncStorage.getItem('loggedInUser');
+
+        if (storedUser) {
+          // Set the username from storage
+          setUsername(storedUser);
+
+          // Update registration state
+          setRegistrationCompleted(true);
+          setShowRegistration(false);
+
+          // Fetch user data from Supabase
+          const { data, error } = await supabase
+            .from('main')
+            .select('*')
+            .eq('user', storedUser)
+            .single();
+
+          if (error) {
+            console.error('Errore durante il fetch da Supabase:', error);
+            return;
+          }
+
+          console.log('Dati utente recuperati:', data);
+
+          // Move these logs to a separate useEffect to see the updated values
+        } else {
+          setShowRegistration(true);
+        }
+      } catch (error) {
+        console.error('Errore nel recupero utente o fetch Supabase:', error);
+      }
+    };
+
+    checkLoggedInUser();
+  }, []);
+
+  useEffect(() => {
+    console.log("REGISTRATION COMPLETED:", registrationCompleted);
+    console.log("SHOW REGISTRATION:", showRegistration);
+  }, [registrationCompleted, showRegistration]);
+
   const RegistrationScreen = () => {
     const handleSubmit = async () => {
       if (!username.trim()) {
@@ -97,7 +141,6 @@ const App = () => {
       }
 
       try {
-        // Inserisci l'utente nel database
         const { data, error } = await supabase
           .from('main')
           .insert([{ user: username.trim() }])
@@ -106,9 +149,12 @@ const App = () => {
         if (error) throw error;
 
         console.log('Utente registrato:', data);
+
+        await AsyncStorage.setItem('loggedInUser', username.trim());
+
         setRegistrationCompleted(true);
         setShowRegistration(false);
-        goToPage(2); // Vai alla home dopo la registrazione
+        goToPage(2);
       } catch (error) {
         console.error('Errore durante la registrazione:', error);
         Alert.alert('Errore', 'Si è verificato un errore durante la registrazione');
@@ -123,16 +169,15 @@ const App = () => {
           resizeMode="cover"
         >
           <View style={styles.registrationContent}>
-            {/* Sfondo arancione per il form */}
-            <Image 
+            <Image
               source={require('./assets/images/rettangolo_arancione_basso.png')}
               style={styles.orangeBackground}
               resizeMode="stretch"
             />
-            
+
             <View style={styles.formContainer}>
               <Text style={styles.registrationText}>Scegli il tuo username:</Text>
-              
+
               <TextInput
                 style={styles.registrationInput}
                 value={username}
@@ -142,8 +187,11 @@ const App = () => {
                 maxLength={20}
                 autoCapitalize="none"
                 autoCorrect={false}
+                keyboardType="default" // Assicurati che sia impostato
+                blurOnSubmit={false}  // Previene la chiusura della tastiera al submit
+                onSubmitEditing={() => {}}
               />
-              
+
               <TouchableOpacity
                 style={styles.registrationButton}
                 onPress={handleSubmit}
@@ -233,14 +281,14 @@ const App = () => {
     const localPromises = localImages.map((image) =>
       Image.prefetch(Image.resolveAssetSource(image).uri)
     );
-  
+
     await Promise.all([...localPromises]);
   };
 
   useEffect(() => {
     const loadAssets = async () => {
       await preloadImages();
-      setIsReady(true); 
+      setIsReady(true);
     };
     loadAssets();
   }, []);
@@ -417,13 +465,8 @@ const App = () => {
         </Animated.View>
       )}
 
-      {/* Schermata di registrazione */}
-      {showRegistration && !registrationCompleted && (
-        <RegistrationScreen />
-      )}
-
       {/* App principale */}
-      {!showRegistration && registrationCompleted && (
+      {registrationCompleted ? (
         <>
           <Animated.FlatList
             data={pages}
@@ -434,8 +477,13 @@ const App = () => {
             showsHorizontalScrollIndicator={false}
             initialNumToRender={5}
             maxToRenderPerBatch={10}
+            initialScrollIndex={2}
             keyExtractor={(item, index) => `page_${index}`}
-            getItemLayout={(data, index) => ({ length: width, offset: width * index, index })}
+            getItemLayout={(data, index) => ({
+              length: width,
+              offset: width * index,
+              index,
+            })}
             onViewableItemsChanged={onViewRef}
             viewabilityConfig={viewConfigRef.current}
             onScroll={Animated.event(
@@ -472,8 +520,9 @@ const App = () => {
             </>
           )}
         </>
+      ) : (
+        showRegistration && <RegistrationScreen />
       )}
-
       {fadeScreenVisible && (
         <Animated.View style={[styles.fadeScreen, { opacity: fadeInOpacity }]} />
       )}
