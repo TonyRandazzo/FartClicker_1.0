@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import {
   SafeAreaView,
   View,
@@ -28,6 +28,7 @@ import Immersive from 'react-native-immersive';
 import { createClient } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback } from 'react-native';
 
 const SUPABASE_URL = 'https://mtwsyxmhjhahirdeisnz.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3N5eG1oamhhaGlyZGVpc256Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNDYxMDgsImV4cCI6MjA1ODkyMjEwOH0.-5qoeUa4iXkXMsN3vRW4df3WyKOETavF6lqnRHNN8Pk';
@@ -88,6 +89,7 @@ const App = () => {
   const [showRegistration, setShowRegistration] = useState(false);
   const [username, setUsername] = useState('');
   const [registrationCompleted, setRegistrationCompleted] = useState(false);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const checkLoggedInUser = async () => {
@@ -133,14 +135,24 @@ const App = () => {
     console.log("SHOW REGISTRATION:", showRegistration);
   }, [registrationCompleted, showRegistration]);
 
-  const RegistrationScreen = () => {
-    const handleSubmit = async () => {
+  const RegistrationForm = React.memo(({ onRegistrationComplete }) => {
+    const [username, setUsername] = useState('');
+    const inputRef = useRef(null);
+
+    console.log("[DEBUG] RegistrationForm renderizzato");
+
+    const handleSubmit = useCallback(async () => {
+      console.log("[DEBUG] Pulsante INIZIA premuto o Invio premuto");
+      Keyboard.dismiss();
+
       if (!username.trim()) {
+        console.log("[DEBUG] Username vuoto, mostra alert");
         Alert.alert('Errore', 'Inserisci un username valido');
         return;
       }
 
       try {
+        console.log("[DEBUG] Tentativo di registrazione con username:", username.trim());
         const { data, error } = await supabase
           .from('main')
           .insert([{ user: username.trim() }])
@@ -148,18 +160,29 @@ const App = () => {
 
         if (error) throw error;
 
-        console.log('Utente registrato:', data);
-
+        console.log("[DEBUG] Utente registrato con successo:", data);
         await AsyncStorage.setItem('loggedInUser', username.trim());
-
-        setRegistrationCompleted(true);
-        setShowRegistration(false);
-        goToPage(2);
+        onRegistrationComplete();
       } catch (error) {
-        console.error('Errore durante la registrazione:', error);
+        console.error("[DEBUG] Errore durante la registrazione:", error);
         Alert.alert('Errore', 'Si è verificato un errore durante la registrazione');
       }
-    };
+    }, [username, onRegistrationComplete]);
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        console.log("[DEBUG] Tastiera APERTA");
+      });
+
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        console.log("[DEBUG] Tastiera CHIUSA");
+      });
+
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     return (
       <View style={styles.registrationContainer}>
@@ -175,10 +198,15 @@ const App = () => {
               resizeMode="stretch"
             />
 
-            <View style={styles.formContainer}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.formContainer}
+              keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
+            >
               <Text style={styles.registrationText}>Scegli il tuo username:</Text>
 
               <TextInput
+                ref={inputRef}
                 style={styles.registrationInput}
                 value={username}
                 onChangeText={setUsername}
@@ -187,9 +215,11 @@ const App = () => {
                 maxLength={20}
                 autoCapitalize="none"
                 autoCorrect={false}
-                keyboardType="default" // Assicurati che sia impostato
-                blurOnSubmit={false}  // Previene la chiusura della tastiera al submit
-                onSubmitEditing={() => {}}
+                onSubmitEditing={handleSubmit}
+                returnKeyType="done"
+                blurOnSubmit={false}
+                onFocus={() => console.log("[DEBUG] Input in focus")}
+                onBlur={() => console.log("[DEBUG] Input perso il focus")}
               />
 
               <TouchableOpacity
@@ -198,12 +228,13 @@ const App = () => {
               >
                 <Text style={styles.registrationButtonText}>INIZIA</Text>
               </TouchableOpacity>
-            </View>
+            </KeyboardAvoidingView>
           </View>
         </ImageBackground>
       </View>
     );
-  };
+  });
+
 
   const goToPage = (index) => {
     setFadeScreenVisible(true);
@@ -492,6 +523,7 @@ const App = () => {
             )}
             scrollEventThrottle={16}
             scrollEnabled={false}
+            keyboardShouldPersistTaps="handled" // Aggiunto questa prop
           />
 
           {isPlaying && (
@@ -521,7 +553,15 @@ const App = () => {
           )}
         </>
       ) : (
-        showRegistration && <RegistrationScreen />
+        showRegistration && (
+          <RegistrationForm
+            onRegistrationComplete={() => {
+              setRegistrationCompleted(true);
+              setShowRegistration(false);
+              goToPage(2);
+            }}
+          />
+        )
       )}
       {fadeScreenVisible && (
         <Animated.View style={[styles.fadeScreen, { opacity: fadeInOpacity }]} />
