@@ -16,6 +16,14 @@ import {
 } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
+import { createClient } from '@supabase/supabase-js';
+import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const SUPABASE_URL = 'https://mtwsyxmhjhahirdeisnz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3N5eG1oamhhaGlyZGVpc256Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNDYxMDgsImV4cCI6MjA1ODkyMjEwOH0.-5qoeUa4iXkXMsN3vRW4df3WyKOETavF6lqnRHNN8Pk';
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const { RNRestart } = NativeModules;
 
 const { width, height } = Dimensions.get('window');
@@ -37,6 +45,7 @@ function PauseButton({ setIsPlaying }) {
   const [isPaused, setIsPaused] = useState(false);
   const pauseScaleAnim = useRef(new Animated.Value(1)).current;
   const [cachedImagePaths, setCachedImagePaths] = useState({});
+  const [money, setMoney] = useState(0); // Stato per il valore "money"
 
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
@@ -53,77 +62,141 @@ function PauseButton({ setIsPlaying }) {
     ]).start();
   };
 
+  useEffect(() => {
+    const fetchMoneyFromSupabase = async () => {
+      try {
+        const username = await AsyncStorage.getItem('loggedInUser');
+  
+        if (!username) {
+          console.warn('Nessun username trovato in AsyncStorage');
+          return;
+        }
+  
+        const { data, error } = await supabase
+          .from('main') 
+          .select('money')
+          .eq('user', username)
+          .single();
+  
+        if (error) {
+          console.error('Errore nella query Supabase:', error.message);
+          return;
+        }
+  
+        if (data?.money !== undefined) {
+          setMoney(data.money);
+        } else {
+          console.warn('Nessun valore money trovato per questo utente');
+        }
+  
+      } catch (err) {
+        console.error('Errore nel recupero dei money:', err);
+      }
+    };
+  
+    fetchMoneyFromSupabase();
+  }, []);
 
+  const images = {
+    topImage: require('../assets/images/raccoglitore_monete_ink_e_impostaz_finale.png'),
+    greenButton: require('../assets/images/GreenButton.png'),
+    coinIcon: require('../assets/images/COIN_MARVIK.png'), // Aggiungi l'immagine per la moneta
+  };
 
-
-
-
-// Carica tutte le immagini in un unico oggetto
-const images = {
-  topImage: require('../assets/images/raccoglitore_monete_ink_e_impostaz_finale.png'),
-  greenButton: require('../assets/images/GreenButton.png')
-};
-
-
-
-return (
-  <>
-    <View style={styles.topContainer}>
-      {(images.topImage, 'TopImage') && (
-        <Image
-          source={images.topImage}
-          style={styles.topImage}
-          resizeMode="cover"
-          onError={() => console.warn('[HUD IMAGE ERROR] Failed to load topImage')}
-        />
-      )}
-    </View>
-    
-    <TouchableOpacity 
-      style={styles.button} 
-      activeOpacity={1}
-      onPressIn={() => {
-        bounceAnimation(pauseScaleAnim);  
-        setIsPaused(true);
-      }}
-    >
-      { (images.greenButton, 'GreenButton') && (
-        <Animated.Image
-          source={images.greenButton}
-          style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
-          resizeMode="contain"
-          onError={() => console.warn('[HUD IMAGE ERROR] Failed to load greenButton')}
-        />
-      )}
-    </TouchableOpacity>
-    
-    {isPaused && (
-      <View style={styles.overlay}>
-        <View style={styles.modalContent}>
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => setIsPaused(false)}
-          >
-            <Text style={styles.modalButtonText}>Resume</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => {
-              setIsPaused(false);
-              setIsPlaying(false);
-              RNRestart.Restart();            }}
-          >
-            <Text style={styles.modalButtonText}>Exit</Text>
-          </TouchableOpacity>
-        </View>
+  return (
+    <>
+      <View style={styles.topContainer}>
+        {images.topImage && (
+          <Image
+            source={images.topImage}
+            style={styles.topImage}
+            resizeMode="cover"
+            onError={() => console.warn('[HUD IMAGE ERROR] Failed to load topImage')}
+          />
+        )}
       </View>
-    )}
-  </>
-);
+
+      <View style={styles.moneyContainer}>
+        <Image
+          source={images.coinIcon}
+          style={styles.coinImage}
+          resizeMode="contain"
+        />
+        <Text style={styles.moneyText}>{money}</Text>
+      </View>
+
+      <TouchableOpacity 
+        style={styles.button} 
+        activeOpacity={1}
+        onPressIn={() => {
+          bounceAnimation(pauseScaleAnim);  
+          setIsPaused(true);
+        }}
+      >
+        {images.greenButton && (
+          <Animated.Image
+            source={images.greenButton}
+            style={[styles.buttonImage, { transform: [{ scale: pauseScaleAnim }] }]}
+            resizeMode="contain"
+            onError={() => console.warn('[HUD IMAGE ERROR] Failed to load greenButton')}
+          />
+        )}
+      </TouchableOpacity>
+
+      {isPaused && (
+        <View style={styles.overlay}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setIsPaused(false)}
+            >
+              <Text style={styles.modalButtonText}>Resume</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => {
+                setIsPaused(false);
+                setIsPlaying(false);
+                RNRestart.Restart();
+              }}
+            >
+              <Text style={styles.modalButtonText}>Exit</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </>
+  );
 }
 
+
 const styles = StyleSheet.create({
+  moneyContainer: {
+    position: 'absolute',
+    top: 15,
+    left: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  
+  coinImage: {
+    width: 24,
+    height: 24,
+    marginRight: 8,
+  },
+  
+  moneyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  
   pauseButton: {
     padding: 15,
     backgroundColor: '#2196F3',

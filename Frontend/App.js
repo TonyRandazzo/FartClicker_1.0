@@ -41,6 +41,7 @@ Text.defaultProps.allowFontScaling = false;
 
 TextInput.defaultProps = TextInput.defaultProps || {};
 TextInput.defaultProps.allowFontScaling = false;
+const sbarraCombattimento = require('./assets/images/sbarra_combattimento.png');
 
 const localImages = [
   require('./assets/images/Sfondo.png'),
@@ -106,7 +107,7 @@ const App = () => {
 
           // Fetch user data from Supabase
           const { data, error } = await supabase
-            .from('main')
+            .from('main') //tabella
             .select('*')
             .eq('user', storedUser)
             .single();
@@ -137,53 +138,37 @@ const App = () => {
 
   const RegistrationForm = React.memo(({ onRegistrationComplete }) => {
     const [username, setUsername] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const inputRef = useRef(null);
-
-    console.log("[DEBUG] RegistrationForm renderizzato");
-
+  
     const handleSubmit = useCallback(async () => {
-      console.log("[DEBUG] Pulsante INIZIA premuto o Invio premuto");
+      if (isSubmitting) return; // Evita più clic
+      setIsSubmitting(true);
       Keyboard.dismiss();
-
+  
       if (!username.trim()) {
-        console.log("[DEBUG] Username vuoto, mostra alert");
         Alert.alert('Errore', 'Inserisci un username valido');
+        setIsSubmitting(false);
         return;
       }
-
+  
       try {
-        console.log("[DEBUG] Tentativo di registrazione con username:", username.trim());
         const { data, error } = await supabase
           .from('main')
           .insert([{ user: username.trim() }])
           .select();
-
+  
         if (error) throw error;
-
-        console.log("[DEBUG] Utente registrato con successo:", data);
+  
         await AsyncStorage.setItem('loggedInUser', username.trim());
         onRegistrationComplete();
       } catch (error) {
-        console.error("[DEBUG] Errore durante la registrazione:", error);
+        console.error("Errore durante la registrazione:", error);
         Alert.alert('Errore', 'Si è verificato un errore durante la registrazione');
+        setIsSubmitting(false);
       }
-    }, [username, onRegistrationComplete]);
-
-    useEffect(() => {
-      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-        console.log("[DEBUG] Tastiera APERTA");
-      });
-
-      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
-        console.log("[DEBUG] Tastiera CHIUSA");
-      });
-
-      return () => {
-        keyboardDidShowListener.remove();
-        keyboardDidHideListener.remove();
-      };
-    }, []);
-
+    }, [username, onRegistrationComplete, isSubmitting]);
+  
     return (
       <View style={styles.registrationContainer}>
         <ImageBackground
@@ -197,14 +182,14 @@ const App = () => {
               style={styles.orangeBackground}
               resizeMode="stretch"
             />
-
+  
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               style={styles.formContainer}
               keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
             >
               <Text style={styles.registrationText}>Scegli il tuo username:</Text>
-
+  
               <TextInput
                 ref={inputRef}
                 style={styles.registrationInput}
@@ -218,22 +203,23 @@ const App = () => {
                 onSubmitEditing={handleSubmit}
                 returnKeyType="done"
                 blurOnSubmit={false}
-                onFocus={() => console.log("[DEBUG] Input in focus")}
-                onBlur={() => console.log("[DEBUG] Input perso il focus")}
               />
-
-              <TouchableOpacity
-                style={styles.registrationButton}
-                onPress={handleSubmit}
-              >
-                <Text style={styles.registrationButtonText}>INIZIA</Text>
-              </TouchableOpacity>
+  
+              {!isSubmitting && (
+                <TouchableOpacity
+                  style={styles.registrationButton}
+                  onPress={handleSubmit}
+                >
+                  <Text style={styles.registrationButtonText}>INIZIA</Text>
+                </TouchableOpacity>
+              )}
             </KeyboardAvoidingView>
           </View>
         </ImageBackground>
       </View>
     );
   });
+  
 
 
   const goToPage = (index) => {
@@ -499,6 +485,25 @@ const App = () => {
       {/* App principale */}
       {registrationCompleted ? (
         <>
+                <ImageBackground
+                  source={sbarraCombattimento}
+                  style={styles.bottomBackground}
+                  accessible={true}
+                  accessibilityLabel="Sbarra di combattimento"
+                  onError={() => console.error('[Image Error] Failed to load CombatBar image')}
+                >
+                  {/* <View style={styles.buttonsContainer}>
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>Button 1</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>Button 2</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button}>
+                      <Text style={styles.buttonText}>Button 3</Text>
+                    </TouchableOpacity>
+                  </View> */}
+                </ImageBackground>
           <Animated.FlatList
             data={pages}
             renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
@@ -571,6 +576,17 @@ const App = () => {
 };
 
 const styles = ScaledSheet.create({
+  bottomBackground: {
+    zIndex: 1,
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+  },
+  pageContainer: {
+    width: width,
+    height: height,
+  },
   registrationContainer: {
     flex: 1,
     width: '100%',

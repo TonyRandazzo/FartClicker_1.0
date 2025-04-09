@@ -631,7 +631,7 @@ return (
           accessibilityLabel="Sbarra di combattimento"
           onError={() => console.error('[Image Error] Failed to load CombatBar image')}
         >
-          <View style={styles.buttonsContainer}>
+          {/* <View style={styles.buttonsContainer}>
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Button 1</Text>
             </TouchableOpacity>
@@ -641,7 +641,7 @@ return (
             <TouchableOpacity style={styles.button}>
               <Text style={styles.buttonText}>Button 3</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </ImageBackground>
       )}
     </View>
@@ -673,7 +673,6 @@ const styles = ScaledSheet.create({
   progressContainer: {
     elevation: 90,
     paddingHorizontal: '20@s',
-    paddingTop: '90@vs',
   },
   progressBackground: {
     height: '10@vs',
@@ -696,6 +695,7 @@ const styles = ScaledSheet.create({
   },
   imagesContainer: {
     flex: 1,
+    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between', // Changed from space-evenly to space-between
     alignItems: 'center',
@@ -735,11 +735,12 @@ const styles = ScaledSheet.create({
     zIndex: 2,
   },
   bottomContainer: {
-    height: '200@vs',
+    height: '100%',
     width: '100%',
   },
   bottomBackground: {
     zIndex: 1,
+    position: 'absolute',
     width: '100%',
     height: '100%',
     justifyContent: 'center',
