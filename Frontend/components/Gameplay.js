@@ -11,22 +11,32 @@ import {
   ImageBackground,
   Text,
   ScrollView,
+  Modal,
+  NativeModules,
 } from 'react-native';
+import HUD from './HUD';
 import { ScaledSheet } from 'react-native-size-matters';
 import RNFS from 'react-native-fs';
-import HUD from './HUD'
+import { createClient } from '@supabase/supabase-js';
+import 'react-native-url-polyfill/auto';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const sbarraCombattimento = require('../assets/images/sbarra_combattimento.png');
+const SUPABASE_URL = 'https://mtwsyxmhjhahirdeisnz.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im10d3N5eG1oamhhaGlyZGVpc256Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMzNDYxMDgsImV4cCI6MjA1ODkyMjEwOH0.-5qoeUa4iXkXMsN3vRW4df3WyKOETavF6lqnRHNN8Pk';
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 
 const { width, height } = Dimensions.get('window');
 
+const { RNRestart } = NativeModules;
 
 
 
-function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
+function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId, isPaused }) {
 
   if (isPlaying) return null;
-
+  const [showRoundWon, setShowRoundWon] = useState(false);
   const [visibleFart, setVisibleFart] = useState(null);
   const [fartEnemy, setFartEnemy] = useState(null);
   const [HPbarMidPoint, setHPbarMidPoint] = useState(10);
@@ -34,6 +44,193 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
   const [lambdaRound, setLambdaRound] = useState(3);
   const [DPC_player, setDPC_player] = useState(0.3);
   const [DPC_bot, setDPC_bot] = useState(1);
+  const [round, setRound] = useState(1);
+  const [roundWon, setRoundWon] = useState(0);
+  const [gold, setGold] = useState(0);
+  const [go, setGo] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [start_DPC, setStart_DPC] = useState(1);
+  const [username, setUsername] = useState(null);
+
+  // Costanti e parametri di progressione
+  const RC = 10; // Ricompensa base
+  const RC_round_d = 0.4; // Diminuzione ricompensa per round
+  const RC_CAP = 3.5; // Ricompensa minima
+  const CPS = 2; // Attacchi per secondo base
+  const CPS_round = 0.01; // Incremento attacchi per round
+  const CPS_cap = 4; // Massimo attacchi per secondo
+  const power_CAP = 0.12; // Incremento massimo potenza nemico
+  const power_CAP_d = 0.002; // Diminuzione incremento per round
+  const power_CAP_lower_bound = 0.02; // Minimo incremento potenza
+  const base_IPS = 0.007; // Incremento base danno per secondo
+  const IPSR = 0.05; // Incremento rate danno
+  const IPSR_d = 0.0008; // Diminuzione incremento rate
+  const IPSR_lower_bound = 0.01; // Minimo incremento rate
+  const HPbar_increment = 0.03; // Incremento vita per round
+
+  const getCurrentRoundFromDB = async () => {
+    if (!username) return 0; // Usa username
+    
+    try {
+      const { data, error } = await supabase
+        .from('main')
+        .select('round')
+        .eq('user', username) // Usa username
+        .single();
+  
+      return data?.round || 0;
+    } catch (error) {
+      console.error('Error fetching round:', error);
+      return 0;
+    }
+  };
+  const updateMaxRound = async (newRound) => {
+    if (!username) {
+      console.error('Cannot update round: No user found');
+      return false;
+    }
+  
+    try {
+      // USA getCurrentRoundFromDB invece di ripetere la query
+      const currentRound = await getCurrentRoundFromDB();
+      console.log(`Current round: ${currentRound}, New round: ${newRound}`);
+  
+      if (newRound > currentRound) {
+        const { error } = await supabase
+          .from('main')
+          .update({ round: newRound })
+          .eq('user', username);
+  
+        if (error) throw error;
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Update round error:', error.message);
+      return false;
+    }
+  };
+  // Fetch current user from AsyncStorage
+  useEffect(() => {
+    const getUserFromStorage = async () => {
+      try {
+        const storedUsername = await AsyncStorage.getItem('loggedInUser');
+        if (storedUsername !== null) {
+          setUsername(storedUsername);
+          console.log('Current user loaded:', storedUsername);
+        }
+      } catch (error) {
+        console.error('Error fetching user from AsyncStorage:', error);
+      }
+    };
+
+    getUserFromStorage();
+  }, []);
+
+  // Function to update money in Supabase
+  const updateUserMoney = async (amount) => {
+    if (!username) {
+      console.error('Cannot update money: No user found in AsyncStorage');
+      return;
+    }
+
+    try {
+      // First, get the current money value from the database
+      const { data, error: fetchError } = await supabase
+        .from('main')
+        .select('money')
+        .eq('user', username)
+        .single();
+
+      if (fetchError) {
+        console.error('Error fetching user data:', fetchError);
+        return;
+      }
+
+      // Calculate the new money value
+      const currentMoney = data?.money || 0;
+      const newMoneyValue = currentMoney + amount;
+
+      // Update the money field in the database
+      const { error: updateError } = await supabase
+        .from('main')
+        .update({ money: newMoneyValue })
+        .eq('user', username);
+
+      if (updateError) {
+        console.error('Error updating money in Supabase:', updateError);
+        return;
+      }
+
+      console.log(`Successfully updated user's money. Added ${amount}. New total: ${newMoneyValue}`);
+    } catch (error) {
+      console.error('Unexpected error updating money:', error);
+    }
+  };
+
+  // Calcola la ricompensa per il round corrente
+  const calculateRoundGold = () => {
+    if (round === 1) return RC;
+    const RC_current_round = Math.max(RC - RC_round_d * (round - 1), RC_CAP);
+    return Math.round(round * RC_current_round);
+  };
+
+  // Calcola il tasso di attacco del nemico
+  const calculateLambdaRound = () => {
+    return Math.min(CPS + (CPS_round * (round - 1)), CPS_cap);
+  };
+
+  // Calcola il CAP del danno nemico
+  const calculateCapDPC = () => {
+    const power_CAP_current = Math.max(
+      power_CAP - (power_CAP_d * (round - 1)), 
+      power_CAP_lower_bound
+    );
+    return start_DPC * (1 + power_CAP_current);
+  };
+
+  // Calcola l'incremento del danno nemico
+  const calculateDPCIncrement = () => {
+    return base_IPS * (1 + Math.max(
+      (IPSR - (IPSR_d * (round - 1))), 
+      IPSR_lower_bound
+    )) ** (round - 1);
+  };
+
+  // Avvia un nuovo round
+  const startNewRound = async () => {
+    const newRound = round + 1;
+    setRound(newRound);
+    setLambdaRound(calculateLambdaRound());
+    
+    // Aumenta la vita massima
+    setHPbarMidPoint(prev => prev * (1 + HPbar_increment));
+    setHPbar(HPbarMidPoint * 2);
+    
+    // Resetta la barra a metà
+    setHPbarMidPoint(HPbarMidPoint);
+    
+    // Aggiorna il round massimo nel DB
+    await updateMaxRound(newRound);
+    
+    // Aggiungi la ricompensa
+    // Calcola la ricompensa per il round
+    const roundReward = calculateRoundGold();
+    
+    // Aggiungi la ricompensa allo stato locale
+    setGold(prev => prev + roundReward);
+    
+    // Aggiorna il denaro nel database Supabase
+    updateUserMoney(roundReward);
+    // Ricalcola i parametri di difficoltà
+    const newCapDPC = calculateCapDPC();
+    const newDPCIncrement = calculateDPCIncrement();
+    
+    setGo(false);
+    // Avvia il round dopo un breve delay
+    setTimeout(() => setGo(true), 1000);
+  };
+
 
   const randf = () => Math.random();
 
@@ -58,43 +255,81 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     if (totalAttacks === 0) {
       inverseSum = 1 / lambdaRound;
     }
-    return inverseSum * 1000; // Convertiamo in millisecondi
+    return inverseSum * 1000;
   };
 
-  useEffect(() => {
-    if (isPlaying) return;
+// Modifica l'useEffect che gestisce gli attacchi del nemico con l'algoritmo di Poisson
+useEffect(() => {
+  // Riferimento alla stato attuale per i timeout
+  const isActive = { current: go && !gameOver && !isPaused};
+  
+  let timeoutId;
+  let animationTimeoutId;
 
-    let timeoutId;
-
-    const scheduleNextAttack = () => {
-      const delay = waitingTime();
-      timeoutId = setTimeout(() => {
-        // Riduci la vita del giocatore
-        setHPbarMidPoint(prev => Math.max(0, prev - DPC_bot)); // Non scende sotto 0
-        
-        // Mostra l'animazione della scoreggia
-        const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
-        setFartEnemy(randomFart);
-        
-        setTimeout(() => {
-          setFartEnemy(null);
-          // Verifica se la vita è a 0
-          if (HPbarMidPoint - DPC_bot <= 0) {
-            // Aggiungi qui la logica di game over se necessario
-            console.log("Game Over!");
+  const scheduleNextAttack = () => {
+    // Calcola il ritardo tra un attacco e l'altro secondo Poisson
+    const delay = waitingTime();
+    
+    timeoutId = setTimeout(() => {
+      // Verifica lo stato attuale usando il riferimento
+      // invece degli stati che potrebbero non essere ancora aggiornati
+      if (isActive.current) {
+        setHPbarMidPoint(prev => {
+          const newValue = prev - DPC_bot;
+          
+          // Controlla se la vita è arrivata a 0
+          if (newValue <= 0) {
+            isActive.current = false; // Aggiorna immediatamente il riferimento
+            setGo(false);
+            setGameOver(true);
+            return 0;
           }
-        }, 500);
+          
+          return newValue;
+        });
 
-        scheduleNextAttack();
-      }, delay);
-    };
+        // Mostra l'animazione della scoreggia solo se ancora attivo
+        if (isActive.current) {
+          const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
+          setFartEnemy(randomFart);
 
+          // Rimuovi l'animazione dopo un breve periodo
+          animationTimeoutId = setTimeout(() => {
+            setFartEnemy(null);
+            
+            // Programma il prossimo attacco solo se ancora attivo
+            if (isActive.current) {
+              scheduleNextAttack();
+            }
+          }, 500);
+        }
+      }
+    }, delay);
+  };
+
+  // Aggiorna il riferimento quando cambiano gli stati
+  isActive.current = go && !gameOver && !isPaused;
+  
+  // Avvia la sequenza di attacchi solo se attivo
+  if (isActive.current) {
     scheduleNextAttack();
+  }
 
-    return () => clearTimeout(timeoutId);
-  }, [lambdaRound, HPbarMidPoint]);
-
-  const [progress, setProgress] = useState(0);
+  // Pulisci i timeout quando il componente si smonta o quando cambiano le dipendenze
+  return () => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    if (animationTimeoutId) {
+      clearTimeout(animationTimeoutId);
+    }
+  };
+},[go, gameOver, lambdaRound, DPC_bot, isPaused]);
+  // Inizializzazione del gioco
+  useEffect(() => {
+    // Avvia il primo round dopo un breve delay
+    setTimeout(() => setGo(true), 1000);
+  }, []);
   const fartPositions = {
     1: {
       top: -20,
@@ -510,21 +745,28 @@ function Gameplay({ isPlaying, setIsPlaying, selectedCharacterId }) {
     setEnemySkin(selectedEnemyData.skin);
     setEnemyId(parseInt(randomKey));
   }, []);
-
-  const handlePress = () => {
-    // Aumenta la barra di progresso
+  
+  const handlePress = async () => {
+    if (!go) return;
+    
     setHPbarMidPoint(prev => {
       const newValue = prev + DPC_player;
-      // Non superare il massimo
-      return Math.min(newValue, HPbar);
+      
+      if (newValue >= HPbar) {
+        setRoundWon(prev => prev + 1);
+        setGo(false);
+        setShowRoundWon(true);
+        return HPbar;
+      }
+      
+      return newValue;
     });
-
-    // Animazione della scoreggia (esistente)
+    
+    // Animazione della scoreggia
     const randomFart = fartImages[Math.floor(Math.random() * fartImages.length)];
     setVisibleFart(randomFart);
     setTimeout(() => setVisibleFart(null), 500);
   };
-
   const item = itemsData[selectedCharacterId] || itemsData[1];
 
 
@@ -535,11 +777,74 @@ const images = {
 
 };
 
+useEffect(() => {
+  if (gameOver && gold > 0) {
+    setGold(0); // Reset gold after updating to prevent duplicate updates
+  }
+}, [gameOver]);
 
+
+const resetGame = () => {
+  updateUserMoney(gold);
+  setGameOver(false);
+  setHPbarMidPoint(10);
+  setHPbar(20);
+  setRound(1);
+  setRoundWon(0);
+  setGo(false);
+  setTimeout(() => setGo(true), 1000);
+};
+
+const handleContinue = async () => {
+  setShowRoundWon(false);
+  await startNewRound();
+};
+
+const handleExit = () => {
+  RNRestart.Restart();
+
+};
+const RoundWonOverlay = ({ onContinue, onExit }) => {
+  return (
+    <View style={styles.roundWonOverlay}>
+      <View style={styles.roundWonContainer}>
+        <Text style={styles.roundWonTitle}>WIN</Text>
+        <Text style={styles.roundWonSubtitle}>Bottino: 🤪</Text>
+        
+        <View style={styles.roundWonButtonsContainer}>
+          <TouchableOpacity 
+            style={[styles.roundWonButton, styles.continueButton]}
+            onPress={onContinue}
+          >
+            <Text style={styles.roundWonButtonText}>Continua</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.roundWonButton, styles.exitButton]}
+            onPress={onExit}
+          >
+            <Text style={styles.roundWonButtonText}>Esci</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 return (
-  <View style={styles.container}>
+  <ImageBackground style={styles.container} source={require('../assets/images/sfondo_blu.png')}>
+          {gameOver && (
+        <View style={styles.gameOverOverlay}>
+          <Text style={styles.gameOverText}>GAME OVER</Text>
+          <TouchableOpacity onPress={resetGame} style={styles.restartButton}>
+            <Text style={styles.restartButtonText}>Riprova</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     <HUD setIsPlaying={setIsPlaying} />
+    <View style={styles.roundContainer}>
+      <Text style={styles.roundText}>ROUND: {round}</Text>
+    </View>
     <View style={styles.progressContainer}>
       <View style={styles.progressBackground}>
         <View style={[
@@ -570,7 +875,7 @@ return (
             onError={() => console.error('[Image Error] Failed to load PlayerPlatform image')}
           />
         )}
-        
+
         {item?.skin ? (
           <Image
             source={item.skin}
@@ -580,7 +885,7 @@ return (
             onError={() => console.error('[Image Error] Failed to load PlayerSkin image')}
           />
         ) : console.error('[Image Debug] PlayerSkin is missing')}
-        
+
         {visibleFart && (
           <Image
             source={visibleFart}
@@ -599,7 +904,7 @@ return (
             onError={() => console.error('[Image Error] Failed to load EnemyPlatform image')}
           />
         )}
-        
+
         {enemySkin ? (
           <Image
             source={enemySkin}
@@ -609,7 +914,7 @@ return (
             onError={() => console.error('[Image Error] Failed to load EnemySkin image')}
           />
         ) : console.error('[Image Debug] EnemySkin is missing')}
-        
+
         {fartEnemy && (
           <Image
             source={fartEnemy}
@@ -621,31 +926,13 @@ return (
     </View>
 
     <TouchableOpacity activeOpacity={1} onPress={handlePress} style={styles.fartButton} />
-
-    <View style={styles.bottomContainer}>
-      {sbarraCombattimento && (
-        <ImageBackground
-          source={sbarraCombattimento}
-          style={styles.bottomBackground}
-          accessible={true}
-          accessibilityLabel="Sbarra di combattimento"
-          onError={() => console.error('[Image Error] Failed to load CombatBar image')}
-        >
-          {/* <View style={styles.buttonsContainer}>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 1</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 2</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>Button 3</Text>
-            </TouchableOpacity>
-          </View> */}
-        </ImageBackground>
-      )}
-    </View>
-  </View>
+    {showRoundWon && (
+  <RoundWonOverlay 
+    onContinue={handleContinue} 
+    onExit={handleExit} 
+  />
+)}
+  </ImageBackground>
 );
 }
 
@@ -653,7 +940,104 @@ const styles = ScaledSheet.create({
   container: {
     width: width,
     height: height,
-    backgroundColor: 'orange',
+  },
+  roundWonOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  roundWonContainer: {
+    padding: '20@s',
+    borderRadius: '15@s',
+    width: '80%',
+    alignItems: 'center',
+  },
+  roundWonTitle: {
+    color: '#fff',
+    fontSize: '24@s',
+    fontWeight: 'bold',
+    marginBottom: '10@s',
+    textAlign: 'center',
+  },
+  roundWonSubtitle: {
+    color: '#ff9800',
+    fontSize: '18@s',
+    marginBottom: '20@s',
+    textAlign: 'center',
+  },
+  roundWonButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  roundWonButton: {
+    padding: '10@s',
+    borderRadius: '10@s',
+    width: '45%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueButton: {
+    backgroundColor: '#4caf50',
+  },
+  exitButton: {
+    backgroundColor: '#f44336',
+  },
+  roundWonButtonText: {
+    color: '#fff',
+    fontSize: '16@s',
+    fontWeight: 'bold',
+  },
+  roundContainer: {
+    position: 'absolute',
+    top: '10%', // Regola questa percentuale per posizionarlo sopra la barra
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 25,
+    borderRadius: 20,
+  },
+  roundText: {
+    color: 'white',
+    fontSize: 30,
+    textAlign: 'center',
+    fontFamily: 'LuckiestGuy-8jyD',
+    textShadowColor: 'black',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  gameOverOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  gameOverText: {
+    color: 'white',
+    fontSize: 48,
+    fontWeight: 'bold',
+    marginBottom: 30,
+  },
+  restartButton: {
+    backgroundColor: '#4CAF50',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 10,
+  },
+  restartButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   fartButton: {
     backgroundColor: 'transparent',
@@ -673,6 +1057,7 @@ const styles = ScaledSheet.create({
   progressContainer: {
     elevation: 90,
     paddingHorizontal: '20@s',
+    paddingTop: '150@vs',
   },
   progressBackground: {
     height: '10@vs',
@@ -695,10 +1080,10 @@ const styles = ScaledSheet.create({
   },
   imagesContainer: {
     flex: 1,
-    position: 'absolute',
     flexDirection: 'row',
     justifyContent: 'space-between', // Changed from space-evenly to space-between
     alignItems: 'center',
+    bottom: '80@s',
     paddingHorizontal: '50@s',
   },
   characterContainer: {
@@ -735,12 +1120,11 @@ const styles = ScaledSheet.create({
     zIndex: 2,
   },
   bottomContainer: {
-    height: '100%',
+    height: '200@vs',
     width: '100%',
   },
   bottomBackground: {
     zIndex: 1,
-    position: 'absolute',
     width: '100%',
     height: '100%',
     justifyContent: 'center',
@@ -763,5 +1147,6 @@ const styles = ScaledSheet.create({
     fontWeight: 'bold',
   },
 });
+
 
 export default Gameplay;

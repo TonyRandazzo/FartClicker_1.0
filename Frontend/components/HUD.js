@@ -45,7 +45,7 @@ function PauseButton({ setIsPlaying }) {
   const [isPaused, setIsPaused] = useState(false);
   const pauseScaleAnim = useRef(new Animated.Value(1)).current;
   const [cachedImagePaths, setCachedImagePaths] = useState({});
-  const [money, setMoney] = useState(0); // Stato per il valore "money"
+  const [money, setMoney] = useState(0); 
 
   const bounceAnimation = (scaleAnim) => {
     Animated.sequence([
@@ -63,40 +63,58 @@ function PauseButton({ setIsPlaying }) {
   };
 
   useEffect(() => {
-    const fetchMoneyFromSupabase = async () => {
+    let subscription;
+    let intervalId;
+  
+    const fetchMoney = async () => {
       try {
         const username = await AsyncStorage.getItem('loggedInUser');
-  
-        if (!username) {
-          console.warn('Nessun username trovato in AsyncStorage');
-          return;
-        }
+        if (!username) return;
   
         const { data, error } = await supabase
-          .from('main') 
+          .from('main')
           .select('money')
           .eq('user', username)
           .single();
   
-        if (error) {
-          console.error('Errore nella query Supabase:', error.message);
-          return;
-        }
-  
-        if (data?.money !== undefined) {
-          setMoney(data.money);
-        } else {
-          console.warn('Nessun valore money trovato per questo utente');
-        }
-  
+        if (!error && data) setMoney(data.money);
       } catch (err) {
-        console.error('Errore nel recupero dei money:', err);
+        console.error('Fetch money error:', err);
       }
     };
   
-    fetchMoneyFromSupabase();
+    // Polling iniziale
+    fetchMoney();
+    intervalId = setInterval(fetchMoney, 10000);
+  
+    // Realtime updates
+    const setupRealtime = async () => {
+      const username = await AsyncStorage.getItem('loggedInUser');
+      if (!username) return;
+  
+      subscription = supabase
+        .channel('money_updates')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'main',
+            filter: `user=eq.${username}`
+          },
+          (payload) => setMoney(payload.new.money)
+        )
+        .subscribe();
+    };
+  
+    setupRealtime();
+  
+    return () => {
+      clearInterval(intervalId);
+      if (subscription) supabase.removeChannel(subscription);
+    };
   }, []);
-
+  
   const images = {
     topImage: require('../assets/images/raccoglitore_monete_ink_e_impostaz_finale.png'),
     greenButton: require('../assets/images/GreenButton.png'),

@@ -60,6 +60,7 @@ const imageUrls = [
 ];
 
 const App = () => {
+  const [Paused, setPaused] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true);
   const [selectedCharacterId, setSelectedCharacterId] = useState(1);
   const flatListRef = useRef(null);
@@ -72,7 +73,7 @@ const App = () => {
   const [storagePermissionsGranted, setStoragePermissionsGranted] = useState(false);
   const pages = [<Shop isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
   <Skin isPlaying={isPlaying} setIsPlaying={setIsPlaying} setSelectedCharacterId={setSelectedCharacterId} />,
-  <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} selectedCharacterId={selectedCharacterId} />,
+  <Home isPlaying={isPlaying} setIsPlaying={setIsPlaying} Paused={Paused} setPaused={setPaused}selectedCharacterId={selectedCharacterId} />,
   <Mission isPlaying={isPlaying} setIsPlaying={setIsPlaying} />,
   <MapScreen isPlaying={isPlaying} setIsPlaying={setIsPlaying} />];
 
@@ -140,26 +141,26 @@ const App = () => {
     const [username, setUsername] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const inputRef = useRef(null);
-  
+
     const handleSubmit = useCallback(async () => {
       if (isSubmitting) return; // Evita più clic
       setIsSubmitting(true);
       Keyboard.dismiss();
-  
+
       if (!username.trim()) {
         Alert.alert('Errore', 'Inserisci un username valido');
         setIsSubmitting(false);
         return;
       }
-  
+
       try {
         const { data, error } = await supabase
           .from('main')
           .insert([{ user: username.trim() }])
           .select();
-  
+
         if (error) throw error;
-  
+
         await AsyncStorage.setItem('loggedInUser', username.trim());
         onRegistrationComplete();
       } catch (error) {
@@ -168,7 +169,7 @@ const App = () => {
         setIsSubmitting(false);
       }
     }, [username, onRegistrationComplete, isSubmitting]);
-  
+
     return (
       <View style={styles.registrationContainer}>
         <ImageBackground
@@ -182,14 +183,14 @@ const App = () => {
               style={styles.orangeBackground}
               resizeMode="stretch"
             />
-  
+
             <KeyboardAvoidingView
               behavior={Platform.OS === "ios" ? "padding" : "height"}
               style={styles.formContainer}
               keyboardVerticalOffset={Platform.OS === "ios" ? 40 : 0}
             >
               <Text style={styles.registrationText}>Scegli il tuo username:</Text>
-  
+
               <TextInput
                 ref={inputRef}
                 style={styles.registrationInput}
@@ -204,7 +205,7 @@ const App = () => {
                 returnKeyType="done"
                 blurOnSubmit={false}
               />
-  
+
               {!isSubmitting && (
                 <TouchableOpacity
                   style={styles.registrationButton}
@@ -219,7 +220,7 @@ const App = () => {
       </View>
     );
   });
-  
+
 
 
   const goToPage = (index) => {
@@ -481,29 +482,31 @@ const App = () => {
           </View>
         </Animated.View>
       )}
-
       {/* App principale */}
       {registrationCompleted ? (
         <>
-                <ImageBackground
-                  source={sbarraCombattimento}
-                  style={styles.bottomBackground}
-                  accessible={true}
-                  accessibilityLabel="Sbarra di combattimento"
-                  onError={() => console.error('[Image Error] Failed to load CombatBar image')}
-                >
-                  {/* <View style={styles.buttonsContainer}>
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.buttonText}>Button 1</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.buttonText}>Button 2</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.buttonText}>Button 3</Text>
-                    </TouchableOpacity>
-                  </View> */}
-                </ImageBackground>
+          {!isPlaying && (
+            <ImageBackground
+              source={sbarraCombattimento}
+              style={styles.bottomBackground}
+              accessible={true}
+              accessibilityLabel="Sbarra di combattimento"
+              onError={() => console.error('[Image Error] Failed to load CombatBar image')}
+            >
+              {/* <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 2</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.buttonText}>Button 3</Text>
+          </TouchableOpacity>
+        </View> */}
+            </ImageBackground>
+          )}
+
           <Animated.FlatList
             data={pages}
             renderItem={({ item }) => <SafeAreaView style={styles.pageContainer}>{item}</SafeAreaView>}
@@ -528,9 +531,8 @@ const App = () => {
             )}
             scrollEventThrottle={16}
             scrollEnabled={false}
-            keyboardShouldPersistTaps="handled" // Aggiunto questa prop
+            keyboardShouldPersistTaps="handled"
           />
-
           {isPlaying && (
             <>
               <SafeAreaView style={styles.bottomContainer}>
@@ -577,6 +579,7 @@ const App = () => {
 
 const styles = ScaledSheet.create({
   bottomBackground: {
+    elevation: 99,
     zIndex: 1,
     position: 'absolute',
     width: '100%',
